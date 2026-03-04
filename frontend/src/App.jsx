@@ -1392,13 +1392,12 @@ function Roadmap({ session }) {
               }}
             >
               <div
+                className="topic-header"
                 style={{
                   background: "#111",
-                  padding: "24px 32px",
                   borderBottom: "1px solid #222",
                   display: "flex",
                   alignItems: "center",
-                  gap: 16,
                 }}
               >
                 <span style={{ fontSize: 40 }}>{selected.emoji}</span>
@@ -1433,8 +1432,12 @@ function Roadmap({ session }) {
                 style={{
                   display: "flex",
                   borderBottom: "1px solid #222",
-                  padding: "0 24px",
+                  padding: "0 10px",
                   background: "#0a0a0a",
+                  overflowX: "auto",
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  WebkitOverflowScrolling: "touch",
                 }}
               >
                 {TABS.filter(
@@ -1457,13 +1460,15 @@ function Roadmap({ session }) {
                           ? "2px solid #fff"
                           : "2px solid transparent",
                       color: tab === t.key ? "#fff" : "#555",
-                      padding: "16px 20px",
+                      padding: "16px 14px",
                       cursor: "pointer",
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: 600,
                       fontFamily: "inherit",
                       transition: "all 0.12s",
                       marginBottom: -1,
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
                     }}
                   >
                     {t.label}
@@ -1473,8 +1478,8 @@ function Roadmap({ session }) {
 
               {/* Content */}
               <div
+                className="roadmap-content"
                 style={{
-                  padding: "32px",
                   background: "#0a0a0a",
                   minHeight: 400,
                 }}

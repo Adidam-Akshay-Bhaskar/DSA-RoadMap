@@ -699,13 +699,21 @@ export default function DSARoadmap() {
     );
 
   if (!session || isRecovering) {
-    return <AuthScreen initialView={isRecovering ? "recovery" : "signIn"} />;
+    return (
+      <AuthScreen 
+        initialView={isRecovering ? "recovery" : "signIn"} 
+        onRecoveryComplete={() => {
+          setIsRecovering(false);
+          setSession(null);
+        }}
+      />
+    );
   }
 
   return <Roadmap session={session} />;
 }
 
-function AuthScreen({ initialView = "signIn" }) {
+function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -808,8 +816,14 @@ function AuthScreen({ initialView = "signIn" }) {
       const res = await supabase.auth.updateUser({ password });
       error = res.error;
       if (!error) {
-        setMsg("Password updated successfully! You can now sign in.");
-        setTimeout(() => setView("signIn"), 2000);
+        setMsg("Password updated successfully! Clearing session...");
+        
+        // Wait bit, then log out to clear the "Recovery" state from Supabase
+        setTimeout(async () => {
+          await supabase.auth.signOut();
+          if (onRecoveryComplete) onRecoveryComplete();
+          setView("signIn");
+        }, 1500);
       }
     }
 

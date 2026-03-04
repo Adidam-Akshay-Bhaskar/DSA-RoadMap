@@ -720,10 +720,24 @@ function AuthScreen({ initialView = "signIn" }) {
   }, [initialView]);
 
   useEffect(() => {
+    // If we are in recovery view, we should try to get the user's email from the session
+    if (view === "recovery") {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user?.email) {
+          setEmail(session.user.email);
+        }
+      });
+    }
+  }, [view]);
+
+  useEffect(() => {
     // Detect if user came from a "Reset Password" link
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "PASSWORD_RECOVERY") {
         setView("recovery");
+        if (session?.user?.email) {
+          setEmail(session.user.email);
+        }
       }
     });
 

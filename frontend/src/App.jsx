@@ -984,11 +984,11 @@ function AuthScreen() {
             {msg && (
               <div
                 style={{
-                  color: msg.includes("Check") ? "#ccc" : "#ef4444",
+                  color: (msg.includes("Check") || msg.includes("sent") || msg.includes("successfully")) ? "#4ade80" : "#ef4444",
                   fontSize: 13,
                   textAlign: "center",
                   padding: "8px",
-                  background: msg.includes("Check") ? "#ffffff10" : "#ef444415",
+                  background: (msg.includes("Check") || msg.includes("sent") || msg.includes("successfully")) ? "#4ade8015" : "#ef444415",
                   borderRadius: 8,
                 }}
               >

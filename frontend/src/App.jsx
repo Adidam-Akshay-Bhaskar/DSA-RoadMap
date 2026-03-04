@@ -704,8 +704,8 @@ export default function DSARoadmap() {
 function AuthScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const [view, setView] = useState("signIn"); // signIn, signUp, forgot, recovery
   const [msg, setMsg] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -766,6 +766,16 @@ function AuthScreen() {
         setResendCooldown(60);
       }
     } else if (view === "recovery") {
+      if (password !== confirmPassword) {
+        setMsg("Passwords do not match!");
+        setLoading(false);
+        return;
+      }
+      if (password.length < 6) {
+        setMsg("Password must be at least 6 characters.");
+        setLoading(false);
+        return;
+      }
       const res = await supabase.auth.updateUser({ password });
       error = res.error;
       if (!error) {
@@ -913,6 +923,28 @@ function AuthScreen() {
                 placeholder={view === "recovery" ? "New Password" : "Password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{
+                  background: "#07090d",
+                  border: "1px solid #1f2937",
+                  color: "#fff",
+                  padding: "14px 16px",
+                  borderRadius: 10,
+                  fontSize: 15,
+                  outline: "none",
+                  transition: "border 0.2s"
+                }}
+                onFocus={(e) => e.target.style.borderColor = "#666"}
+                onBlur={(e) => e.target.style.borderColor = "#1f2937"}
+              />
+            )}
+
+            {view === "recovery" && (
+              <input
+                type="password"
+                placeholder="Confirm New Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 style={{
                   background: "#07090d",

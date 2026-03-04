@@ -706,7 +706,30 @@ function AuthScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [view, setView] = useState("signIn"); // signIn, signUp, forgot, recovery
   const [msg, setMsg] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    // Detect if user came from a "Reset Password" link
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setView("recovery");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    let timer;
+    if (resendCooldown > 0) {
+      timer = setInterval(() => {
+        setResendCooldown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -714,7 +737,7 @@ function AuthScreen() {
     setMsg("");
 
     let error;
-    if (isSignUp) {
+    if (view === "signUp") {
       const res = await supabase.auth.signUp({ 
         email, 
         password,
@@ -724,12 +747,31 @@ function AuthScreen() {
       });
       error = res.error;
       if (!error && res.data.user)
-        setMsg(
-          "Check your email for the confirmation link!",
-        );
-    } else {
+        setMsg("Check your email for the confirmation link!");
+    } else if (view === "signIn") {
       const res = await supabase.auth.signInWithPassword({ email, password });
       error = res.error;
+    } else if (view === "forgot") {
+      if (resendCooldown > 0) {
+        setMsg(`Please wait ${resendCooldown}s before trying again.`);
+        setLoading(false);
+        return;
+      }
+      const res = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin,
+      });
+      error = res.error;
+      if (!error) {
+        setMsg("Password reset link sent to your email!");
+        setResendCooldown(60);
+      }
+    } else if (view === "recovery") {
+      const res = await supabase.auth.updateUser({ password });
+      error = res.error;
+      if (!error) {
+        setMsg("Password updated successfully! You can now sign in.");
+        setTimeout(() => setView("signIn"), 2000);
+      }
     }
 
     if (error) setMsg(error.message);
@@ -817,7 +859,7 @@ function AuthScreen() {
                 marginBottom: 16,
               }}
             >
-              {isSignUp ? "GET STARTED" : "HELLO"}
+              {view === "signUp" ? "GET STARTED" : view === "forgot" ? "RECOVERY" : view === "recovery" ? "RESET" : "HELLO"}
             </div>
             <h2
               style={{
@@ -827,10 +869,16 @@ function AuthScreen() {
                 color: "#fff",
               }}
             >
-              {isSignUp ? "Create an Account" : "Welcome Back"}
+              {view === "signUp" ? "Create an Account" : 
+               view === "forgot" ? "Reset Password" : 
+               view === "recovery" ? "New Password" : 
+               "Welcome Back"}
             </h2>
             <p style={{ color: "#555", fontSize: 14, marginTop: 8 }}>
-              {isSignUp ? "Sign up to track your progress" : "Log in to continue your journey"}
+              {view === "signUp" ? "Sign up to track your progress" : 
+               view === "forgot" ? "Enter your email to receive a reset link" : 
+               view === "recovery" ? "Enter your new secure password" :
+               "Log in to continue your journey"}
             </p>
           </div>
 
@@ -844,6 +892,7 @@ function AuthScreen() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={view === "recovery"}
               style={{
                 background: "#07090d",
                 border: "1px solid #1f2937",
@@ -852,30 +901,53 @@ function AuthScreen() {
                 borderRadius: 10,
                 fontSize: 15,
                 outline: "none",
-                transition: "border 0.2s"
+                transition: "border 0.2s",
+                opacity: view === "recovery" ? 0.5 : 1
               }}
               onFocus={(e) => e.target.style.borderColor = "#666"}
               onBlur={(e) => e.target.style.borderColor = "#1f2937"}
             />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{
-                background: "#07090d",
-                border: "1px solid #1f2937",
-                color: "#fff",
-                padding: "14px 16px",
-                borderRadius: 10,
-                fontSize: 15,
-                outline: "none",
-                transition: "border 0.2s"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#666"}
-              onBlur={(e) => e.target.style.borderColor = "#1f2937"}
-            />
+            {view !== "forgot" && (
+              <input
+                type="password"
+                placeholder={view === "recovery" ? "New Password" : "Password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{
+                  background: "#07090d",
+                  border: "1px solid #1f2937",
+                  color: "#fff",
+                  padding: "14px 16px",
+                  borderRadius: 10,
+                  fontSize: 15,
+                  outline: "none",
+                  transition: "border 0.2s"
+                }}
+                onFocus={(e) => e.target.style.borderColor = "#666"}
+                onBlur={(e) => e.target.style.borderColor = "#1f2937"}
+              />
+            )}
+
+            {view === "signIn" && (
+              <div style={{ textAlign: "right", marginTop: -8 }}>
+                <button
+                  type="button"
+                  onClick={() => { setView("forgot"); setMsg(""); }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#64748b",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    padding: 0
+                  }}
+                >
+                  Forgot Password?
+                </button>
+              </div>
+            )}
 
             {msg && (
               <div
@@ -906,62 +978,48 @@ function AuthScreen() {
                 cursor: loading ? "not-allowed" : "pointer",
                 opacity: loading ? 0.6 : 1,
                 marginTop: 8,
-                transition: "background 0.08s, transform 0.08s, opacity 0.1s",
-                transform: "scale(1)",
-                userSelect: "none",
-              }}
-              onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.background = "#fff";
-              }}
-              onMouseLeave={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.background = "#e2e8f4";
-                  e.currentTarget.style.transform = "scale(1)";
-                }
-              }}
-              onMouseDown={(e) => {
-                if (!loading) e.currentTarget.style.transform = "scale(0.97)";
-              }}
-              onMouseUp={(e) => {
-                if (!loading) e.currentTarget.style.transform = "scale(1)";
+                transition: "all 0.1s",
               }}
             >
-              {loading ? "Please wait..." : isSignUp ? "Sign Up" : "Sign In"}
+              {loading ? "Please wait..." : 
+               view === "signUp" ? "Create Account" : 
+               view === "forgot" ? "Send Reset Link" : 
+               view === "recovery" ? "Secure Account" :
+               "Sign In"}
             </button>
           </form>
 
-          <div
-            style={{
-              marginTop: 28,
-              textAlign: "center",
-              fontSize: 14,
-              color: "#64748b",
-            }}
-          >
-            {isSignUp ? "Already have an account? " : "Don't have an account? "}
-            <button
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setMsg("");
-              }}
+          {view !== "recovery" && (
+            <div
               style={{
-                background: "none",
-                border: "none",
-                color: "#ccc",
-                fontWeight: 700,
-                cursor: "pointer",
-                padding: "2px 4px",
-                borderRadius: 4,
-                transition: "color 0.08s",
-                textDecoration: "underline",
-                textUnderlineOffset: 3,
+                marginTop: 28,
+                textAlign: "center",
+                fontSize: 14,
+                color: "#64748b",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "#ccc"}
             >
-              {isSignUp ? "Sign In" : "Sign Up"}
-            </button>
-          </div>
+              {view === "signIn" ? "Don't have an account? " : "Already have an account? "}
+              <button
+                type="button"
+                onClick={() => {
+                  if (view === "forgot") setView("signIn");
+                  else setView(view === "signIn" ? "signUp" : "signIn");
+                  setMsg("");
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#ccc",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  padding: 0,
+                  marginLeft: 4
+                }}
+              >
+                {view === "signIn" ? "Sign Up" : "Sign In"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

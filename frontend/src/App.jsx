@@ -715,11 +715,17 @@ function AuthScreen() {
 
     let error;
     if (isSignUp) {
-      const res = await supabase.auth.signUp({ email, password });
+      const res = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
       error = res.error;
       if (!error && res.data.user)
         setMsg(
-          "Check your email for the confirmation link! (If you disabled email confirmations in Supabase, you can just log in now)",
+          "Check your email for the confirmation link!",
         );
     } else {
       const res = await supabase.auth.signInWithPassword({ email, password });

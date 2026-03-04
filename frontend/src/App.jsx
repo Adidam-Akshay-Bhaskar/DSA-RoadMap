@@ -1571,102 +1571,53 @@ function Roadmap({ session }) {
                   </div>
                 )}
                 {tab === "questions" && (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(2, 1fr)",
-                      gap: 10,
-                    }}
-                  >
+                  <div className="questions-grid">
                     {[...selected.questions].sort((a, b) => {
-                        const order = { E: 0, M: 1, H: 2 };
-                        return (order[a.difficulty] ?? 1) - (order[b.difficulty] ?? 1);
-                      }).map((q) => {
+                      const order = { E: 0, M: 1, H: 2 };
+                      return (order[a.difficulty] ?? 1) - (order[b.difficulty] ?? 1);
+                    }).map((q) => {
                       const isCompleted = completedQs.has(q.id);
                       return (
                         <div
                           key={q.id}
+                          className="question-card"
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 10,
-                            padding: "10px 12px",
-                            borderRadius: 8,
                             background: isCompleted ? "#10b981" : "#111",
                             border: isCompleted ? "1px solid #10b981" : "1px solid #222",
-                            cursor: "pointer",
-                            transition: "background 0.2s, border-color 0.2s",
                           }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleQuestion(q.id);
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!completedQs.has(q.id)) e.currentTarget.style.background = "#191919";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = completedQs.has(q.id) ? "#10b981" : "#111";
-                          }}
+                          onClick={() => toggleQuestion(q.id)}
                         >
-                          {/* LC Number */}
-                          <span style={{
-                            fontSize: 10,
-                            fontWeight: 700,
-                            color: isCompleted ? "rgba(0,0,0,0.5)" : "#444",
-                            minWidth: 30,
-                            flexShrink: 0,
-                          }}>
+                          <span 
+                            className="question-id"
+                            style={{ color: isCompleted ? "rgba(0,0,0,0.5)" : "#444" }}
+                          >
                             #{q.id}
                           </span>
-
-                          {/* Question name */}
-                          <span style={{
-                            flex: 1,
-                            fontSize: 12,
-                            fontWeight: 500,
-                            color: isCompleted ? "#000" : "#ccc",
-                            lineHeight: 1.35,
-                          }}>
+                          <span 
+                            className="question-name"
+                            style={{ color: isCompleted ? "#000" : "#ccc" }}
+                          >
                             {q.name}
                           </span>
-
-                          {/* Difficulty badge */}
-                          <span style={{
-                            fontSize: 10,
-                            fontWeight: 800,
-                            padding: "2px 6px",
-                            borderRadius: 4,
-                            flexShrink: 0,
-                            background: isCompleted ? "rgba(0,0,0,0.15)" : (
-                              q.difficulty === "E" ? "#16532420" :
-                              q.difficulty === "H" ? "#7f1d1d20" : "#78350f20"
-                            ),
-                            color: isCompleted ? "#000" : (
-                              q.difficulty === "E" ? "#4ade80" :
-                              q.difficulty === "H" ? "#f87171" : "#fb923c"
-                            ),
-                          }}>
-                            {q.difficulty === "E" ? "Easy" : q.difficulty === "H" ? "Hard" : "Med"}
-                          </span>
-
-                          {/* Toggle button */}
-                          <span style={{
-                            width: 22,
-                            height: 22,
-                            borderRadius: 5,
-                            border: isCompleted ? "2px solid rgba(0,0,0,0.3)" : "2px solid #333",
-                            background: isCompleted ? "rgba(0,0,0,0.15)" : "transparent",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            fontSize: isCompleted ? 12 : 16,
-                            color: isCompleted ? "#000" : "#555",
-                            fontWeight: 900,
-                            transition: "all 0.15s",
-                          }}>
+                          {!isCompleted && (
+                            <span className="difficulty-badge" style={{
+                              background: q.difficulty === "E" ? "#16532420" : q.difficulty === "H" ? "#7f1d1d20" : "#78350f20",
+                              color: q.difficulty === "E" ? "#4ade80" : q.difficulty === "H" ? "#f87171" : "#fb923c",
+                              border: `1px solid ${q.difficulty === "E" ? "#4ade8020" : q.difficulty === "H" ? "#f8717120" : "#fb923c20"}`
+                            }}>
+                              {q.difficulty === "E" ? "Easy" : q.difficulty === "H" ? "Hard" : "Med"}
+                            </span>
+                          )}
+                          <div 
+                            className="action-btn"
+                            style={{ 
+                              color: isCompleted ? "#000" : "#555",
+                              border: isCompleted ? "2px solid rgba(0,0,0,0.3)" : "2px solid #333",
+                              background: isCompleted ? "rgba(0,0,0,0.1)" : "transparent"
+                            }}
+                          >
                             {isCompleted ? "✓" : "+"}
-                          </span>
+                          </div>
                         </div>
                       );
                     })}

@@ -1,0 +1,1934 @@
+import { useState, useEffect } from "react";
+import { supabase } from "./supabaseClient";
+
+const dsaData = [
+  {
+    id: 1,
+    order: "01",
+    emoji: "🔢",
+    title: "Math & Bit Manipulation",
+    subtitle: "Prerequisites",
+    color: "#64B5F6",
+    structures: ["Integers", "Bits", "Number Line"],
+    algorithms: [
+      "GCD / LCM (Euclidean Algorithm)",
+      "Sieve of Eratosthenes (Prime Numbers)",
+      "Fast Exponentiation",
+      "Modular Arithmetic",
+      "Integer Overflow Handling",
+      "AND / OR / XOR / NOT",
+      "Left Shift / Right Shift",
+      "Bit Masking",
+      "Count Set Bits (Brian Kernighan's)",
+    ],
+    patterns: [
+      "XOR to find unique element",
+      "Check Power of 2 — (n & n-1) == 0",
+      "Swap without temp (XOR swap)",
+      "Get / Set / Clear a specific bit",
+    ],
+    questions: [
+      { id: 7, name: "Reverse Integer", difficulty: "M" },
+      { id: 9, name: "Palindrome Number", difficulty: "E" },
+      { id: 29, name: "Divide Two Integers", difficulty: "M" },
+      { id: 50, name: "Pow(x, n)", difficulty: "M" },
+      { id: 66, name: "Plus One", difficulty: "E" },
+      { id: 67, name: "Add Binary", difficulty: "E" },
+      { id: 69, name: "Sqrt(x)", difficulty: "E" },
+      { id: 136, name: "Single Number", difficulty: "E" },
+      { id: 137, name: "Single Number II", difficulty: "M" },
+      { id: 168, name: "Excel Sheet Column Title", difficulty: "E" },
+      { id: 171, name: "Excel Sheet Column Number", difficulty: "E" },
+      { id: 190, name: "Reverse Bits", difficulty: "E" },
+      { id: 191, name: "Number of 1 Bits", difficulty: "E" },
+      { id: 201, name: "Bitwise AND of Numbers Range", difficulty: "M" },
+      { id: 202, name: "Happy Number", difficulty: "E" },
+      { id: 204, name: "Count Primes (Sieve)", difficulty: "M" },
+      { id: 231, name: "Power of Two", difficulty: "E" },
+      { id: 260, name: "Single Number III", difficulty: "M" },
+      { id: 268, name: "Missing Number", difficulty: "E" },
+      { id: 326, name: "Power of Three", difficulty: "E" },
+      { id: 338, name: "Counting Bits", difficulty: "E" },
+      { id: 371, name: "Sum of Two Integers (no +)", difficulty: "M" },
+      { id: 461, name: "Hamming Distance", difficulty: "E" },
+      { id: 477, name: "Total Hamming Distance", difficulty: "M" },
+    ],
+  },
+  {
+    id: 2,
+    order: "02",
+    emoji: "📦",
+    title: "Arrays",
+    subtitle: "Foundation",
+    color: "#FF7043",
+    structures: [
+      "Static Array",
+      "Dynamic Array (ArrayList / Vector)",
+      "Multi-dimensional Array",
+    ],
+    algorithms: [
+      "Linear Search — O(n)",
+      "Binary Search — O(log n)",
+      "Bubble Sort — O(n²)",
+      "Selection Sort — O(n²)",
+      "Insertion Sort — O(n²)",
+      "Merge Sort — O(n log n)",
+      "Quick Sort — O(n log n) avg",
+      "Counting Sort — O(n+k)",
+      "Prefix Sum Construction — O(n)",
+      "Kadane's Algorithm (Max Subarray)",
+      "Dutch National Flag (3-way partition)",
+    ],
+    patterns: [
+      "Two Pointers (opposite ends)",
+      "Fast & Slow Pointers",
+      "Sliding Window — Fixed Size",
+      "Sliding Window — Variable Size",
+      "Prefix Sum",
+      "Suffix Sum",
+      "Binary Search on Answer",
+      "Divide & Conquer",
+    ],
+    questions: [
+      { id: 1, name: "Two Sum", difficulty: "E" },
+      { id: 11, name: "Container With Most Water", difficulty: "M" },
+      { id: 15, name: "3Sum", difficulty: "M" },
+      { id: 16, name: "3Sum Closest", difficulty: "M" },
+      { id: 18, name: "4Sum", difficulty: "M" },
+      { id: 42, name: "Trapping Rain Water", difficulty: "H" },
+      { id: 45, name: "Jump Game II", difficulty: "M" },
+      { id: 53, name: "Maximum Subarray (Kadane)", difficulty: "M" },
+      { id: 54, name: "Spiral Matrix", difficulty: "M" },
+      { id: 55, name: "Jump Game", difficulty: "M" },
+      { id: 56, name: "Merge Intervals", difficulty: "M" },
+      { id: 57, name: "Insert Interval", difficulty: "M" },
+      { id: 59, name: "Spiral Matrix II", difficulty: "M" },
+      { id: 4, name: "Median of Two Sorted Arrays", difficulty: "H" },
+      { id: 73, name: "Set Matrix Zeroes", difficulty: "M" },
+      { id: 75, name: "Sort Colors (Dutch Flag)", difficulty: "M" },
+      { id: 121, name: "Best Time to Buy/Sell Stock", difficulty: "E" },
+      { id: 122, name: "Best Time to Buy/Sell Stock II", difficulty: "M" },
+      { id: 123, name: "Best Time to Buy/Sell Stock III", difficulty: "H" },
+      { id: 152, name: "Maximum Product Subarray", difficulty: "M" },
+      { id: 153, name: "Find Min in Rotated Sorted Array", difficulty: "M" },
+      { id: 162, name: "Find Peak Element", difficulty: "M" },
+      { id: 188, name: "Best Time to Buy/Sell Stock IV", difficulty: "H" },
+      { id: 189, name: "Rotate Array", difficulty: "M" },
+      { id: 217, name: "Contains Duplicate", difficulty: "E" },
+      { id: 219, name: "Contains Duplicate II", difficulty: "E" },
+      { id: 220, name: "Contains Duplicate III", difficulty: "H" },
+      { id: 238, name: "Product of Array Except Self", difficulty: "M" },
+      { id: 283, name: "Move Zeroes", difficulty: "E" },
+      { id: 289, name: "Game of Life", difficulty: "M" },
+      { id: 33, name: "Search in Rotated Sorted Array", difficulty: "M" },
+      { id: 435, name: "Non-overlapping Intervals", difficulty: "M" },
+      { id: 560, name: "Subarray Sum Equals K", difficulty: "M" },
+    ],
+  },
+  {
+    id: 3,
+    order: "03",
+    emoji: "🔤",
+    title: "Strings",
+    subtitle: "Foundation",
+    color: "#FFA726",
+    structures: [
+      "String (immutable)",
+      "StringBuilder / StringBuffer",
+      "Character Array",
+      "Frequency Array (char[26])",
+    ],
+    algorithms: [
+      "Linear Scan",
+      "Two Pointer on String",
+      "KMP Pattern Matching — O(n+m)",
+      "Rabin-Karp (Rolling Hash)",
+      "Z-Algorithm",
+      "Anagram Check (Frequency Map)",
+    ],
+    patterns: [
+      "Sliding Window on String",
+      "Two Pointers (Palindrome check)",
+      "Hashing / Frequency Count",
+      "Expand Around Center (Palindrome)",
+    ],
+    questions: [
+      { id: 3, name: "Longest Substring Without Repeating Chars", difficulty: "M" },
+      { id: 5, name: "Longest Palindromic Substring", difficulty: "M" },
+      { id: 6, name: "Zigzag Conversion", difficulty: "M" },
+      { id: 8, name: "String to Integer (atoi)", difficulty: "M" },
+      { id: 14, name: "Longest Common Prefix", difficulty: "E" },
+      { id: 20, name: "Valid Parentheses", difficulty: "E" },
+      { id: 28, name: "Implement strStr", difficulty: "E" },
+      { id: 43, name: "Multiply Strings", difficulty: "M" },
+      { id: 49, name: "Group Anagrams", difficulty: "M" },
+      { id: 76, name: "Minimum Window Substring", difficulty: "H" },
+      { id: 125, name: "Valid Palindrome", difficulty: "E" },
+      { id: 205, name: "Isomorphic Strings", difficulty: "E" },
+      { id: 242, name: "Valid Anagram", difficulty: "E" },
+      { id: 271, name: "Encode & Decode Strings", difficulty: "M" },
+      { id: 424, name: "Longest Repeating Char Replacement", difficulty: "M" },
+      { id: 438, name: "Find All Anagrams in String", difficulty: "M" },
+      { id: 647, name: "Palindromic Substrings", difficulty: "M" },
+    ],
+  },
+  {
+    id: 4,
+    order: "04",
+    emoji: "🗂️",
+    title: "Hashing",
+    subtitle: "Foundation",
+    color: "#FFCA28",
+    structures: ["HashMap / HashTable", "HashSet", "LinkedHashMap"],
+    algorithms: [
+      "Hash Function Design",
+      "Collision Handling — Chaining",
+      "Collision Handling — Open Addressing",
+      "Frequency Count",
+      "Rolling Hash",
+    ],
+    patterns: [
+      "Count Frequencies",
+      "Seen / Visited Set",
+      "Complement Lookup (Two Sum pattern)",
+      "Prefix Sum + HashMap",
+      "Grouping by Key",
+    ],
+    questions: [
+      { id: 1, name: "Two Sum (HashMap)", difficulty: "E" },
+      { id: 49, name: "Group Anagrams", difficulty: "M" },
+      { id: 128, name: "Longest Consecutive Sequence", difficulty: "M" },
+      { id: 202, name: "Happy Number", difficulty: "E" },
+      { id: 205, name: "Isomorphic Strings", difficulty: "E" },
+      { id: 242, name: "Valid Anagram", difficulty: "E" },
+      { id: 287, name: "Find Duplicate in Array", difficulty: "M" },
+      { id: 290, name: "Word Pattern", difficulty: "E" },
+      { id: 347, name: "Top K Frequent Elements", difficulty: "M" },
+      { id: 438, name: "Find All Anagrams in String", difficulty: "M" },
+      { id: 454, name: "Four Sum II", difficulty: "M" },
+      { id: 523, name: "Continuous Subarray Sum", difficulty: "M" },
+      { id: 560, name: "Subarray Sum Equals K", difficulty: "M" },
+    ],
+  },
+  {
+    id: 5,
+    order: "05",
+    emoji: "📚",
+    title: "Stack",
+    subtitle: "Linear DS",
+    color: "#66BB6A",
+    structures: [
+      "Array-backed Stack",
+      "LinkedList-backed Stack",
+      "Monotonic Stack",
+    ],
+    algorithms: [
+      "Push / Pop / Peek — O(1)",
+      "DFS using explicit Stack",
+      "Iterative Tree Traversal (Inorder/Preorder)",
+      "Balanced Parentheses Check",
+      "Monotonic Increasing Stack",
+      "Monotonic Decreasing Stack",
+    ],
+    patterns: [
+      "Monotonic Stack — Next Greater Element",
+      "Monotonic Stack — Next Smaller Element",
+      "Min Stack (auxiliary stack)",
+      "Two-Stack Queue simulation",
+      "Stack for expression evaluation",
+    ],
+    questions: [
+      { id: 20, name: "Valid Parentheses", difficulty: "E" },
+      { id: 42, name: "Trapping Rain Water", difficulty: "H" },
+      { id: 84, name: "Largest Rectangle in Histogram", difficulty: "H" },
+      { id: 150, name: "Evaluate Reverse Polish Notation", difficulty: "M" },
+      { id: 155, name: "Min Stack", difficulty: "M" },
+      { id: 224, name: "Basic Calculator", difficulty: "H" },
+      { id: 227, name: "Basic Calculator II", difficulty: "M" },
+      { id: 394, name: "Decode String", difficulty: "M" },
+      { id: 402, name: "Remove K Digits", difficulty: "M" },
+      { id: 456, name: "132 Pattern", difficulty: "M" },
+      { id: 496, name: "Next Greater Element I", difficulty: "E" },
+      { id: 503, name: "Next Greater Element II", difficulty: "M" },
+      { id: 735, name: "Asteroid Collision", difficulty: "M" },
+      { id: 739, name: "Daily Temperatures", difficulty: "M" },
+    ],
+  },
+  {
+    id: 6,
+    order: "06",
+    emoji: "🚶",
+    title: "Queue & Deque",
+    subtitle: "Linear DS",
+    color: "#26C6DA",
+    structures: [
+      "Array Queue",
+      "LinkedList Queue",
+      "Circular Queue",
+      "Deque (Double-ended Queue)",
+    ],
+    algorithms: [
+      "Enqueue / Dequeue — O(1)",
+      "BFS using Queue",
+      "Circular Buffer",
+      "Monotonic Deque for Window Max",
+    ],
+    patterns: [
+      "BFS Level-by-Level",
+      "Sliding Window Maximum (Monotonic Deque)",
+      "Queue from Two Stacks",
+    ],
+    questions: [
+      { id: 102, name: "BFS — Binary Tree Level Order Traversal", difficulty: "M" },
+      { id: 225, name: "Implement Stack using Queues", difficulty: "E" },
+      { id: 232, name: "Implement Queue using Stacks", difficulty: "E" },
+      { id: 239, name: "Sliding Window Maximum", difficulty: "H" },
+      { id: 387, name: "First Unique Character in String", difficulty: "E" },
+      { id: 622, name: "Design Circular Queue", difficulty: "M" },
+      { id: 641, name: "Design Circular Deque", difficulty: "M" },
+      { id: 933, name: "Number of Recent Calls", difficulty: "E" },
+    ],
+  },
+  {
+    id: 7,
+    order: "07",
+    emoji: "🔗",
+    title: "Linked List",
+    subtitle: "Linear DS",
+    color: "#4DB6AC",
+    structures: [
+      "Singly Linked List",
+      "Doubly Linked List",
+      "Circular Linked List",
+    ],
+    algorithms: [
+      "Traversal — O(n)",
+      "Insert at Head / Tail / Position",
+      "Delete a Node",
+      "Reverse Iteratively",
+      "Reverse Recursively",
+      "Floyd's Cycle Detection Algorithm",
+      "Merge Sort on Linked List",
+      "Find Middle (Fast & Slow pointer)",
+    ],
+    patterns: [
+      "Fast & Slow Pointers (Floyd's)",
+      "In-place Reversal of sub-list",
+      "Dummy Head Node trick",
+      "Two Pointers distance-based (Nth from end)",
+      "Merge Two Sorted Lists",
+    ],
+    questions: [
+      { id: 2, name: "Add Two Numbers", difficulty: "M" },
+      { id: 19, name: "Remove Nth Node From End", difficulty: "M" },
+      { id: 21, name: "Merge Two Sorted Lists", difficulty: "E" },
+      { id: 138, name: "Copy List with Random Pointer", difficulty: "M" },
+      { id: 141, name: "Detect Cycle", difficulty: "E" },
+      { id: 142, name: "Linked List Cycle II", difficulty: "M" },
+      { id: 143, name: "Reorder List", difficulty: "M" },
+      { id: 146, name: "LRU Cache", difficulty: "H" },
+      { id: 148, name: "Sort List (Merge Sort on LL)", difficulty: "M" },
+      { id: 160, name: "Intersection of Two Linked Lists", difficulty: "E" },
+      { id: 206, name: "Reverse Linked List", difficulty: "E" },
+      { id: 234, name: "Palindrome Linked List", difficulty: "E" },
+      { id: 430, name: "Flatten Multilevel Linked List", difficulty: "M" },
+      { id: 876, name: "Find Middle of Linked List", difficulty: "E" },
+    ],
+  },
+  {
+    id: 8,
+    order: "08",
+    emoji: "🌳",
+    title: "Binary Tree",
+    subtitle: "Non-Linear DS",
+    color: "#A5D6A7",
+    structures: [
+      "Binary Tree Node",
+      "Binary Search Tree (BST)",
+      "Complete Binary Tree",
+    ],
+    algorithms: [
+      "Inorder Traversal — Left→Root→Right",
+      "Preorder Traversal — Root→Left→Right",
+      "Postorder Traversal — Left→Right→Root",
+      "Level Order Traversal (BFS)",
+      "DFS — Recursive",
+      "DFS — Iterative (Stack)",
+      "Morris Traversal — O(1) space",
+      "BST Insert / Delete / Search",
+      "Height / Depth Calculation",
+    ],
+    patterns: [
+      "Top-Down DFS (pass value down)",
+      "Bottom-Up DFS (collect from children)",
+      "BFS Level-by-Level",
+      "Path problems — Root to Leaf",
+      "LCA — Binary Lifting",
+    ],
+    questions: [
+      { id: 100, name: "Same Tree", difficulty: "E" },
+      { id: 101, name: "Symmetric Tree", difficulty: "E" },
+      { id: 102, name: "Level Order Traversal", difficulty: "M" },
+      { id: 103, name: "Zigzag Level Order Traversal", difficulty: "M" },
+      { id: 104, name: "Max Depth of Binary Tree", difficulty: "E" },
+      { id: 105, name: "Construct from Preorder + Inorder", difficulty: "M" },
+      { id: 110, name: "Balanced Binary Tree", difficulty: "E" },
+      { id: 112, name: "Path Sum", difficulty: "E" },
+      { id: 113, name: "Path Sum II", difficulty: "M" },
+      { id: 114, name: "Flatten Tree to Linked List", difficulty: "M" },
+      { id: 124, name: "Binary Tree Max Path Sum", difficulty: "H" },
+      { id: 199, name: "Right Side View", difficulty: "M" },
+      { id: 226, name: "Invert Binary Tree", difficulty: "E" },
+      { id: 230, name: "Kth Smallest in BST", difficulty: "M" },
+      { id: 235, name: "Lowest Common Ancestor (BST)", difficulty: "M" },
+      { id: 236, name: "Lowest Common Ancestor (BT)", difficulty: "M" },
+      { id: 297, name: "Serialize / Deserialize Binary Tree", difficulty: "H" },
+      { id: 543, name: "Diameter of Binary Tree", difficulty: "E" },
+      { id: 98, name: "Validate BST", difficulty: "M" },
+      { id: 1448, name: "Count Good Nodes", difficulty: "M" },
+    ],
+  },
+  {
+    id: 9,
+    order: "09",
+    emoji: "🌲",
+    title: "Advanced Trees",
+    subtitle: "Non-Linear DS",
+    color: "#81C784",
+    structures: [
+      "Trie (Prefix Tree)",
+      "Segment Tree",
+      "Fenwick Tree (Binary Indexed Tree)",
+      "AVL Tree",
+      "N-ary Tree",
+    ],
+    algorithms: [
+      "Trie Insert / Search / StartsWith — O(L)",
+      "Segment Tree Build — O(n)",
+      "Segment Tree Range Query / Point Update — O(log n)",
+      "BIT (Fenwick) Prefix Sum Query / Update — O(log n)",
+      "N-ary Tree Traversal",
+    ],
+    patterns: [
+      "Prefix Matching (Trie)",
+      "Word Search (Trie + Backtracking)",
+      "Range Query (Segment Tree / BIT)",
+    ],
+    questions: [
+      { id: 98, name: "Validate Binary Search Tree", difficulty: "M" },
+      { id: 99, name: "Recover Binary Search Tree", difficulty: "H" },
+      { id: 208, name: "Implement Trie", difficulty: "M" },
+      { id: 211, name: "Add & Search Words (Wildcard Trie)", difficulty: "M" },
+      { id: 212, name: "Word Search II", difficulty: "H" },
+      { id: 230, name: "Kth Smallest Element in BST", difficulty: "M" },
+      { id: 297, name: "Serialize & Deserialize Binary Tree", difficulty: "H" },
+      { id: 307, name: "Range Sum Query — Mutable", difficulty: "M" },
+      { id: 315, name: "Count of Smaller Numbers After Self", difficulty: "H" },
+      { id: 429, name: "N-ary Tree Level Order", difficulty: "M" },
+      { id: 450, name: "Delete Node in BST", difficulty: "M" },
+      { id: 648, name: "Replace Words", difficulty: "M" },
+      { id: 1008, name: "Construct BST from Preorder Traversal", difficulty: "M" },
+      { id: 1268, name: "Search Suggestions System", difficulty: "M" },
+    ],
+  },
+  {
+    id: 10,
+    order: "10",
+    emoji: "⛰️",
+    title: "Heap / Priority Queue",
+    subtitle: "Non-Linear DS",
+    color: "#EF9A9A",
+    structures: ["Min Heap", "Max Heap", "Custom Comparator Heap"],
+    algorithms: [
+      "Heapify — O(n)",
+      "Insert — O(log n)",
+      "Extract Min/Max — O(log n)",
+      "Heap Sort — O(n log n)",
+      "K-way Merge with Min Heap",
+    ],
+    patterns: [
+      "Top K Elements — Max Heap",
+      "Kth Largest/Smallest — Min Heap of size K",
+      "Two Heaps — Median Stream",
+      "K-way Merge — Min Heap",
+      "Greedy scheduling with Heap",
+    ],
+    questions: [
+      { id: 215, name: "Kth Largest Element in Array", difficulty: "M" },
+      { id: 347, name: "Top K Frequent Elements", difficulty: "M" },
+      { id: 295, name: "Find Median from Data Stream", difficulty: "H" },
+      { id: 621, name: "Task Scheduler", difficulty: "M" },
+      { id: 973, name: "K Closest Points to Origin", difficulty: "M" },
+      { id: 23, name: "Merge K Sorted Lists", difficulty: "H" },
+      { id: 767, name: "Reorganize String", difficulty: "M" },
+      { id: 480, name: "Sliding Window Median", difficulty: "H" },
+      { id: 373, name: "Find K Pairs with Smallest Sums", difficulty: "M" },
+      { id: 502, name: "IPO (Maximize Capital)", difficulty: "H" },
+    ],
+  },
+  {
+    id: 11,
+    order: "11",
+    emoji: "🔷",
+    title: "Graphs",
+    subtitle: "Non-Linear DS",
+    color: "#CE93D8",
+    structures: [
+      "Adjacency List",
+      "Adjacency Matrix",
+      "Edge List",
+      "Union-Find (Disjoint Set Union — DSU)",
+    ],
+    algorithms: [
+      "BFS — O(V+E)",
+      "DFS — O(V+E)",
+      "Topological Sort — Kahn's BFS",
+      "Topological Sort — DFS + Stack",
+      "Cycle Detection — Directed (DFS colors)",
+      "Cycle Detection — Undirected (Union-Find)",
+      "Dijkstra's Shortest Path — O((V+E) log V)",
+      "Bellman-Ford — O(V·E)",
+      "Floyd-Warshall All-Pairs — O(V³)",
+      "Kruskal's MST — Sort + Union-Find",
+      "Prim's MST — Min Heap",
+      "Bipartite Check (2-coloring BFS)",
+    ],
+    patterns: [
+      "BFS Shortest Path (unweighted graph)",
+      "DFS Island Counting",
+      "Union-Find — Connectivity",
+      "Topological Sort — Dependency order",
+      "Multi-source BFS",
+      "0/1 BFS using Deque",
+    ],
+    questions: [
+      { id: 127, name: "Word Ladder", difficulty: "H" },
+      { id: 133, name: "Clone Graph", difficulty: "M" },
+      { id: 200, name: "Number of Islands", difficulty: "M" },
+      { id: 207, name: "Course Schedule I", difficulty: "M" },
+      { id: 210, name: "Course Schedule II", difficulty: "M" },
+      { id: 261, name: "Graph Valid Tree", difficulty: "M" },
+      { id: 269, name: "Alien Dictionary", difficulty: "H" },
+      { id: 323, name: "Number of Connected Components", difficulty: "M" },
+      { id: 417, name: "Pacific Atlantic Water Flow", difficulty: "M" },
+      { id: 684, name: "Redundant Connection", difficulty: "M" },
+      { id: 743, name: "Network Delay Time", difficulty: "M" },
+      { id: 778, name: "Swim in Rising Water", difficulty: "H" },
+      { id: 785, name: "Is Graph Bipartite?", difficulty: "M" },
+      { id: 787, name: "Cheapest Flights Within K Stops", difficulty: "M" },
+      { id: 994, name: "Rotting Oranges", difficulty: "M" },
+      { id: 1584, name: "Min Cost to Connect All Points", difficulty: "M" },
+    ],
+  },
+  {
+    id: 12,
+    order: "12",
+    emoji: "🔙",
+    title: "Recursion & Backtracking",
+    subtitle: "Technique",
+    color: "#F48FB1",
+    structures: ["Recursion Tree", "Call Stack"],
+    algorithms: [
+      "Base Case + Recursive Case",
+      "Backtrack Template — choose → explore → unchoose",
+      "Pruning / Early Termination",
+      "Memoization on top of Recursion",
+    ],
+    patterns: [
+      "Subsets — Power Set",
+      "Permutations",
+      "Combinations",
+      "N-Queens Style — Constraint Satisfaction",
+      "Decision Tree Backtracking",
+    ],
+    questions: [
+      { id: 78, name: "Subsets", difficulty: "M" },
+      { id: 90, name: "Subsets II", difficulty: "M" },
+      { id: 46, name: "Permutations", difficulty: "M" },
+      { id: 47, name: "Permutations II", difficulty: "M" },
+      { id: 39, name: "Combination Sum", difficulty: "M" },
+      { id: 40, name: "Combination Sum II", difficulty: "M" },
+      { id: 79, name: "Word Search", difficulty: "M" },
+      { id: 51, name: "N-Queens", difficulty: "H" },
+      { id: 37, name: "Sudoku Solver", difficulty: "H" },
+      { id: 131, name: "Palindrome Partitioning", difficulty: "M" },
+      { id: 17, name: "Letter Combinations of Phone Number", difficulty: "M" },
+      { id: 22, name: "Generate Parentheses", difficulty: "M" },
+    ],
+  },
+  {
+    id: 13,
+    order: "13",
+    emoji: "🧩",
+    title: "Greedy",
+    subtitle: "Technique",
+    color: "#FFAB40",
+    structures: ["Sorted Array", "Priority Queue"],
+    algorithms: [
+      "Activity Selection by End Time",
+      "Huffman Coding",
+      "Fractional Knapsack",
+      "Interval Scheduling Maximization",
+    ],
+    patterns: [
+      "Sort + Greedy Choice Property",
+      "Interval Scheduling — sort by end time",
+      "Jump Game — greedy farthest reach",
+      "Two Pointer Greedy",
+    ],
+    questions: [
+      { id: 45, name: "Jump Game II", difficulty: "M" },
+      { id: 55, name: "Jump Game I", difficulty: "M" },
+      { id: 134, name: "Gas Station", difficulty: "M" },
+      { id: 135, name: "Candy", difficulty: "H" },
+      { id: 253, name: "Meeting Rooms II", difficulty: "M" },
+      { id: 406, name: "Queue Reconstruction by Height", difficulty: "M" },
+      { id: 435, name: "Non-overlapping Intervals", difficulty: "M" },
+      { id: 452, name: "Min Arrows to Burst Balloons", difficulty: "M" },
+      { id: 621, name: "Task Scheduler", difficulty: "M" },
+      { id: 678, name: "Valid Parenthesis String", difficulty: "M" },
+      { id: 763, name: "Partition Labels", difficulty: "M" },
+      { id: 846, name: "Hand of Straights", difficulty: "M" },
+      { id: 1899, name: "Merge Triplets to Form Target", difficulty: "M" },
+    ],
+  },
+  {
+    id: 14,
+    order: "14",
+    emoji: "🔄",
+    title: "Dynamic Programming",
+    subtitle: "Technique",
+    color: "#80DEEA",
+    structures: [
+      "1D DP Array",
+      "2D DP Table",
+      "Memoization HashMap",
+      "Rolling Array (space optimization)",
+    ],
+    algorithms: [
+      "Top-Down DP — Memoization",
+      "Bottom-Up DP — Tabulation",
+      "Space-Optimized DP (rolling row)",
+      "Bitmask DP",
+      "Digit DP",
+    ],
+    patterns: [
+      "1D DP — Fibonacci / House Robber",
+      "0/1 Knapsack",
+      "Unbounded Knapsack (Coin Change)",
+      "Longest Common Subsequence (LCS)",
+      "Longest Increasing Subsequence (LIS — O(n log n))",
+      "Edit Distance",
+      "Matrix DP — Unique Paths",
+      "Interval DP — Burst Balloons",
+      "State Machine DP — Stock Problems",
+      "Partition DP",
+      "DP on Trees",
+    ],
+    questions: [
+      { id: 10, name: "Regular Expression Matching", difficulty: "H" },
+      { id: 62, name: "Unique Paths", difficulty: "M" },
+      { id: 63, name: "Unique Paths II", difficulty: "M" },
+      { id: 70, name: "Climbing Stairs", difficulty: "E" },
+      { id: 72, name: "Edit Distance", difficulty: "H" },
+      { id: 91, name: "Decode Ways", difficulty: "M" },
+      { id: 97, name: "Interleaving String", difficulty: "M" },
+      { id: 115, name: "Distinct Subsequences", difficulty: "H" },
+      { id: 132, name: "Palindrome Partitioning II", difficulty: "H" },
+      { id: 139, name: "Word Break", difficulty: "M" },
+      { id: 152, name: "Maximum Product Subarray", difficulty: "M" },
+      { id: 198, name: "House Robber", difficulty: "M" },
+      { id: 213, name: "House Robber II", difficulty: "M" },
+      { id: 300, name: "Longest Increasing Subsequence", difficulty: "M" },
+      { id: 309, name: "Best Time to Buy/Sell — Cooldown", difficulty: "M" },
+      { id: 312, name: "Burst Balloons", difficulty: "H" },
+      { id: 322, name: "Coin Change", difficulty: "M" },
+      { id: 416, name: "Partition Equal Subset Sum", difficulty: "M" },
+      { id: 494, name: "Target Sum", difficulty: "M" },
+      { id: 518, name: "Coin Change II", difficulty: "M" },
+      { id: 1143, name: "Longest Common Subsequence", difficulty: "M" },
+      { id: 1235, name: "Maximum Profit in Job Scheduling", difficulty: "H" },
+    ],
+  },
+];
+
+const TABS = [
+  { key: "structures", label: "🏗 Structures" },
+  { key: "algorithms", label: "⚙️ Algorithms" },
+  { key: "patterns", label: "🔁 Patterns" },
+  { key: "questions", label: "❓ Questions" },
+];
+
+export default function DSARoadmap() {
+  const [session, setSession] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setIsLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (isLoading)
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#07090d",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#fff",
+        }}
+      >
+        Loading...
+      </div>
+    );
+
+  if (!session) {
+    return <AuthScreen />;
+  }
+
+  return <Roadmap session={session} />;
+}
+
+function AuthScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const handleAuth = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMsg("");
+
+    let error;
+    if (isSignUp) {
+      const res = await supabase.auth.signUp({ email, password });
+      error = res.error;
+      if (!error && res.data.user)
+        setMsg(
+          "Check your email for the confirmation link! (If you disabled email confirmations in Supabase, you can just log in now)",
+        );
+    } else {
+      const res = await supabase.auth.signInWithPassword({ email, password });
+      error = res.error;
+    }
+
+    if (error) setMsg(error.message);
+    setLoading(false);
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#07090d",
+        fontFamily: "'Inter', sans-serif",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "40px 20px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Background Orbs */}
+      <div style={{ position: "absolute", top: "-15%", left: "-10%", width: "50%", height: "60%", background: "radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(7,9,13,0) 70%)", borderRadius: "50%", zIndex: 0 }} />
+      <div style={{ position: "absolute", bottom: "-15%", right: "-10%", width: "50%", height: "60%", background: "radial-gradient(circle, rgba(80,80,80,0.06) 0%, rgba(7,9,13,0) 70%)", borderRadius: "50%", zIndex: 0 }} />
+
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          width: "100%",
+          maxWidth: 960,
+          background: "#0d1117",
+          borderRadius: 24,
+          border: "1px solid #222",
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
+          overflow: "hidden",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        {/* Left Side Decorative Panel */}
+        <div className="auth-panel-left">
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3, backgroundImage: "radial-gradient(#1a2535 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+          
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <h1 style={{ margin: "0 0 16px", fontSize: 44, fontWeight: 900, color: "#fff", lineHeight: 1.1, letterSpacing: "-1px" }}>
+              DSA-roadmap
+            </h1>
+            <p style={{ color: "#888", fontSize: 16, lineHeight: 1.6, marginBottom: 32 }}>
+              Your ultimate platform to track and master Data Structures and Algorithms. Explore 14 core topics, learn crucial patterns, and conquer interview questions.
+            </p>
+            
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 32 }}>
+              <div style={{ background: "#111", padding: "16px", borderRadius: 12, border: "1px solid #222", flex: 1, minWidth: 140 }}>
+                <div style={{ fontSize: 24, marginBottom: 8 }}>🎯</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#ddd", marginBottom: 4 }}>Structured</div>
+                <div style={{ fontSize: 12, color: "#555" }}>Master topics sequentially</div>
+              </div>
+              <div style={{ background: "#111", padding: "16px", borderRadius: 12, border: "1px solid #222", flex: 1, minWidth: 140 }}>
+                <div style={{ fontSize: 24, marginBottom: 8 }}>🔗</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#ddd", marginBottom: 4 }}>LeetCode Focus</div>
+                <div style={{ fontSize: 12, color: "#555" }}>Master 200+ curated questions organized by difficulty.</div>
+              </div>
+            </div>
+
+            <div style={{ fontSize: 13, color: "#444", fontWeight: 500, borderTop: "1px solid #222", paddingTop: 16 }}>
+              Made by Adidam Akshay Bhaskar
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side Login Form */}
+        <div className="auth-panel-right">
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <div
+              style={{
+                display: "inline-block",
+                background: "#111",
+                border: "1px solid #333",
+                borderRadius: 8,
+                padding: "6px 14px",
+                fontSize: 13,
+                fontWeight: 800,
+                color: "#fff",
+                letterSpacing: 2,
+                marginBottom: 16,
+              }}
+            >
+              {isSignUp ? "GET STARTED" : "HELLO"}
+            </div>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 26,
+                fontWeight: 800,
+                color: "#fff",
+              }}
+            >
+              {isSignUp ? "Create an Account" : "Welcome Back"}
+            </h2>
+            <p style={{ color: "#555", fontSize: 14, marginTop: 8 }}>
+              {isSignUp ? "Sign up to track your progress" : "Log in to continue your journey"}
+            </p>
+          </div>
+
+          <form
+            onSubmit={handleAuth}
+            style={{ display: "flex", flexDirection: "column", gap: 16 }}
+          >
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                background: "#07090d",
+                border: "1px solid #1f2937",
+                color: "#fff",
+                padding: "14px 16px",
+                borderRadius: 10,
+                fontSize: 15,
+                outline: "none",
+                transition: "border 0.2s"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#666"}
+              onBlur={(e) => e.target.style.borderColor = "#1f2937"}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{
+                background: "#07090d",
+                border: "1px solid #1f2937",
+                color: "#fff",
+                padding: "14px 16px",
+                borderRadius: 10,
+                fontSize: 15,
+                outline: "none",
+                transition: "border 0.2s"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#666"}
+              onBlur={(e) => e.target.style.borderColor = "#1f2937"}
+            />
+
+            {msg && (
+              <div
+                style={{
+                  color: msg.includes("Check") ? "#ccc" : "#ef4444",
+                  fontSize: 13,
+                  textAlign: "center",
+                  padding: "8px",
+                  background: msg.includes("Check") ? "#ffffff10" : "#ef444415",
+                  borderRadius: 8,
+                }}
+              >
+                {msg}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                background: "#e2e8f4",
+                color: "#0d1117",
+                padding: "14px",
+                borderRadius: 10,
+                border: "none",
+                fontSize: 15,
+                fontWeight: 800,
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.6 : 1,
+                marginTop: 8,
+                transition: "background 0.08s, transform 0.08s, opacity 0.1s",
+                transform: "scale(1)",
+                userSelect: "none",
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) e.currentTarget.style.background = "#fff";
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = "#e2e8f4";
+                  e.currentTarget.style.transform = "scale(1)";
+                }
+              }}
+              onMouseDown={(e) => {
+                if (!loading) e.currentTarget.style.transform = "scale(0.97)";
+              }}
+              onMouseUp={(e) => {
+                if (!loading) e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              {loading ? "Please wait..." : isSignUp ? "Sign Up" : "Sign In"}
+            </button>
+          </form>
+
+          <div
+            style={{
+              marginTop: 28,
+              textAlign: "center",
+              fontSize: 14,
+              color: "#64748b",
+            }}
+          >
+            {isSignUp ? "Already have an account? " : "Don't have an account? "}
+            <button
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setMsg("");
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#ccc",
+                fontWeight: 700,
+                cursor: "pointer",
+                padding: "2px 4px",
+                borderRadius: 4,
+                transition: "color 0.08s",
+                textDecoration: "underline",
+                textUnderlineOffset: 3,
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "#ccc"}
+            >
+              {isSignUp ? "Sign In" : "Sign Up"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Roadmap({ session }) {
+  const [active, setActive] = useState(null);
+  const [tab, setTab] = useState("algorithms");
+  const [completedQs, setCompletedQs] = useState(new Set());
+  const [showTracker, setShowTracker] = useState(false);
+  const [syncing, setSyncing] = useState(true);
+  const [todos, setTodos] = useState(() => {
+    if (session && session.user) {
+      const savedTodos = localStorage.getItem(`dsa_todos_${session.user.id}`);
+      return savedTodos ? JSON.parse(savedTodos) : [];
+    }
+    return [];
+  });
+  const [newTodo, setNewTodo] = useState("");
+
+  useEffect(() => {
+    if (session && session.user) {
+      localStorage.setItem(`dsa_todos_${session.user.id}`, JSON.stringify(todos));
+    }
+  }, [todos, session?.user?.id]);
+
+  useEffect(() => {
+    window.history.replaceState({ view: 'dashboard' }, "", window.location.pathname);
+
+    const handlePopState = (e) => {
+      const state = e.state;
+      if (state && state.view === 'topic') {
+        setActive(state.id);
+        setShowTracker(false);
+      } else if (state && state.view === 'tracker') {
+        setShowTracker(true);
+        setActive(null);
+      } else {
+        setActive(null);
+        setShowTracker(false);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const openDataStructure = (id) => {
+    setActive(id);
+    setTab("algorithms");
+    window.history.pushState({ view: 'topic', id }, "", `?topic=${id}`);
+  };
+
+  const toggleTracker = () => {
+    const nextState = !showTracker;
+    setShowTracker(nextState);
+    window.history.pushState({ view: nextState ? 'tracker' : 'dashboard' }, "", nextState ? '?view=tracker' : window.location.pathname);
+  };
+
+  const goBackToDashboard = () => {
+    setActive(null);
+    setShowTracker(false);
+    window.history.pushState({ view: 'dashboard' }, "", window.location.pathname);
+  };
+
+  const selected = dsaData.find((d) => d.id === active);
+  const totalQuestions = dsaData.reduce(
+    (acc, curr) => acc + curr.questions.length,
+    0,
+  );
+
+  // Load progress from Supabase on mount
+  useEffect(() => {
+    async function fetchProgress() {
+      const { data, error } = await supabase
+        .from("user_progress")
+        .select("completed_qs")
+        .eq("id", session.user.id)
+        .single();
+
+      if (data && data.completed_qs) {
+        setCompletedQs(new Set(data.completed_qs));
+      }
+      setSyncing(false);
+    }
+    fetchProgress();
+  }, [session.user.id]);
+
+  const toggleQuestion = async (qId) => {
+    const nextArr = [...completedQs];
+    if (completedQs.has(qId)) {
+      nextArr.splice(nextArr.indexOf(qId), 1);
+    } else {
+      nextArr.push(qId);
+    }
+
+    const nextSet = new Set(nextArr);
+    setCompletedQs(nextSet);
+
+    // Save to Supabase Cloud
+    await supabase.from("user_progress").upsert({
+      id: session.user.id,
+      completed_qs: nextArr,
+      updated_at: new Date().toISOString(),
+    });
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#07090d",
+        fontFamily: "'Inter', sans-serif",
+        color: "#ddd",
+        position: "relative",
+      }}
+    >
+      {/* Header */}
+      <div
+        className="header-container"
+        style={{
+          background: "#0d1117",
+          borderBottom: "1px solid #222",
+          padding: "22px 28px 16px",
+          position: "relative",
+          zIndex: 200,
+        }}
+      >
+        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 16,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div
+                style={{
+                  background: "#111827",
+                  border: "1px solid #334155",
+                  borderRadius: 8,
+                  padding: "6px 14px",
+                  fontSize: 14,
+                  fontWeight: 900,
+                  color: "#e2e8f4",
+                  letterSpacing: 2,
+                }}
+              >
+                DSA
+              </div>
+              <h1
+                className="header-title-text"
+                style={{
+                  margin: 0,
+                  fontSize: 26,
+                  fontWeight: 900,
+                  color: "#e2e8f4",
+                  letterSpacing: -0.5,
+                }}
+              >
+                {session?.user?.email}
+              </h1>
+            </div>
+
+            {/* Tracker UI & Logout */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div
+                className="tracker-toggle-btn"
+                onClick={toggleTracker}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: showTracker ? "#1f2937" : "#111827",
+                  padding: "6px 14px",
+                  borderRadius: 20,
+                  border: "1px solid #222",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                <span style={{ fontSize: 18 }}>{showTracker ? "←" : "🎯"}</span>
+                <span
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#888",
+                    marginRight: showTracker ? 0 : 4,
+                  }}
+                >
+                  {showTracker ? "Back to Roadmap" : "Progress:"}
+                </span>
+                {!showTracker && (
+                  <>
+                    <span
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 800,
+                        color:
+                          completedQs.size === totalQuestions
+                            ? "#fff"
+                            : "#ccc",
+                      }}
+                    >
+                      {completedQs.size}{" "}
+                      <span style={{ color: "#444", fontSize: 12 }}>
+                        / {totalQuestions}
+                      </span>
+                    </span>
+                    <div
+                      style={{
+                        width: 60,
+                        height: 6,
+                        background: "#1f2937",
+                        borderRadius: 3,
+                        marginLeft: 8,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${Math.round((completedQs.size / totalQuestions) * 100)}%`,
+                          height: "100%",
+                          background: "#3b82f6",
+                          transition: "width 0.3s ease",
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+              <button
+                onClick={() => supabase.auth.signOut()}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #444",
+                  color: "#aaa",
+                  padding: "6px 14px",
+                  borderRadius: 20,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  transition: "color 0.08s, border-color 0.08s, transform 0.08s, background 0.08s",
+                  userSelect: "none",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.borderColor = "#888";
+                  e.currentTarget.style.background = "#ffffff0d";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "#aaa";
+                  e.currentTarget.style.borderColor = "#444";
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+                onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"}
+                onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{ maxWidth: 1060, margin: "0 auto", padding: "24px 20px 60px" }}
+      >
+        {showTracker ? (
+          <div style={{ animation: "slideDown 0.2s ease" }}>
+            <h2
+              style={{
+                fontSize: 24,
+                fontWeight: 800,
+                margin: "0 0 24px",
+                color: "#e2e8f4",
+              }}
+            >
+              Completed Topics & Questions
+            </h2>
+            {dsaData.map((item) => {
+              const completedInThisTopic = item.questions.filter((q) =>
+                completedQs.has(q.id),
+              );
+              if (completedInThisTopic.length === 0) return null;
+
+              return (
+                <div
+                  key={item.id}
+                  style={{
+                    marginBottom: 24,
+                    background: "#0d1117",
+                    border: "1px solid #333",
+                    borderRadius: 12,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "#111",
+                      padding: "16px 20px",
+                      borderBottom: "1px solid #222",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
+                    <span style={{ fontSize: 24 }}>{item.emoji}</span>
+                    <div>
+                      <h3
+                        style={{ margin: 0, fontSize: 18, color: item.color }}
+                      >
+                        {item.title}
+                      </h3>
+                      <div
+                        style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}
+                      >
+                        {completedInThisTopic.length} / {item.questions.length}{" "}
+                        completed
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      padding: 20,
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fill, minmax(280px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {completedInThisTopic.map((q) => (
+                      <div
+                        key={q.id}
+                        style={{
+                          background: "#111",
+                          borderLeft: "4px solid #fff",
+                          borderRadius: 8,
+                          padding: "10px 14px",
+                          fontSize: 14,
+                          color: "#ccc",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: "#666",
+                            fontSize: 12,
+                            fontWeight: 700,
+                            minWidth: 20,
+                          }}
+                        >
+                          {q.id}
+                        </span>
+                        <span style={{ lineHeight: 1.3 }}>{q.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            {completedQs.size === 0 && (
+              <div
+                style={{
+                  padding: 40,
+                  textAlign: "center",
+                  color: "#64748b",
+                  background: "#0d1117",
+                  borderRadius: 12,
+                  border: "1px dashed #1e293b",
+                }}
+              >
+                <span
+                  style={{ fontSize: 32, display: "block", marginBottom: 12 }}
+                >
+                  📭
+                </span>
+                You haven't completed any questions yet. Head to the roadmap to
+                get started!
+              </div>
+            )}
+          </div>
+        ) : active !== null ? (
+          <div style={{ animation: "fadeIn 0.2s ease" }}>
+            <button
+              onClick={goBackToDashboard}
+              style={{
+                background: "transparent",
+                border: "1px solid #333",
+                color: "#888",
+                padding: "8px 16px",
+                borderRadius: 8,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 24,
+                fontSize: 14,
+                fontWeight: 600,
+                transition: "0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#fff";
+                e.currentTarget.style.borderColor = "#666";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#888";
+                e.currentTarget.style.borderColor = "#333";
+              }}
+            >
+              <span style={{ fontSize: 18, lineHeight: 1 }}>←</span> Back to
+              Roadmap
+            </button>
+
+            <div
+              style={{
+                background: "#0d1117",
+                border: "1px solid #222",
+                borderRadius: 16,
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  background: "#111",
+                  padding: "24px 32px",
+                  borderBottom: "1px solid #222",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                }}
+              >
+                <span style={{ fontSize: 40 }}>{selected.emoji}</span>
+                <div>
+                  <h2
+                    style={{
+                      margin: 0,
+                      fontSize: 28,
+                      fontWeight: 800,
+                      color: "#fff",
+                    }}
+                  >
+                    {selected.title}
+                  </h2>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      color: "#555",
+                      marginTop: 4,
+                      textTransform: "uppercase",
+                      letterSpacing: 1.2,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {selected.subtitle}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div
+                style={{
+                  display: "flex",
+                  borderBottom: "1px solid #222",
+                  padding: "0 24px",
+                  background: "#0a0a0a",
+                }}
+              >
+                {TABS.filter(
+                  (t) =>
+                    !(
+                      t.key === "structures" && selected.structures.length === 0
+                    ),
+                ).map((t) => (
+                  <button
+                    key={t.key}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTab(t.key);
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      borderBottom:
+                        tab === t.key
+                          ? "2px solid #fff"
+                          : "2px solid transparent",
+                      color: tab === t.key ? "#fff" : "#555",
+                      padding: "16px 20px",
+                      cursor: "pointer",
+                      fontSize: 15,
+                      fontWeight: 600,
+                      fontFamily: "inherit",
+                      transition: "all 0.12s",
+                      marginBottom: -1,
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Content */}
+              <div
+                style={{
+                  padding: "32px",
+                  background: "#0a0a0a",
+                  minHeight: 400,
+                }}
+              >
+                {tab === "structures" && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                    {selected.structures.map((s, i) => (
+                      <span
+                        key={i}
+                        style={{
+                          background: "#111",
+                          border: "1px solid #222",
+                          borderRadius: 8,
+                          padding: "10px 18px",
+                          fontSize: 14,
+                          color: "#ccc",
+                        }}
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {tab === "algorithms" && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 10,
+                    }}
+                  >
+                    {selected.algorithms.map((a, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 14,
+                          padding: "14px 18px",
+                          background: "#0d1520",
+                          borderRadius: 8,
+                          border: "1px solid #141e2d",
+                        }}
+                      >
+                        <span
+                          style={{
+                            minWidth: 26,
+                            height: 26,
+                            background: "#ffffff10",
+                            border: "1px solid #333",
+                            borderRadius: 6,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 12,
+                            fontWeight: 800,
+                            color: "#ddd",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {i + 1}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: 15,
+                            color: "#ddd",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {a}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {tab === "patterns" && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                    {selected.patterns.map((p, i) => (
+                      <span
+                        key={i}
+                        style={{
+                          background: "#111",
+                          border: "1px solid #333",
+                          borderRadius: 24,
+                          padding: "10px 20px",
+                          fontSize: 14,
+                          color: "#ddd",
+                          fontWeight: 600,
+                        }}
+                      >
+                        ⬡ {p}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {tab === "questions" && (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(2, 1fr)",
+                      gap: 10,
+                    }}
+                  >
+                    {[...selected.questions].sort((a, b) => {
+                        const order = { E: 0, M: 1, H: 2 };
+                        return (order[a.difficulty] ?? 1) - (order[b.difficulty] ?? 1);
+                      }).map((q) => {
+                      const isCompleted = completedQs.has(q.id);
+                      return (
+                        <div
+                          key={q.id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                            padding: "10px 12px",
+                            borderRadius: 8,
+                            background: isCompleted ? "#10b981" : "#111",
+                            border: isCompleted ? "1px solid #10b981" : "1px solid #222",
+                            cursor: "pointer",
+                            transition: "background 0.2s, border-color 0.2s",
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleQuestion(q.id);
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!completedQs.has(q.id)) e.currentTarget.style.background = "#191919";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = completedQs.has(q.id) ? "#10b981" : "#111";
+                          }}
+                        >
+                          {/* LC Number */}
+                          <span style={{
+                            fontSize: 10,
+                            fontWeight: 700,
+                            color: isCompleted ? "rgba(0,0,0,0.5)" : "#444",
+                            minWidth: 30,
+                            flexShrink: 0,
+                          }}>
+                            #{q.id}
+                          </span>
+
+                          {/* Question name */}
+                          <span style={{
+                            flex: 1,
+                            fontSize: 12,
+                            fontWeight: 500,
+                            color: isCompleted ? "#000" : "#ccc",
+                            lineHeight: 1.35,
+                          }}>
+                            {q.name}
+                          </span>
+
+                          {/* Difficulty badge */}
+                          <span style={{
+                            fontSize: 10,
+                            fontWeight: 800,
+                            padding: "2px 6px",
+                            borderRadius: 4,
+                            flexShrink: 0,
+                            background: isCompleted ? "rgba(0,0,0,0.15)" : (
+                              q.difficulty === "E" ? "#16532420" :
+                              q.difficulty === "H" ? "#7f1d1d20" : "#78350f20"
+                            ),
+                            color: isCompleted ? "#000" : (
+                              q.difficulty === "E" ? "#4ade80" :
+                              q.difficulty === "H" ? "#f87171" : "#fb923c"
+                            ),
+                          }}>
+                            {q.difficulty === "E" ? "Easy" : q.difficulty === "H" ? "Hard" : "Med"}
+                          </span>
+
+                          {/* Toggle button */}
+                          <span style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: 5,
+                            border: isCompleted ? "2px solid rgba(0,0,0,0.3)" : "2px solid #333",
+                            background: isCompleted ? "rgba(0,0,0,0.15)" : "transparent",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            fontSize: isCompleted ? 12 : 16,
+                            color: isCompleted ? "#000" : "#555",
+                            fontWeight: 900,
+                            transition: "all 0.15s",
+                          }}>
+                            {isCompleted ? "✓" : "+"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="roadmap-grid" style={{ animation: "fadeIn 0.25s ease" }}>
+            {dsaData.map((item) => {
+              const totalQ = item.questions.length;
+              const completedQCount = item.questions.filter(q => completedQs.has(q.id)).length;
+              const isAllCompleted = totalQ > 0 && totalQ === completedQCount;
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => openDataStructure(item.id)}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 14,
+                    cursor: "pointer",
+                    padding: "24px",
+                    borderRadius: 14,
+                    border: isAllCompleted ? "1px solid #10b98180" : "1px solid #333",
+                    background: isAllCompleted ? "#10b98110" : "#161b22",
+                    transition: "border-color 0.2s, box-shadow 0.2s, transform 0.2s, background-color 0.2s",
+                    height: "190px",
+                    justifyContent: "space-between",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = isAllCompleted ? "#10b981" : "#555";
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = isAllCompleted ? "0 8px 24px rgba(16,185,129,0.2)" : "0 8px 24px rgba(255,255,255,0.04)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = isAllCompleted ? "#10b98180" : "#555";
+                    e.currentTarget.style.transform = "none";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <span style={{ fontSize: 32 }}>{item.emoji}</span>
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: "50%",
+                        background: "#1e2530",
+                        border: "2px solid #3a4555",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        fontWeight: 900,
+                        color: "#888",
+                      }}
+                    >
+                      {item.order}
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                      flex: 1,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 20,
+                        fontWeight: 700,
+                        color: "#e2e8f4",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {item.title}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        letterSpacing: 1.2,
+                        color: "#666",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {item.subtitle}
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      borderTop: "1px solid #2a3545",
+                      paddingTop: 14,
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 10,
+                      fontSize: 13,
+                      color: "#666",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <div style={{ display: "flex", gap: 14 }}>
+                      <span title="Algorithms">
+                        ⚙️ {item.algorithms.length}
+                      </span>
+                      <span title="Patterns">🔁 {item.patterns.length}</span>
+                      <span title="Questions">❓ {item.questions.length}</span>
+                    </div>
+                    <div
+                      style={{
+                        color: item.color,
+                        fontSize: 16,
+                        fontWeight: 700,
+                      }}
+                    >
+                      →
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            
+            {/* Embedded Notes / To-Do List Section */}
+            <div
+              className="todo-container"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                background: "#0d1117",
+                border: "1px solid #1a2535",
+                borderRadius: 14,
+                padding: "24px",
+                height: "190px",
+                transition: "border-color 0.2s, box-shadow 0.2s, transform 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#3b82f650";
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(59, 130, 246, 0.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#1a2535";
+                e.currentTarget.style.transform = "none";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              <h3 style={{ margin: "0 0 12px", color: "#e2e8f4", fontSize: 18, display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                 📝 DSA To-Do List
+              </h3>
+              <div 
+                style={{ 
+                  flex: 1, 
+                  overflowY: "auto", 
+                  marginBottom: 12, 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  gap: 8, 
+                  paddingRight: 4 
+                }}
+              >
+                {todos.length === 0 ? (
+                  <div style={{ color: "#4f7598", fontSize: 13, fontStyle: "italic", marginTop: 4 }}>No tasks added yet. Stay focused!</div>
+                ) : (
+                  todos.map((t, idx) => (
+                    <div key={idx} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: t.done ? "#4f7598" : "#acc4dc" }}>
+                      <input 
+                        type="checkbox" 
+                        checked={t.done} 
+                        onChange={() => {
+                          const newTodos = [...todos];
+                          newTodos[idx].done = !newTodos[idx].done;
+                          setTodos(newTodos);
+                        }}
+                        style={{ cursor: "pointer", width: 16, height: 16, accentColor: "#3b82f6" }}
+                      />
+                      <span style={{ flex: 1, textDecoration: t.done ? "line-through" : "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t.text}</span>
+                      <button 
+                        onClick={() => setTodos(todos.filter((_, i) => i !== idx))}
+                        style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 18, padding: 0, opacity: 0.8 }}
+                        title="Delete task"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!newTodo.trim()) return;
+                  setTodos([...todos, { text: newTodo.trim(), done: false }]);
+                  setNewTodo("");
+                }}
+                style={{ display: "flex", gap: 8, flexShrink: 0 }}
+              >
+                <input 
+                  type="text" 
+                  value={newTodo}
+                  onChange={(e) => setNewTodo(e.target.value)}
+                  placeholder="Write a new task..." 
+                  style={{
+                    flex: 1,
+                    background: "#07090d",
+                    border: "1px solid #1f2937",
+                    color: "#fff",
+                    padding: "8px 12px",
+                    borderRadius: 8,
+                    fontSize: 13,
+                    outline: "none",
+                    transition: "border 0.2s"
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = "#666"}
+                  onBlur={(e) => e.target.style.borderColor = "#1f2937"}
+                />
+                <button 
+                  type="submit"
+                  style={{
+                    background: "#fff",
+                    color: "#000",
+                    border: "none",
+                    padding: "0 16px",
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "0.2s"
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "#e0e0e0"}
+                  onMouseLeave={(e) => e.currentTarget.style.background = "#fff"}
+                >
+                  Add
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div
+          style={{
+            marginTop: 40,
+            textAlign: "center",
+            fontSize: 15,
+            letterSpacing: 0.5,
+            color: "#64748b",
+            fontWeight: 600,
+          }}
+        >
+          DSA Roadmap made by Adidam Akshay Bhaskar
+        </div>
+      </div>
+
+      <style>{`@keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }`}</style>
+    </div>
+  );
+}

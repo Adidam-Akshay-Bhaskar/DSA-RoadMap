@@ -662,6 +662,7 @@ const TABS = [
 export default function DSARoadmap() {
   const [session, setSession] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRecovering, setIsRecovering] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -671,8 +672,11 @@ export default function DSARoadmap() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
+      if (event === "PASSWORD_RECOVERY") {
+        setIsRecovering(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -694,21 +698,25 @@ export default function DSARoadmap() {
       </div>
     );
 
-  if (!session) {
-    return <AuthScreen />;
+  if (!session || isRecovering) {
+    return <AuthScreen initialView={isRecovering ? "recovery" : "signIn"} />;
   }
 
   return <Roadmap session={session} />;
 }
 
-function AuthScreen() {
+function AuthScreen({ initialView = "signIn" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [view, setView] = useState("signIn"); // signIn, signUp, forgot, recovery
+  const [view, setView] = useState(initialView); // signIn, signUp, forgot, recovery
   const [msg, setMsg] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    setView(initialView);
+  }, [initialView]);
 
   useEffect(() => {
     // Detect if user came from a "Reset Password" link

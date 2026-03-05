@@ -1514,7 +1514,7 @@ function Roadmap({ session }) {
               gap: 16,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div className="header-brand" style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
                 style={{
                   background: "#000",
@@ -1581,7 +1581,7 @@ function Roadmap({ session }) {
             </div>
 
             {/* Tracker UI & Logout */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div className="header-controls" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", flexWrap: "wrap", gap: 12 }}>
               <div
                 className="tracker-toggle-btn"
                 onClick={toggleTracker}

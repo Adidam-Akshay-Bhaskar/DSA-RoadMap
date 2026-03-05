@@ -376,24 +376,20 @@ body {
     flex: 0 1 45% !important;
   }
   .stage-tooltip-box {
-    width: 145px !important;
-    padding: 8px !important;
-    bottom: 100px !important;
+    width: 155px !important;
+    padding: 6px !important;
   }
-  .stage-tooltip-box-1 {
-    transform: translateX(0%) !important;
+  .stage-tooltip-box-odd {
+    transform: translateX(-15%) !important;
   }
-  .stage-tooltip-box-2 {
-    transform: translateX(-50%) !important;
+  .stage-tooltip-box-even {
+    transform: translateX(-85%) !important;
   }
-  .stage-tooltip-box-3 {
-    transform: translateX(-50%) !important;
+  .stage-tooltip-arrow-odd {
+    left: 20% !important;
   }
-  .stage-tooltip-box-4 {
-    transform: translateX(-50%) !important;
-  }
-  .stage-tooltip-box-5 {
-    transform: translateX(-100%) !important;
+  .stage-tooltip-arrow-even {
+    left: 80% !important;
   }
   .profile-banner {
     padding-bottom: 60px;

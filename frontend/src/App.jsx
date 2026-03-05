@@ -2618,54 +2618,47 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
           animation: "fadeIn 0.2s ease"
         }}>
           <div style={{
-            background: "linear-gradient(145deg, #162032, #0f172a)",
-            border: "1px solid rgba(255,255,255,0.05)",
-            borderRadius: 20,
-            padding: "32px 24px",
-            maxWidth: 340, width: "90%",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.02) inset",
+            background: "#0f172a",
+            border: "1px solid #1e293b",
+            borderRadius: 24,
+            padding: "36px 40px",
+            maxWidth: 380, width: "90%",
+            boxShadow: "0 25px 60px rgba(0,0,0,0.6)",
             textAlign: "center",
-            animation: "slideDown 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+            animation: "slideDown 0.25s ease"
           }}>
-            <div style={{ 
-              width: 56, height: 56, margin: "0 auto 20px",
-              background: "rgba(239, 68, 68, 0.1)", color: "#ef4444",
-              borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 24, boxShadow: "0 0 20px rgba(239, 68, 68, 0.2)"
-            }}>
-              🗑️
-            </div>
-            <h3 style={{ color: "#fff", fontWeight: 800, fontSize: 18, margin: "0 0 8px", letterSpacing: 0.5 }}>
-              Remove Photo?
+            <div style={{ fontSize: 40, marginBottom: 16 }}>🗑️</div>
+            <h3 style={{ color: "#f8fafc", fontWeight: 900, fontSize: 20, margin: "0 0 8px" }}>
+              Remove Profile Photo?
             </h3>
-            <p style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.5, margin: "0 0 28px", padding: "0 10px" }}>
-              This action will permanently delete your custom avatar.
+            <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.6, margin: "0 0 28px" }}>
+              Your profile photo will be removed and replaced with the default avatar.
             </p>
-            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
               <button
                 onClick={handleDeleteAvatar}
                 style={{
-                  flex: 1, background: "#ef4444", color: "#fff", border: "none",
-                  padding: "12px", borderRadius: 10, fontWeight: 700,
+                  background: "#ef4444", color: "#fff", border: "none",
+                  padding: "12px 28px", borderRadius: 12, fontWeight: 800,
                   cursor: "pointer", fontSize: 14, transition: "all 0.2s"
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = "#f87171"}
                 onMouseLeave={e => e.currentTarget.style.background = "#ef4444"}
               >
-                Yes, remove
+                Yes, Remove
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 style={{
-                  flex: 1, background: "rgba(255,255,255,0.05)", color: "#fff", 
+                  background: "rgba(255,255,255,0.05)", color: "#94a3b8",
                   border: "1px solid rgba(255,255,255,0.1)",
-                  padding: "12px", borderRadius: 10, fontWeight: 700,
+                  padding: "12px 28px", borderRadius: 12, fontWeight: 700,
                   cursor: "pointer", fontSize: 14, transition: "all 0.2s"
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
               >
-                Cancel
+                Keep Photo
               </button>
             </div>
           </div>
@@ -2828,10 +2821,10 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                   {/* Tooltip Popup */}
                   {hoveredStage === s && (
                     <div 
-                      className={`stage-tooltip-box stage-tooltip-box-${s}`}
+                      className={`stage-tooltip-box ${s % 2 !== 0 ? 'stage-tooltip-box-odd' : 'stage-tooltip-box-even'}`}
                       style={{
                         position: "absolute", bottom: "115px", left: "50%",
-                        transform: s === 1 ? "translateX(-15%)" : s === 5 ? "translateX(-85%)" : "translateX(-50%)",
+                        transform: "translateX(-50%)",
                         background: "#0f172a", border: "2px solid #334155",
                         color: "#fff", padding: "8px",
                         borderRadius: 16, width: 190, zIndex: 1000,
@@ -2903,10 +2896,12 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                       )}
 
                       {/* Arrow Down */}
-                      <div style={{ 
-                        position: "absolute", top: "100%", 
-                        left: s === 1 ? "15%" : s === 5 ? "85%" : "50%", 
-                        transform: "translateX(-50%)", width: 0, height: 0,
+                      <div 
+                        className={s % 2 !== 0 ? 'stage-tooltip-arrow-odd' : 'stage-tooltip-arrow-even'}
+                        style={{ 
+                          position: "absolute", top: "100%", 
+                          left: "50%", 
+                          transform: "translateX(-50%)", width: 0, height: 0,
                         borderLeft: "6px solid transparent", borderRight: "6px solid transparent",
                         borderTop: "6px solid #0f172a"
                       }} />

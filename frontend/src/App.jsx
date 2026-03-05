@@ -2478,10 +2478,45 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
             padding: "0 40px"
           }}>
             {[1, 2, 3, 4, 5].map(s => {
-              // Progression logic: 20% of total questions per stage
-              const stageThreshold = (totalQuestions / 5) * (s - 1);
-              const isUnlocked = completedCount.size >= stageThreshold;
-              const isCurrent = completedCount.size >= stageThreshold && (s === 5 || completedCount.size < (totalQuestions / 5) * s);
+              // Define topic groups for each level
+              const levelGroups = {
+                1: [1, 2, 3],    // Early Human: Math, Arrays, Strings
+                2: [4, 5, 6],    // Human: Hashing, Stack, Queue
+                3: [7, 8, 9],    // Pro: Linked List, Binary Trees, Advanced Trees
+                4: [10, 11],     // Hacker: Heap, Graphs
+                5: [12, 13, 14]  // God: Recursion, Greedy, DP
+              };
+
+              const levelTitles = {
+                1: "Early Human",
+                2: "Human",
+                3: "Pro",
+                4: "Hacker",
+                5: "God"
+              };
+
+              // Helper to check if a topic is fully completed
+              const isTopicDone = (topicId) => {
+                const topic = dsaData.find(d => d.id === topicId);
+                if (!topic) return false;
+                return topic.questions.every(q => completedCount.has(q.id));
+              };
+
+              // Level is unlocked if ALL previous levels + current level topics are done
+              // (Or based on user request: if they complete the entire structure then level is unlocked)
+              const isUnlocked = levelGroups[s].every(id => isTopicDone(id));
+              
+              // Find current level (the first one not yet unlocked)
+              let currentLevel = 1;
+              for (let i = 1; i <= 5; i++) {
+                if (!levelGroups[i].every(id => isTopicDone(id))) {
+                  currentLevel = i;
+                  break;
+                } else if (i === 5) {
+                  currentLevel = 5;
+                }
+              }
+              const isCurrent = s === currentLevel;
               
               return (
                 <div key={s} style={{ 
@@ -2520,11 +2555,11 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   }}>
                     <img 
                       src={`/stages/stage${s}.png`} 
-                      alt={`Stage ${s}`} 
+                      alt={levelTitles[s]} 
                       style={{ 
                         height: "100%",
                         width: "auto",
-                        maxWidth: "150%", // Allow overflow for wide sprites
+                        maxWidth: "150%", 
                         objectFit: "contain",
                         imageRendering: "pixelated",
                         mixBlendMode: "multiply",
@@ -2536,27 +2571,28 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   
                   {/* Progress Indicator */}
                   <div style={{
-                    width: 50,
+                    width: "80%",
                     height: 4,
-                    background: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.05)",
+                    background: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "rgba(255,255,255,0.05)",
                     borderRadius: 2,
-                    boxShadow: isCurrent ? "0 0 20px #3b82f6" : "none",
+                    boxShadow: isUnlocked ? "0 0 10px rgba(16,185,129,0.4)" : isCurrent ? "0 0 20px #3b82f6" : "none",
                     marginBottom: 8,
                     transition: "all 0.3s ease"
                   }} />
 
                   {/* Level Label */}
                   <div style={{ 
-                    fontSize: 11, 
+                    fontSize: 10, 
                     fontWeight: 900, 
-                    color: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.3)",
+                    color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "rgba(255,255,255,0.3)",
                     fontFamily: "monospace",
                     textTransform: "uppercase",
-                    letterSpacing: 1.5,
+                    letterSpacing: 1,
+                    textAlign: "center",
                     textShadow: isCurrent ? "0 0 10px rgba(59,130,246,0.4)" : "none",
                     transition: "color 0.3s ease"
                   }}>
-                    {s === 5 ? "Ascended" : `Stage 0${s}`}
+                    {levelTitles[s]}
                   </div>
                 </div>
               );

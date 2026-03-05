@@ -376,14 +376,24 @@ body {
     flex: 0 1 45% !important;
   }
   .stage-tooltip-box {
-    width: 155px !important;
-    padding: 6px !important;
+    width: 145px !important;
+    padding: 8px !important;
+    bottom: 100px !important;
   }
   .stage-tooltip-box-1 {
-    transform: translateX(-5%) !important;
+    transform: translateX(0%) !important;
+  }
+  .stage-tooltip-box-2 {
+    transform: translateX(-50%) !important;
+  }
+  .stage-tooltip-box-3 {
+    transform: translateX(-50%) !important;
+  }
+  .stage-tooltip-box-4 {
+    transform: translateX(-50%) !important;
   }
   .stage-tooltip-box-5 {
-    transform: translateX(-95%) !important;
+    transform: translateX(-100%) !important;
   }
   .profile-banner {
     padding-bottom: 60px;

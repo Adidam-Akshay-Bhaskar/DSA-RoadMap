@@ -2618,47 +2618,54 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
           animation: "fadeIn 0.2s ease"
         }}>
           <div style={{
-            background: "#0f172a",
-            border: "1px solid #1e293b",
-            borderRadius: 24,
-            padding: "36px 40px",
-            maxWidth: 380, width: "90%",
-            boxShadow: "0 25px 60px rgba(0,0,0,0.6)",
+            background: "linear-gradient(145deg, #162032, #0f172a)",
+            border: "1px solid rgba(255,255,255,0.05)",
+            borderRadius: 20,
+            padding: "32px 24px",
+            maxWidth: 340, width: "90%",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.02) inset",
             textAlign: "center",
-            animation: "slideDown 0.25s ease"
+            animation: "slideDown 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
           }}>
-            <div style={{ fontSize: 40, marginBottom: 16 }}>🗑️</div>
-            <h3 style={{ color: "#f8fafc", fontWeight: 900, fontSize: 20, margin: "0 0 8px" }}>
-              Remove Profile Photo?
+            <div style={{ 
+              width: 56, height: 56, margin: "0 auto 20px",
+              background: "rgba(239, 68, 68, 0.1)", color: "#ef4444",
+              borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 24, boxShadow: "0 0 20px rgba(239, 68, 68, 0.2)"
+            }}>
+              🗑️
+            </div>
+            <h3 style={{ color: "#fff", fontWeight: 800, fontSize: 18, margin: "0 0 8px", letterSpacing: 0.5 }}>
+              Remove Photo?
             </h3>
-            <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.6, margin: "0 0 28px" }}>
-              Your profile photo will be removed and replaced with the default avatar.
+            <p style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.5, margin: "0 0 28px", padding: "0 10px" }}>
+              This action will permanently delete your custom avatar.
             </p>
-            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
               <button
                 onClick={handleDeleteAvatar}
                 style={{
-                  background: "#ef4444", color: "#fff", border: "none",
-                  padding: "12px 28px", borderRadius: 12, fontWeight: 800,
+                  flex: 1, background: "#ef4444", color: "#fff", border: "none",
+                  padding: "12px", borderRadius: 10, fontWeight: 700,
                   cursor: "pointer", fontSize: 14, transition: "all 0.2s"
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = "#f87171"}
                 onMouseLeave={e => e.currentTarget.style.background = "#ef4444"}
               >
-                Yes, Remove
+                Yes, remove
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 style={{
-                  background: "rgba(255,255,255,0.05)", color: "#94a3b8",
+                  flex: 1, background: "rgba(255,255,255,0.05)", color: "#fff", 
                   border: "1px solid rgba(255,255,255,0.1)",
-                  padding: "12px 28px", borderRadius: 12, fontWeight: 700,
+                  padding: "12px", borderRadius: 10, fontWeight: 700,
                   cursor: "pointer", fontSize: 14, transition: "all 0.2s"
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
               >
-                Keep Photo
+                Cancel
               </button>
             </div>
           </div>

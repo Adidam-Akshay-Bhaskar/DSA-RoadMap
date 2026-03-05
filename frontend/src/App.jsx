@@ -1750,6 +1750,7 @@ function Roadmap({ session }) {
                 questions={dsaData}
                 onUpdate={updateProfile}
                 onBack={goBackToDashboard}
+                defaultName={session?.user?.email?.split('@')[0] || "User"}
              />
           </div>
         ) : showTracker ? (
@@ -2401,8 +2402,8 @@ function Roadmap({ session }) {
   );
 }
 
-function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions, onBack }) {
-  const [name, setName] = useState(profile?.display_name || "");
+function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions, onBack, defaultName }) {
+  const [name, setName] = useState(profile?.display_name || defaultName || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -2410,10 +2411,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
   // Sync state with props when they finally load
   useEffect(() => {
     if (!isEditing && profile) {
-      setName(profile.display_name || "");
+      setName(profile.display_name || defaultName || "");
       setBio(profile.bio || "");
     }
-  }, [profile, isEditing]);
+  }, [profile, isEditing, defaultName]);
 
   const difficultyStats = { E: 0, M: 0, H: 0 };
   const userStats = { E: 0, M: 0, H: 0 };
@@ -2503,7 +2504,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 margin: 0, fontSize: 36, fontWeight: 900, color: "#f8fafc",
                 letterSpacing: "-1px"
               }}>
-                {profile?.display_name || "Code Master"}
+                {profile?.display_name || defaultName}
               </h2>
             )}
             <div style={{ fontSize: 14, color: "#64748b", fontWeight: 600, marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>

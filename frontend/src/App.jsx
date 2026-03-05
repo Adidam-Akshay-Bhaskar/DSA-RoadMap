@@ -2587,7 +2587,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
           position: "fixed", inset: 0, zIndex: 9999,
           background: "rgba(0,0,0,0.65)",
           backdropFilter: "blur(8px)",
-          display: "flex", alignItems: "center", justifyContent: "center",
+          display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "15vh",
           animation: "fadeIn 0.2s ease"
         }}>
           <div style={{

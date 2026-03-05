@@ -2703,7 +2703,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   flex: window.innerWidth < 600 ? 1 : "initial",
                   background: "rgba(239, 68, 68, 0.1)", 
                   border: "1px solid rgba(239, 68, 68, 0.2)",
-                  color: "#ef4444", 
+                  color: "#670909ff", 
                   fontSize: 14, 
                   fontWeight: 700, 
                   cursor: "pointer",
@@ -2733,7 +2733,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
           }}>
             <div style={{ fontSize: 12, color: "#3b82f6", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>Current Streak</div>
             <div style={{ fontSize: 40, fontWeight: 950, color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
-               {streak} <span style={{ fontSize: 32, filter: "drop-shadow(0 0 10px #3b82f6)" }}>🔥</span>
+               {streak} <span style={{ fontSize: 32, filter: "hue-rotate(180deg) brightness(1.5) drop-shadow(0 0 10px #3b82f6)" }}>🔥</span>
             </div>
           </div>
           <div style={{ 

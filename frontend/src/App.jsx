@@ -1588,18 +1588,18 @@ function Roadmap({ session }) {
                   transition: "all 0.2s",
                 }}
               >
-                <span style={{ fontSize: 18 }}>{(showTracker || showProfile) ? "←" : "🎯"}</span>
+                <span style={{ fontSize: 18 }}>{showTracker ? "←" : "🎯"}</span>
                 <span
                   style={{
                     fontSize: 14,
                     fontWeight: 600,
                     color: "#888",
-                    marginRight: (showTracker || showProfile) ? 0 : 4,
+                    marginRight: showTracker ? 0 : 4,
                   }}
                 >
-                  {(showTracker || showProfile) ? "Back to Roadmap" : "Progress:"}
+                  {showTracker ? "Back to Roadmap" : "Progress:"}
                 </span>
-                {!(showTracker || showProfile) && (
+                {!showTracker && (
                   <>
                     <span
                       style={{

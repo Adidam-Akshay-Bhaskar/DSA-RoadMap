@@ -1405,13 +1405,14 @@ function Roadmap({ session }) {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 6,
+                  gap: 8,
                   background: "#111827",
                   padding: "6px 14px",
                   borderRadius: 20,
                   border: "1px solid #1a2535",
                   position: "relative",
-                  overflow: "hidden"
+                  overflow: "hidden",
+                  opacity: streak > 0 ? 1 : 0.6
                 }}
                 title="Your DSA Streak"
               >
@@ -1421,14 +1422,31 @@ function Roadmap({ session }) {
                   justifyContent: "center",
                   position: "relative"
                 }}>
-                  <span style={{ fontSize: 20, filter: "drop-shadow(0 0 8px #3b82f6)", display: "flex", alignItems: "center" }}>
-                    <span style={{ color: "#3b82f6" }}>⚡</span>
-                    <span style={{ marginLeft: -4, marginTop: 4, transform: "scale(0.8)", filter: "hue-rotate(180deg) brightness(1.5)" }}>🔥</span>
+                  <span style={{ 
+                    fontSize: 22, 
+                    filter: streak > 0 ? "drop-shadow(0 0 10px #3b82f6) drop-shadow(0 0 5px #3b82f6)" : "grayscale(1) brightness(0.5)",
+                    display: "flex", 
+                    alignItems: "center",
+                    transition: "all 0.3s ease"
+                  }}>
+                    <span style={{ filter: "hue-rotate(180deg) brightness(1.5)" }}>🔥</span>
                   </span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-                  <span style={{ fontSize: 16, fontWeight: 900, color: "#e2e8f4" }}>{streak}</span>
-                  <span style={{ fontSize: 8, fontWeight: 800, color: "#3b82f6", textTransform: "uppercase", letterSpacing: 0.5 }}>STREAK</span>
+                  <span style={{ 
+                    fontSize: 16, 
+                    fontWeight: 900, 
+                    color: streak > 0 ? "#fff" : "#64748b",
+                    transition: "color 0.3s ease"
+                  }}>{streak}</span>
+                  <span style={{ 
+                    fontSize: 8, 
+                    fontWeight: 800, 
+                    color: streak > 0 ? "#3b82f6" : "#475569", 
+                    textTransform: "uppercase", 
+                    letterSpacing: 0.5,
+                    transition: "color 0.3s ease"
+                  }}>STREAK</span>
                 </div>
               </div>
 

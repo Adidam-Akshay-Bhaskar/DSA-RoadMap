@@ -677,6 +677,10 @@ export default function DSARoadmap() {
       if (event === "PASSWORD_RECOVERY") {
         setIsRecovering(true);
       }
+      // On fresh login: always land on dashboard, not a stale deep-link
+      if (event === "SIGNED_IN") {
+        window.history.replaceState({ view: 'dashboard' }, "", "/");
+      }
     });
 
     return () => subscription.unsubscribe();

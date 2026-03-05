@@ -1737,6 +1737,7 @@ function Roadmap({ session }) {
                 totalQuestions={totalQuestions}
                 questions={dsaData}
                 onUpdate={updateProfile}
+                onBack={goBackToDashboard}
              />
           </div>
         ) : showTracker ? (
@@ -2388,7 +2389,7 @@ function Roadmap({ session }) {
   );
 }
 
-function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions }) {
+function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions, onBack }) {
   const [name, setName] = useState(profile?.display_name || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [isEditing, setIsEditing] = useState(false);
@@ -2443,6 +2444,43 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
       {/* Profile Content */}
       <div style={{ padding: "0 40px 40px", marginTop: -60, position: "relative" }}>
+        
+        {/* Back Button */}
+        <button
+          onClick={onBack}
+          style={{
+            position: "absolute",
+            top: -120,
+            left: 20,
+            background: "rgba(13, 17, 23, 0.4)",
+            backdropFilter: "blur(12px)",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            color: "#eee",
+            padding: "10px 18px",
+            borderRadius: 14,
+            cursor: "pointer",
+            fontSize: 14,
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            transition: "all 0.2s",
+            zIndex: 10
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(13, 17, 23, 0.6)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+            e.currentTarget.style.transform = "translateX(-4px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(13, 17, 23, 0.4)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+            e.currentTarget.style.transform = "none";
+          }}
+        >
+          <span>←</span> Back to Roadmap
+        </button>
+
         <div style={{ display: "flex", alignItems: "flex-end", gap: 32, marginBottom: 36, flexWrap: "wrap" }}>
           <div style={{
             width: 140, height: 140, borderRadius: 36, 

@@ -177,9 +177,10 @@ body {
 }
 
 /* Character Spacing Adjustments */
-.stage-item-1 { margin-left: 20px; } /* Move 1st slightly to right */
-.stage-item-1, .stage-item-2, .stage-item-3 { margin-right: -10px; } /* Reduce gap between 1,2,3,4 */
-.stage-item-5 { margin-left: 40px; } /* Increase gap between 4 and 5 */
+.stage-item-1 { margin-left: 40px; } /* Move 1st noticeably to right */
+.stage-item-1, .stage-item-2, .stage-item-3 { margin-right: -25px; } /* Strongly reduce gap between 1,2,3 */
+.stage-item-4 { margin-right: 30px; } /* Increase gap before God */
+.stage-item-5 { margin-left: 20px; } /* Increase gap between 4 and 5 */
 
 .profile-avatar-container {
   width: 140px;

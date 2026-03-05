@@ -2465,63 +2465,95 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
            backgroundSize: "20px 20px" 
          }} />
 
-         {/* Stages Display */}
-         <div style={{ 
-           display: "flex", 
-           justifyContent: "space-around",
-           width: "100%",
-           position: "relative", 
-           zIndex: 2,
-           padding: "0 40px"
-         }}>
-           {[1, 2, 3, 4, 5].map(s => (
-             <div key={s} style={{ 
-               width: "18%", 
-               height: 140, 
-               display: "flex",
-               flexDirection: "column",
-               alignItems: "center",
-               justifyContent: "center",
-               position: "relative",
-               transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-               cursor: "pointer"
-             }}
-             onMouseEnter={e => {
-               e.currentTarget.style.transform = "translateY(-20px) scale(1.4)";
-               e.currentTarget.style.zIndex = 10;
-             }}
-             onMouseLeave={e => {
-               e.currentTarget.style.transform = "none";
-               e.currentTarget.style.zIndex = 1;
-             }}>
-                <img 
-                   src={`/stages/stage${s}.jpg`} 
-                   alt={`Stage ${s}`} 
-                   style={{ 
-                     width: "100%", 
-                     height: "100%", 
-                     objectFit: "contain",
-                     imageRendering: "pixelated",
-                     // Blend technique to make characters float on dark bg
-                     mixBlendMode: "lighten",
-                     filter: "contrast(1.4) brightness(1.2)"
-                   }} 
-                 />
-               
-               <div style={{ 
-                 marginTop: 0,
-                 fontSize: 10, fontWeight: 900, 
-                 color: "rgba(255,255,255,0.4)",
-                 fontFamily: "monospace",
-                 textTransform: "uppercase",
-                 letterSpacing: 2,
-                 textShadow: "0 2px 4px rgba(0,0,0,0.5)"
-               }}>
-                 {s === 5 ? "Ascended" : `Stage 0${s}`}
-               </div>
-             </div>
-           ))}
-         </div>
+          {/* Stages Display */}
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "space-around",
+            width: "100%",
+            position: "relative", 
+            zIndex: 2,
+            padding: "0 40px 0 220px", // Start after the profile square
+            alignItems: "flex-end",
+            height: "100%"
+          }}>
+            {[1, 2, 3, 4, 5].map(s => {
+              // Progression logic: 20% of total questions per stage
+              const stageThreshold = (totalQuestions / 5) * (s - 1);
+              const isUnlocked = completedCount.size >= stageThreshold;
+              const isCurrent = completedCount.size >= stageThreshold && (s === 5 || completedCount.size < (totalQuestions / 5) * s);
+              
+              return (
+                <div key={s} style={{ 
+                  width: "16%", 
+                  height: 120, 
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
+                  transition: "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                  cursor: isUnlocked ? "pointer" : "default",
+                  opacity: isUnlocked ? 1 : 0.3,
+                  filter: isUnlocked ? "none" : "grayscale(1) brightness(0.5)",
+                }}
+                onMouseEnter={e => {
+                  if (isUnlocked) {
+                    e.currentTarget.style.transform = "translateY(-15px) scale(1.3)";
+                    e.currentTarget.style.zIndex = 10;
+                  }
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = "none";
+                  e.currentTarget.style.zIndex = 1;
+                }}>
+                  {isCurrent && (
+                    <div style={{
+                      position: "absolute",
+                      bottom: 0,
+                      width: 40,
+                      height: 4,
+                      background: "#3b82f6",
+                      borderRadius: 2,
+                      boxShadow: "0 0 15px #3b82f6"
+                    }} />
+                  )}
+                  
+                  <img 
+                    src={`/stages/stage${s}.png`} 
+                    alt={`Stage ${s}`} 
+                    style={{ 
+                      width: "100%", 
+                      height: "100%", 
+                      objectFit: "contain",
+                      imageRendering: "pixelated",
+                      /* 
+                         Updated blend strategy: 
+                         Since images have white backgrounds, we use multiply to clear it 
+                         against the banner. Filter boost ensures internal colors don't muddy.
+                      */
+                      mixBlendMode: "multiply",
+                      filter: `contrast(1.5) brightness(1.1) ${isCurrent ? "drop-shadow(0 0 5px rgba(59,130,246,0.3))" : ""}`,
+                      transition: "filter 0.3s ease"
+                    }} 
+                  />
+                  
+                  <div style={{ 
+                    position: "absolute",
+                    bottom: -15,
+                    fontSize: 9, 
+                    fontWeight: 900, 
+                    color: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.3)",
+                    fontFamily: "monospace",
+                    textTransform: "uppercase",
+                    letterSpacing: 1.5,
+                    opacity: isUnlocked ? 1 : 0.5
+                  }}>
+                    {s === 5 ? "Ascended" : `LVL 0${s}`}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
       </div>
 
       {/* Profile Content */}

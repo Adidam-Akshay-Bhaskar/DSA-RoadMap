@@ -2541,6 +2541,43 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
       backdropFilter: "blur(4px)"
     }}>
+      {/* Top Navigation */}
+      <button
+        onClick={onBack}
+        style={{
+          position: "absolute",
+          top: 24,
+          left: 24,
+          zIndex: 100,
+          background: "rgba(255, 255, 255, 0.05)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          color: "#94a3b8",
+          fontSize: 13,
+          fontWeight: 700,
+          cursor: "pointer",
+          padding: "8px 16px",
+          borderRadius: 12,
+          transition: "all 0.2s",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          backdropFilter: "blur(8px)"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
+          e.currentTarget.style.color = "#fff";
+          e.currentTarget.style.transform = "translateX(-4px)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+          e.currentTarget.style.color = "#94a3b8";
+          e.currentTarget.style.transform = "none";
+        }}
+      >
+        ← Roadmap
+      </button>
       {/* Banner Section */}
       <div className="profile-banner">
          <div style={{ 

@@ -2683,11 +2683,11 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   {/* Tooltip Popup */}
                   {hoveredStage === s && (
                     <div style={{
-                      position: "absolute", bottom: "125px", left: "50%",
+                      position: "absolute", bottom: "115px", left: "50%",
                       transform: s === 1 ? "translateX(-5%)" : s === 5 ? "translateX(-95%)" : "translateX(-50%)",
                       background: "#0f172a", border: "2px solid #334155",
                       color: "#fff", padding: "8px",
-                      borderRadius: 16, width: 200, zIndex: 1000,
+                      borderRadius: 16, width: 190, zIndex: 1000,
                       boxShadow: "0 20px 25px -5px rgba(0,0,0,0.5)",
                       pointerEvents: "none", animation: "fadeInUpTooltip 0.3s ease-out forwards"
                     }}>

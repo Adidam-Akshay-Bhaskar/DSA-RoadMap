@@ -166,21 +166,20 @@ body {
 .stages-display {
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 150px);
-  margin-left: 150px;
+  width: calc(100% - 130px); /* Fill most of the remaining area */
+  margin-left: 130px; /* Shift to the left, tightly hugging the avatar area */
   position: relative;
   z-index: 2;
   align-items: center;
   height: 100%;
-  padding: 0 40px;
+  padding: 0 10px; /* Reduced from 40px to give character more space */
   transition: all 0.3s ease;
 }
 
-/* Character Spacing Adjustments */
-.stage-item-1 { margin-left: 40px; } /* Move 1st noticeably to right */
-.stage-item-1, .stage-item-2, .stage-item-3 { margin-right: -25px; } /* Strongly reduce gap between 1,2,3 */
-.stage-item-4 { margin-right: 30px; } /* Increase gap before God */
-.stage-item-5 { margin-left: 20px; } /* Increase gap between 4 and 5 */
+/* Base uniform flex configuration */
+.stage-item {
+  flex: 1; /* All items take exactly equal space */
+}
 
 .profile-avatar-container {
   width: 140px;

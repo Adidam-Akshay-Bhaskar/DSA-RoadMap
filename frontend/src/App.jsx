@@ -2469,13 +2469,13 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
           <div style={{ 
             display: "flex", 
             justifyContent: "space-around",
-            width: "100%",
+            width: "calc(100% - 240px)", // Account for profile pic offset
+            marginLeft: "240px",
             position: "relative", 
             zIndex: 2,
-            padding: "0 40px 0 240px", // Increased offset for larger pfp compatibility
-            alignItems: "flex-end",
+            alignItems: "center",
             height: "100%",
-            paddingBottom: 20
+            padding: "0 40px"
           }}>
             {[1, 2, 3, 4, 5].map(s => {
               // Progression logic: 20% of total questions per stage
@@ -2485,68 +2485,78 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
               
               return (
                 <div key={s} style={{ 
-                  width: "18%", 
-                  height: 200, // Significantly larger
+                  flex: 1,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
+                  height: "100%",
                   position: "relative",
-                  transition: "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                  transition: "all 0.4s ease",
                   cursor: isUnlocked ? "pointer" : "default",
-                  opacity: isUnlocked ? 1 : 0.25,
-                  filter: isUnlocked ? "none" : "grayscale(1) brightness(0.4)",
-                  paddingBottom: 25
+                  opacity: isUnlocked ? 1 : 0.2,
+                  filter: isUnlocked ? "none" : "grayscale(1) brightness(0.3)",
                 }}
                 onMouseEnter={e => {
                   if (isUnlocked) {
-                    e.currentTarget.style.transform = "translateY(-25px) scale(1.4)";
+                    const img = e.currentTarget.querySelector('img');
+                    if (img) img.style.transform = "translateY(-15px) scale(1.2)";
                     e.currentTarget.style.zIndex = 10;
                   }
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.transform = "none";
+                  const img = e.currentTarget.querySelector('img');
+                  if (img) img.style.transform = "none";
                   e.currentTarget.style.zIndex = 1;
                 }}>
-                  {isCurrent && (
-                    <div style={{
-                      position: "absolute",
-                      bottom: 10,
-                      width: 60,
-                      height: 4,
-                      background: "#3b82f6",
-                      borderRadius: 2,
-                      boxShadow: "0 0 20px #3b82f6"
-                    }} />
-                  )}
-                  
-                  <img 
-                    src={`/stages/stage${s}.png`} 
-                    alt={`Stage ${s}`} 
-                    style={{ 
-                      width: "115%", // Slightly overflow the container for "large" feel
-                      height: "115%", 
-                      objectFit: "contain",
-                      imageRendering: "pixelated",
-                      mixBlendMode: "multiply",
-                      filter: `contrast(1.4) brightness(1.1) ${isCurrent ? "drop-shadow(0 0 15px rgba(59,130,246,0.5))" : ""}`,
-                      transition: "filter 0.3s ease"
-                    }} 
-                  />
-                  
+                  {/* Character Image */}
                   <div style={{ 
-                    position: "absolute",
-                    bottom: -10,
-                    fontSize: 10, 
+                    height: 160, 
+                    width: "100%", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center",
+                    marginBottom: 10
+                  }}>
+                    <img 
+                      src={`/stages/stage${s}.png`} 
+                      alt={`Stage ${s}`} 
+                      style={{ 
+                        height: "100%",
+                        width: "auto",
+                        maxWidth: "150%", // Allow overflow for wide sprites
+                        objectFit: "contain",
+                        imageRendering: "pixelated",
+                        mixBlendMode: "multiply",
+                        filter: `contrast(1.4) brightness(1.1) ${isCurrent ? "drop-shadow(0 0 15px rgba(59,130,246,0.6))" : ""}`,
+                        transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Progress Indicator */}
+                  <div style={{
+                    width: 50,
+                    height: 4,
+                    background: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.05)",
+                    borderRadius: 2,
+                    boxShadow: isCurrent ? "0 0 20px #3b82f6" : "none",
+                    marginBottom: 8,
+                    transition: "all 0.3s ease"
+                  }} />
+
+                  {/* Level Label */}
+                  <div style={{ 
+                    fontSize: 11, 
                     fontWeight: 900, 
-                    color: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.4)",
+                    color: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.3)",
                     fontFamily: "monospace",
                     textTransform: "uppercase",
-                    letterSpacing: 2,
-                    opacity: isUnlocked ? 1 : 0.5,
-                    textShadow: isCurrent ? "0 0 10px rgba(59,130,246,0.5)" : "none"
+                    letterSpacing: 1.5,
+                    textShadow: isCurrent ? "0 0 10px rgba(59,130,246,0.4)" : "none",
+                    transition: "color 0.3s ease"
                   }}>
-                    {s === 5 ? "Ascended" : `LVL 0${s}`}
+                    {s === 5 ? "Ascended" : `Stage 0${s}`}
                   </div>
                 </div>
               );

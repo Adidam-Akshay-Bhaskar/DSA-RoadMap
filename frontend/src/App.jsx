@@ -1237,7 +1237,17 @@ function Roadmap({ session }) {
     }
 
     const handlePopState = (e) => {
-      const state = e.state;
+      let state = e.state;
+      if (!state) {
+        const params = new URLSearchParams(window.location.search);
+        const topicId = params.get('topic');
+        const view = params.get('view');
+        if (view === 'tracker') state = { view: 'tracker' };
+        else if (view === 'profile') state = { view: 'profile' };
+        else if (topicId) state = { view: 'topic', id: parseInt(topicId, 10) };
+        else state = { view: 'dashboard' };
+      }
+
       if (state && state.view === 'topic') {
         setActive(state.id);
         setTab("algorithms");

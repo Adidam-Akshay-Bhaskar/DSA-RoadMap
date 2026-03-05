@@ -2667,48 +2667,90 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   {/* Tooltip Popup */}
                   {hoveredStage === s && (
                     <div style={{
-                      position: "absolute", bottom: "100%", left: "50%",
+                      position: "absolute", bottom: "185px", left: "50%",
                       transform: "translateX(-50%) translateY(-10px)",
-                      background: "rgba(13, 17, 23, 0.95)", border: "1px solid rgba(255, 255, 255, 0.1)",
-                      backdropFilter: "blur(12px)", color: "#fff", padding: "12px 16px",
-                      borderRadius: 16, width: 220, zIndex: 1000,
-                      boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
-                      pointerEvents: "none", animation: "fadeInUpTooltip 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards"
+                      background: "rgba(13, 17, 23, 0.98)", border: "1px solid rgba(255, 255, 255, 0.15)",
+                      backdropFilter: "blur(20px)", color: "#fff", padding: "20px",
+                      borderRadius: 24, width: 300, zIndex: 1000,
+                      boxShadow: "0 25px 50px -12px rgba(0,0,0,0.8), 0 0 30px rgba(59,130,246,0.2)",
+                      pointerEvents: "none", animation: "fadeInUpTooltip 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards"
                     }}>
-                      <div style={{ fontSize: 13, fontWeight: 900, marginBottom: 4, color: isUnlocked ? "#10b981" : "#ef4444", display: "flex", alignItems: "center", gap: 6 }}>
-                         {isUnlocked ? "✅ UNLOCKED" : "🔒 LOCKED"}
+                      {/* Header Status */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                        <div style={{ 
+                          fontSize: 11, fontWeight: 950, letterSpacing: 1,
+                          color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "#475569",
+                          textTransform: "uppercase"
+                        }}>
+                          {isUnlocked ? "✨ EVOLVED" : isCurrent ? "🔥 CURRENT FORM" : "🔒 STAGE LOCKED"}
+                        </div>
+                        <div style={{ fontSize: 10, padding: "2px 8px", background: "rgba(255,255,255,0.05)", borderRadius: 8, color: "#94a3b8" }}>
+                          STG {s}/5
+                        </div>
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 8, color: "#fff" }}>
+
+                      {/* Stage Title & Lore */}
+                      <div style={{ fontSize: 20, fontWeight: 950, color: "#fff", marginBottom: 6 }}>
                         {levelTitles[s]}
                       </div>
-                      <div style={{ fontSize: 11, color: "#94a3b8", lineHeight: 1.5, marginBottom: 12 }}>
-                        {s === 1 && "The dawn of your journey. Master the fundamental primitives."}
-                        {s === 2 && "Consciousness rises. Understanding the flow of data."}
-                        {s === 3 && "Professional warrior. Mastery over complex structural nodes."}
-                        {s === 4 && "The digital phantom. Efficient navigation through logic mazes."}
-                        {s === 5 && "Ascended Divinity. Total command over time and memory."}
+                      <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5, marginBottom: 16 }}>
+                        {s === 1 && "The dawn of reasoning. You've mastered the basic syntax of the universe."}
+                        {s === 2 && "The logic becomes fluid. You now flow through data with purpose and intent."}
+                        {s === 3 && "A professional architect. You structure complex nodes into powerful systems."}
+                        {s === 4 && "The machine's shadow. You navigate the deepest logic networks with ease."}
+                        {s === 5 && "Digital Divinity. Time and memory bend to your ultimate command."}
+                      </p>
+
+                      {/* Technical Detail */}
+                      <div style={{ background: "rgba(59, 130, 246, 0.05)", padding: "12px", borderRadius: 12, border: "1px solid rgba(59, 130, 246, 0.1)", marginBottom: 16 }}>
+                        <div style={{ fontSize: 10, color: "#3b82f6", fontWeight: 800, textTransform: "uppercase", marginBottom: 6 }}>Evolution Requirements:</div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                           {(s === 1 ? ["Math", "Arrays", "Strings"] : 
+                             s === 2 ? ["Hashing", "Stack", "Queue"] : 
+                             s === 3 ? ["Lists", "Binary Trees", "Adv Trees"] : 
+                             s === 4 ? ["Heap", "Graphs"] : 
+                             ["Recursion", "Greedy", "DP"]).map(tag => {
+                               const topicMap = {
+                                 "Math": 1, "Arrays": 2, "Strings": 3,
+                                 "Hashing": 4, "Stack": 5, "Queue": 6,
+                                 "Lists": 7, "Binary Trees": 8, "Adv Trees": 9,
+                                 "Heap": 10, "Graphs": 11,
+                                 "Recursion": 12, "Greedy": 13, "DP": 14
+                               };
+                               const done = isTopicDone(topicMap[tag]);
+                               return (
+                                 <span key={tag} style={{ 
+                                   fontSize: 10, px: 8, py: 2, borderRadius: 6, 
+                                   background: done ? "rgba(16, 185, 129, 0.15)" : "rgba(255,255,255,0.03)",
+                                   border: `1px solid ${done ? "rgba(16, 185, 129, 0.3)" : "rgba(255,255,255,0.08)"}`,
+                                   color: done ? "#10b981" : "#475569",
+                                   padding: "3px 8px", fontWeight: 700
+                                 }}>
+                                   {tag} {done ? "✓" : "○"}
+                                 </span>
+                               );
+                             })}
+                        </div>
                       </div>
-                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 8 }}>
-                         <div style={{ fontSize: 10, color: "#475569", textTransform: "uppercase", fontWeight: 800, marginBottom: 4 }}>Required Topics:</div>
-                         <div style={{ fontSize: 11, color: "#3b82f6", fontWeight: 700 }}>
-                           {s === 1 && "Math, Arrays, Strings"}
-                           {s === 2 && "Hashing, Stack, Queue"}
-                           {s === 3 && "Lists, Binary Trees, Advanced Trees"}
-                           {s === 4 && "Heap, Graphs"}
-                           {s === 5 && "Recursion, Greedy, DP"}
-                         </div>
-                         {s > 1 && !Array.from({length: s-1}, (_, i) => i + 1).every(lvl => levelGroups[lvl].every(id => isTopicDone(id))) && (
-                           <div style={{ fontSize: 10, color: "#ef4444", marginTop: 4, fontWeight: 700 }}>
-                             ⚠️ Must unlock previous stages first!
-                           </div>
-                         )}
-                      </div>
+
+                      {/* Locking Logic Warning */}
+                      {s > 1 && !Array.from({length: s-1}, (_, i) => i + 1).every(lvl => levelGroups[lvl].every(id => isTopicDone(id))) && (
+                        <div style={{ 
+                          fontSize: 10, color: "#ef4444", fontWeight: 900, 
+                          background: "rgba(239, 68, 68, 0.1)", padding: "8px 12px", 
+                          borderRadius: 10, border: "1px solid rgba(239, 68, 68, 0.2)",
+                          textAlign: "center"
+                        }}>
+                          ⚠️ MASTER PREVIOUS STAGES TO UNLOCK
+                        </div>
+                      )}
+
                       {/* Arrow Down */}
                       <div style={{ 
                         position: "absolute", top: "100%", left: "50%", 
                         transform: "translateX(-50%)", width: 0, height: 0,
-                        borderLeft: "8px solid transparent", borderRight: "8px solid transparent",
-                        borderTop: "8px solid rgba(13, 17, 23, 0.95)"
+                        borderLeft: "10px solid transparent", borderRight: "10px solid transparent",
+                        borderTop: "10px solid rgba(13, 17, 23, 0.98)"
                       }} />
                     </div>
                   )}

@@ -237,6 +237,47 @@ body {
 }
 
 @media (max-width: 480px) {
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+  .todo-container {
+    grid-column: span 1;
+  }
+  .auth-panel-left {
+    padding: 30px 20px;
+  }
+  .auth-panel-right {
+    padding: 30px 20px;
+  }
+  .header-title-text {
+    font-size: 18px !important;
+  }
+  .topic-header {
+    padding: 16px !important;
+    gap: 10px !important;
+  }
+  .topic-header h2 {
+    font-size: 22px !important;
+  }
+  .topic-header span {
+    font-size: 32px !important;
+  }
+  .roadmap-content {
+    padding: 16px !important;
+  }
+  .questions-grid {
+    grid-template-columns: 1fr;
+  }
+  .question-name {
+    font-size: 13px;
+  }
+  .question-id {
+    width: 35px;
+    font-size: 11px;
+  }
+  .difficulty-badge {
+    width: 55px;
+  }
   .stage-item {
     flex: 0 1 45% !important;
   }

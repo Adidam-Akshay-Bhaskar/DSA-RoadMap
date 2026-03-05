@@ -2521,7 +2521,8 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "center", // Center vertically so they appear at 'same level'
+                  justifyContent: "flex-end", // Align to bottom so all bars sit at the exact same horizontal baseline
+                  paddingBottom: 25,
                   height: "100%",
                   position: "relative",
                   transition: "all 0.4s ease",
@@ -2543,10 +2544,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 }}>
                   {/* Character Image with Ascending Size */}
                   <div style={{ 
-                    height: 70 + (s * 28), // Ascending height (~100px to ~210px)
+                    height: 220, // Fixed height container forces all bars/labels below it to sit perfectly level
                     width: "100%", 
                     display: "flex", 
-                    alignItems: "center", // Shared midline center
+                    alignItems: "flex-end", // Align character sprites to the bottom of this fixed area
                     justifyContent: "center",
                     marginBottom: 10
                   }}>
@@ -2554,7 +2555,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       src={`/stages/stage${s}.png`} 
                       alt={levelTitles[s]} 
                       style={{ 
-                        height: "100%",
+                        height: 70 + (s * 28), // The actual image scales up gradually
                         width: "auto",
                         maxWidth: "180%", 
                         objectFit: "contain",

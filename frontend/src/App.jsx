@@ -1287,6 +1287,12 @@ function Roadmap({ session }) {
           });
         }
 
+        // If activity was undoed (no questions for today), show the previous streak
+        if (currentLastDate === today && fetchedTodayQs.length === 0) {
+          currentStreak = pStreak;
+          currentLastDate = pDate;
+        }
+
         setStreak(currentStreak);
         setLastActivityDate(currentLastDate);
         setPrevStreak(pStreak);
@@ -1325,6 +1331,7 @@ function Roadmap({ session }) {
       currentTodayQsArr = [];
     }
 
+    let newTodayQsArr = [...currentTodayQsArr];
     let newStreak = streak;
     let newLastDate = lastActivityDate;
     let newPrevStreak = prevStreak;

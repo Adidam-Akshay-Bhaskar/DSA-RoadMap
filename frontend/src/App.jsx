@@ -1135,11 +1135,28 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
 function Roadmap({ session }) {
   const [active, setActive] = useState(null);
   const [tab, setTab] = useState("algorithms");
-  const [completedQs, setCompletedQs] = useState(new Set());
+  const [completedQs, setCompletedQs] = useState(() => {
+    if (session?.user) {
+      const saved = localStorage.getItem(`dsa_completed_${session.user.id}`);
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    }
+    return new Set();
+  });
   const [showTracker, setShowTracker] = useState(false);
   const [syncing, setSyncing] = useState(true);
-  const [streak, setStreak] = useState(0);
-  const [lastActivityDate, setLastActivityDate] = useState(null);
+  const [streak, setStreak] = useState(() => {
+    if (session?.user) {
+      const saved = localStorage.getItem(`dsa_streak_${session.user.id}`);
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  });
+  const [lastActivityDate, setLastActivityDate] = useState(() => {
+    if (session?.user) {
+      return localStorage.getItem(`dsa_last_date_${session.user.id}`);
+    }
+    return null;
+  });
   const [todos, setTodos] = useState(() => {
     if (session && session.user) {
       const savedTodos = localStorage.getItem(`dsa_todos_${session.user.id}`);
@@ -1210,9 +1227,19 @@ function Roadmap({ session }) {
         .single();
 
       if (data) {
-        if (data.completed_qs) setCompletedQs(new Set(data.completed_qs));
-        if (data.streak_count) setStreak(data.streak_count);
-        if (data.last_activity_date) setLastActivityDate(data.last_activity_date);
+        if (data.completed_qs) {
+          const fetchedSet = new Set(data.completed_qs);
+          setCompletedQs(fetchedSet);
+          localStorage.setItem(`dsa_completed_${session.user.id}`, JSON.stringify([...fetchedSet]));
+        }
+        if (data.streak_count !== undefined) {
+          setStreak(data.streak_count);
+          localStorage.setItem(`dsa_streak_${session.user.id}`, data.streak_count.toString());
+        }
+        if (data.last_activity_date) {
+          setLastActivityDate(data.last_activity_date);
+          localStorage.setItem(`dsa_last_date_${session.user.id}`, data.last_activity_date);
+        }
         
         // Check if streak is lost
         const today = new Date().toISOString().split('T')[0];
@@ -1220,6 +1247,7 @@ function Roadmap({ session }) {
         
         if (data.last_activity_date && data.last_activity_date !== today && data.last_activity_date !== yesterday) {
           setStreak(0);
+          localStorage.setItem(`dsa_streak_${session.user.id}`, "0");
           await supabase.from("user_progress").upsert({
             id: session.user.id,
             streak_count: 0,
@@ -1241,6 +1269,7 @@ function Roadmap({ session }) {
 
     const nextSet = new Set(nextArr);
     setCompletedQs(nextSet);
+    localStorage.setItem(`dsa_completed_${session.user.id}`, JSON.stringify(nextArr));
 
     // Calculate streak
     let newStreak = streak;
@@ -1259,6 +1288,8 @@ function Roadmap({ session }) {
         newLastDate = today;
         setStreak(newStreak);
         setLastActivityDate(newLastDate);
+        localStorage.setItem(`dsa_streak_${session.user.id}`, newStreak.toString());
+        localStorage.setItem(`dsa_last_date_${session.user.id}`, newLastDate);
       }
     }
 

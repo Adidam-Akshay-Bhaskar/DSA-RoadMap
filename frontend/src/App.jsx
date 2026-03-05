@@ -1300,6 +1300,24 @@ function Roadmap({ session }) {
     return { success: false, error };
   };
 
+  const handleResetProgress = async () => {
+    if (!window.confirm("Are you sure? This will untick ALL questions. Your current streak will be preserved, but you must tick at least one question within 24 hours to maintain it!")) return;
+    
+    setCompletedQs(new Set());
+    setTodayQs([]);
+    localStorage.setItem(`dsa_completed_${session.user.id}`, JSON.stringify([]));
+    localStorage.setItem(`dsa_today_qs_${session.user.id}`, JSON.stringify([]));
+
+    await supabase.from("user_progress").upsert({
+      id: session.user.id,
+      completed_qs: [],
+      today_qs: [],
+      updated_at: new Date().toISOString(),
+    });
+
+    alert("Progress reset! Start ticking to maintain your streak.");
+  };
+
   const selected = dsaData.find((d) => d.id === active);
   const totalQuestions = new Set(dsaData.flatMap(topic => topic.questions.map(q => q.id))).size;
 
@@ -1336,18 +1354,23 @@ function Roadmap({ session }) {
         let pDate = data.previous_activity_date;
         
         // Check if streak is lost due to inactivity
+        const is100Percent = (data.completed_qs?.length || 0) === totalQuestions;
+        
         if (data.last_activity_date && data.last_activity_date !== today && data.last_activity_date !== yesterday) {
-          currentStreak = 0;
-          currentLastDate = null;
-          pStreak = 0;
-          pDate = null;
-          await supabase.from("user_progress").upsert({
-            id: session.user.id,
-            streak_count: 0,
-            today_qs: [],
-            previous_streak_count: 0,
-            previous_activity_date: null
-          });
+          // PROTECTION: If user is at 100%, streak NEVER breaks due to inactivity
+          if (!is100Percent) {
+            currentStreak = 0;
+            currentLastDate = null;
+            pStreak = 0;
+            pDate = null;
+            await supabase.from("user_progress").upsert({
+              id: session.user.id,
+              streak_count: 0,
+              today_qs: [],
+              previous_streak_count: 0,
+              previous_activity_date: null
+            });
+          }
         }
 
         // If activity was undoed (no questions for today), show the previous streak
@@ -1728,6 +1751,7 @@ function Roadmap({ session }) {
                 questions={dsaData}
                 onUpdate={updateProfile}
                 onBack={goBackToDashboard}
+                onResetProgress={handleResetProgress}
                 defaultName={session?.user?.email?.split('@')[0] || "User"}
              />
           </div>
@@ -2396,7 +2420,7 @@ function Roadmap({ session }) {
   );
 }
 
-function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions, onBack, defaultName }) {
+function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions, onBack, onResetProgress, defaultName }) {
   const [name, setName] = useState(profile?.display_name || defaultName || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [isEditing, setIsEditing] = useState(false);
@@ -2672,6 +2696,29 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(59,130,246,0.1)"}
               >
                 Edit Profile
+              </button>
+              <button 
+                onClick={onResetProgress} 
+                style={{ 
+                  flex: window.innerWidth < 600 ? 1 : "initial",
+                  background: "rgba(239, 68, 68, 0.1)", 
+                  border: "1px solid rgba(239, 68, 68, 0.2)",
+                  color: "#ef4444", 
+                  fontSize: 14, 
+                  fontWeight: 700, 
+                  cursor: "pointer",
+                  padding: "10px 24px",
+                  borderRadius: 12,
+                  transition: "all 0.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.2)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)"}
+              >
+                <span>🗑️</span> Reset
               </button>
             </div>
           )}

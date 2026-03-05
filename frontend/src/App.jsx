@@ -1202,7 +1202,13 @@ function Roadmap({ session }) {
     return [];
   });
   const [newTodo, setNewTodo] = useState("");
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(() => {
+    if (session?.user) {
+      const saved = localStorage.getItem(`dsa_profile_${session.user.id}`);
+      return saved ? JSON.parse(saved) : null;
+    }
+    return null;
+  });
   const [showProfile, setShowProfile] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get('view') === 'profile';
@@ -1297,7 +1303,9 @@ function Roadmap({ session }) {
       });
     
     if (!error) {
-      setProfile(prev => ({ ...(prev || {}), ...updates, id: session.user.id }));
+      const nextProfile = { ...(prev || {}), ...updates, id: session.user.id };
+      setProfile(nextProfile);
+      localStorage.setItem(`dsa_profile_${session.user.id}`, JSON.stringify(nextProfile));
       return { success: true };
     }
     return { success: false, error };
@@ -1382,6 +1390,7 @@ function Roadmap({ session }) {
       
       if (profileData) {
         setProfile(profileData);
+        localStorage.setItem(`dsa_profile_${session.user.id}`, JSON.stringify(profileData));
       }
 
       setSyncing(false);

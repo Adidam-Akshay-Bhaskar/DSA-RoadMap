@@ -1454,40 +1454,42 @@ function Roadmap({ session }) {
                     </div>
                   </div>
                   <div
-                    style={{
-                      padding: 20,
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fill, minmax(280px, 1fr))",
-                      gap: 12,
-                    }}
+                    className="questions-grid"
+                    style={{ padding: 20 }}
                   >
                     {completedInThisTopic.map((q) => (
                       <div
                         key={q.id}
+                        className="question-card"
                         style={{
-                          background: "#111",
-                          borderLeft: "4px solid #fff",
-                          borderRadius: 8,
-                          padding: "10px 14px",
-                          fontSize: 14,
-                          color: "#ccc",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 12,
+                          background: "#10b981",
+                          border: "1px solid #10b981",
+                          cursor: "pointer"
                         }}
+                        onClick={() => toggleQuestion(q.id)}
                       >
-                        <span
-                          style={{
-                            color: "#666",
-                            fontSize: 12,
-                            fontWeight: 700,
-                            minWidth: 20,
+                        <span 
+                          className="question-id"
+                          style={{ color: "rgba(0,0,0,0.5)" }}
+                        >
+                          #{q.id}
+                        </span>
+                        <span 
+                          className="question-name"
+                          style={{ color: "#000" }}
+                        >
+                          {q.name}
+                        </span>
+                        <div 
+                          className="action-btn"
+                          style={{ 
+                            color: "#000",
+                            border: "2px solid rgba(0,0,0,0.3)",
+                            background: "rgba(0,0,0,0.1)"
                           }}
                         >
-                          {q.id}
-                        </span>
-                        <span style={{ lineHeight: 1.3 }}>{q.name}</span>
+                          ✓
+                        </div>
                       </div>
                     ))}
                   </div>

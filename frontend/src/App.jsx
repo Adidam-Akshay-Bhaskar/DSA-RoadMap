@@ -1492,8 +1492,6 @@ function Roadmap({ session }) {
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           padding: "16px 28px",
-          position: "sticky",
-          top: 0,
           zIndex: 200,
         }}
       >

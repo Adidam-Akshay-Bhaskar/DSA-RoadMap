@@ -2143,7 +2143,7 @@ function Roadmap({ session }) {
                       active === item.id
                         ? "rgba(59, 130, 246, 0.12)"
                         : isAllComp
-                        ? "rgba(16, 185, 129, 0.05)"
+                        ? "rgba(16, 185, 129, 0.15)"
                         : "rgba(13, 17, 23, 0.6)",
                     borderRadius: 24,
                     padding: "24px",
@@ -2152,7 +2152,7 @@ function Roadmap({ session }) {
                       active === item.id
                         ? "1.5px solid rgba(59, 130, 246, 0.5)"
                         : isAllComp
-                        ? "1.5px solid rgba(16, 185, 129, 0.3)"
+                        ? "2px solid rgba(16, 185, 129, 0.8)"
                         : "1px solid rgba(255, 255, 255, 0.05)",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     position: "relative",
@@ -2160,25 +2160,25 @@ function Roadmap({ session }) {
                     display: "flex",
                     flexDirection: "column",
                     gap: 16,
-                    boxShadow: active === item.id ? "0 10px 25px -5px rgba(59, 130, 246, 0.2)" : "none",
+                    boxShadow: active === item.id ? "0 10px 25px -5px rgba(59, 130, 246, 0.2)" : isAllComp ? "0 0 20px -5px rgba(16, 185, 129, 0.3)" : "none",
                     height: "190px",
                     justifyContent: "space-between",
                     backdropFilter: "blur(4px)"
                   }}
                   onMouseEnter={(e) => {
                     if (active !== item.id) {
-                      e.currentTarget.style.background = isAllComp ? "rgba(16, 185, 129, 0.08)" : "rgba(22, 27, 34, 0.8)";
+                      e.currentTarget.style.background = isAllComp ? "rgba(16, 185, 129, 0.25)" : "rgba(22, 27, 34, 0.8)";
                       e.currentTarget.style.borderColor = isAllComp ? "#10b981" : "rgba(255,255,255,0.2)";
                       e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
-                      e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4)";
+                      e.currentTarget.style.boxShadow = isAllComp ? "0 20px 40px rgba(16, 185, 129, 0.4)" : "0 20px 40px rgba(0, 0, 0, 0.4)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (active !== item.id) {
-                      e.currentTarget.style.background = isAllComp ? "rgba(16, 185, 129, 0.05)" : "rgba(13, 17, 23, 0.6)";
-                      e.currentTarget.style.borderColor = isAllComp ? "rgba(16, 185, 129, 0.4)" : "rgba(255,255,255,0.08)";
+                      e.currentTarget.style.background = isAllComp ? "rgba(16, 185, 129, 0.15)" : "rgba(13, 17, 23, 0.6)";
+                      e.currentTarget.style.borderColor = isAllComp ? "rgba(16, 185, 129, 0.8)" : "rgba(255,255,255,0.08)";
                       e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.boxShadow = isAllComp ? "0 0 20px -5px rgba(16, 185, 129, 0.3)" : "none";
                     }
                   }}
                 >

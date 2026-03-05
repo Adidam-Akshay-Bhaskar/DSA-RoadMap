@@ -1211,6 +1211,11 @@ function Roadmap({ session }) {
     }
   }, [todos, session?.user?.id]);
 
+  // ─── Universal scroll-to-top on ANY navigation change ───
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [active, tab, showProfile, showTracker]);
+
   useEffect(() => {
     // Correctly initialize history state if it's currently null
     if (!window.history.state) {

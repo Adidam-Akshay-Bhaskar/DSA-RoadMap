@@ -1203,7 +1203,10 @@ function Roadmap({ session }) {
   });
   const [newTodo, setNewTodo] = useState("");
   const [profile, setProfile] = useState(null);
-  const [showProfile, setShowProfile] = useState(false);
+  const [showProfile, setShowProfile] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('view') === 'profile';
+  });
 
   useEffect(() => {
     if (session && session.user) {
@@ -1232,12 +1235,19 @@ function Roadmap({ session }) {
       if (state && state.view === 'topic') {
         setActive(state.id);
         setShowTracker(false);
+        setShowProfile(false);
       } else if (state && state.view === 'tracker') {
         setShowTracker(true);
         setActive(null);
+        setShowProfile(false);
+      } else if (state && state.view === 'profile') {
+        setShowProfile(true);
+        setActive(null);
+        setShowTracker(false);
       } else {
         setActive(null);
         setShowTracker(false);
+        setShowProfile(false);
       }
     };
 
@@ -1251,10 +1261,30 @@ function Roadmap({ session }) {
     window.history.pushState({ view: 'topic', id }, "", `?topic=${id}`);
   };
 
+  const openProfile = () => {
+    setShowProfile(true);
+    setShowTracker(false);
+    setActive(null);
+    window.history.pushState({ view: 'profile' }, "", "?view=profile");
+  };
+
   const toggleTracker = () => {
     const nextState = !showTracker;
     setShowTracker(nextState);
-    window.history.pushState({ view: nextState ? 'tracker' : 'dashboard' }, "", nextState ? '?view=tracker' : window.location.pathname);
+    setShowProfile(false);
+    setActive(null);
+    if (nextState) {
+      window.history.pushState({ view: 'tracker' }, "", "?view=tracker");
+    } else {
+      window.history.pushState({ view: 'dashboard' }, "", "/");
+    }
+  };
+
+  const goBackToDashboard = () => {
+    setActive(null);
+    setShowTracker(false);
+    setShowProfile(false);
+    window.history.pushState({ view: 'dashboard' }, "", "/");
   };
 
   const updateProfile = async (updates) => {
@@ -1268,12 +1298,6 @@ function Roadmap({ session }) {
       return { success: true };
     }
     return { success: false, error };
-  };
-
-  const goBackToDashboard = () => {
-    setActive(null);
-    setShowTracker(false);
-    window.history.pushState({ view: 'dashboard' }, "", window.location.pathname);
   };
 
   const selected = dsaData.find((d) => d.id === active);
@@ -1498,7 +1522,7 @@ function Roadmap({ session }) {
                 <img src="/logo.png" alt="DSA Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <div 
-                onClick={() => setShowProfile(true)}
+                onClick={openProfile}
                 style={{ 
                   display: "flex", 
                   alignItems: "center", 
@@ -1507,16 +1531,18 @@ function Roadmap({ session }) {
                   padding: "6px 14px",
                   borderRadius: 20,
                   transition: "all 0.2s",
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.05)"
+                  background: showProfile ? "rgba(59, 130, 246, 0.15)" : "rgba(255,255,255,0.03)",
+                  border: showProfile ? "1px solid rgba(59, 130, 246, 0.4)" : "1px solid rgba(255,255,255,0.05)"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "rgba(59, 130, 246, 0.1)";
                   e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.3)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)";
+                  if (!showProfile) {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)";
+                  }
                 }}
               >
                 <div style={{
@@ -1562,18 +1588,18 @@ function Roadmap({ session }) {
                   transition: "all 0.2s",
                 }}
               >
-                <span style={{ fontSize: 18 }}>{showTracker ? "←" : "🎯"}</span>
+                <span style={{ fontSize: 18 }}>{(showTracker || showProfile) ? "←" : "🎯"}</span>
                 <span
                   style={{
                     fontSize: 14,
                     fontWeight: 600,
                     color: "#888",
-                    marginRight: showTracker ? 0 : 4,
+                    marginRight: (showTracker || showProfile) ? 0 : 4,
                   }}
                 >
-                  {showTracker ? "Back to Roadmap" : "Progress:"}
+                  {(showTracker || showProfile) ? "Back to Roadmap" : "Progress:"}
                 </span>
-                {!showTracker && (
+                {!(showTracker || showProfile) && (
                   <>
                     <span
                       style={{
@@ -1604,7 +1630,8 @@ function Roadmap({ session }) {
                         style={{
                           width: `${Math.round((completedQs.size / totalQuestions) * 100)}%`,
                           height: "100%",
-                          background: "#3b82f6",
+                          background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
+                          borderRadius: 3,
                           transition: "width 0.3s ease",
                         }}
                       />
@@ -1701,7 +1728,18 @@ function Roadmap({ session }) {
       <div
         style={{ maxWidth: 1060, margin: "0 auto", padding: "24px 20px 60px" }}
       >
-        {showTracker ? (
+        {showProfile ? (
+          <div style={{ animation: "slideDown 0.3s ease" }}>
+             <ProfileTab 
+                profile={profile}
+                streak={streak}
+                completedCount={completedQs}
+                totalQuestions={totalQuestions}
+                questions={dsaData}
+                onUpdate={updateProfile}
+             />
+          </div>
+        ) : showTracker ? (
           <div style={{ animation: "slideDown 0.2s ease" }}>
             <h2
               style={{
@@ -2346,23 +2384,11 @@ function Roadmap({ session }) {
       </div>
 
       <style>{`@keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }`}</style>
-
-      {showProfile && (
-        <ProfileModal 
-          profile={profile}
-          streak={streak}
-          completedCount={completedQs}
-          totalQuestions={totalQuestions}
-          questions={dsaData}
-          onClose={() => setShowProfile(false)}
-          onUpdate={updateProfile}
-        />
-      )}
     </div>
   );
 }
 
-function ProfileModal({ profile, streak, completedCount, totalQuestions, onClose, onUpdate, questions }) {
+function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions }) {
   const [name, setName] = useState(profile?.display_name || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [isEditing, setIsEditing] = useState(false);
@@ -2394,233 +2420,214 @@ function ProfileModal({ profile, streak, completedCount, totalQuestions, onClose
 
   return (
     <div style={{
-      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-      background: "rgba(2, 6, 23, 0.9)", zIndex: 1000,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      backdropFilter: "blur(12px)", padding: 20
-    }} onClick={onClose}>
-      <div style={{
-        background: "#0d1117", width: "100%", maxWidth: 520,
-        borderRadius: 32, border: "1px solid rgba(255,255,255,0.1)",
-        overflow: "hidden", position: "relative",
-        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-        animation: "modalFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
-      }} onClick={e => e.stopPropagation()}>
-        
-        {/* Banner Section */}
-        <div style={{ 
-          height: 120, 
-          background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", 
-          position: "relative",
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: 20
-        }}>
-           <div style={{ 
-             position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
-             opacity: 0.1, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", 
-             backgroundSize: "20px 20px" 
-           }} />
-           <button onClick={onClose} style={{
-             background: "rgba(255,255,255,0.1)", border: "none", color: "#fff",
-             width: 36, height: 36, borderRadius: "50%", cursor: "pointer",
-             fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center",
-             backdropFilter: "blur(4px)", position: "relative", zIndex: 2
-           }}>×</button>
+      background: "rgba(13, 17, 23, 0.4)",
+      borderRadius: 32,
+      border: "1px solid rgba(255, 255, 255, 0.08)",
+      overflow: "hidden",
+      position: "relative",
+      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+      backdropFilter: "blur(4px)"
+    }}>
+      {/* Banner Section */}
+      <div style={{ 
+        height: 160, 
+        background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", 
+        position: "relative"
+      }}>
+         <div style={{ 
+           position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
+           opacity: 0.1, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", 
+           backgroundSize: "20px 20px" 
+         }} />
+      </div>
+
+      {/* Profile Content */}
+      <div style={{ padding: "0 40px 40px", marginTop: -60, position: "relative" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 32, marginBottom: 36, flexWrap: "wrap" }}>
+          <div style={{
+            width: 140, height: 140, borderRadius: 36, 
+            background: "linear-gradient(135deg, #334155, #1e293b)",
+            border: "8px solid #070c18", display: "flex", alignItems: "center",
+            justifyContent: "center", fontSize: 60, 
+            boxShadow: "0 12px 24px rgba(0,0,0,0.4)",
+            position: "relative"
+          }}>
+            {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28 }} /> : "👤"}
+          </div>
+          
+          <div style={{ flex: 1, paddingBottom: 10, minWidth: 280 }}>
+            {isEditing ? (
+              <div style={{ position: "relative" }}>
+                <input 
+                  value={name} 
+                  onChange={e => setName(e.target.value)}
+                  autoFocus
+                  placeholder="Enter your name"
+                  style={{ 
+                    background: "rgba(255,255,255,0.03)", 
+                    border: "1px solid #334155", 
+                    color: "#fff",
+                    fontSize: 32, fontWeight: 900, 
+                    padding: "8px 16px", 
+                    borderRadius: 16,
+                    width: "100%", 
+                    outline: "none",
+                    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)"
+                  }} 
+                />
+              </div>
+            ) : (
+              <h2 style={{ 
+                margin: 0, fontSize: 36, fontWeight: 900, color: "#f8fafc",
+                letterSpacing: "-1px"
+              }}>
+                {profile?.display_name || "Code Master"}
+              </h2>
+            )}
+            <div style={{ fontSize: 14, color: "#64748b", fontWeight: 600, marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ opacity: 0.6 }}>📅</span> Member since {memberSince}
+            </div>
+          </div>
+
+          {!isEditing && (
+            <button 
+              onClick={() => setIsEditing(true)} 
+              style={{ 
+                background: "rgba(59, 130, 246, 0.1)", 
+                border: "1px solid rgba(59, 130, 246, 0.2)",
+                color: "#3b82f6", 
+                fontSize: 14, 
+                fontWeight: 700, 
+                cursor: "pointer",
+                padding: "10px 24px",
+                borderRadius: 12,
+                marginBottom: 10,
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(59,130,246,0.2)"}
+              onMouseLeave={e => e.currentTarget.style.background = "rgba(59,130,246,0.1)"}
+            >
+              Edit Profile
+            </button>
+          )}
         </div>
 
-        {/* Profile Content */}
-        <div style={{ padding: "0 32px 32px", marginTop: -45, position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 24, marginBottom: 28 }}>
-            <div style={{
-              width: 100, height: 100, borderRadius: 28, 
-              background: "linear-gradient(135deg, #334155, #1e293b)",
-              border: "6px solid #0d1117", display: "flex", alignItems: "center",
-              justifyContent: "center", fontSize: 44, 
-              boxShadow: "0 12px 24px rgba(0,0,0,0.4)",
-              position: "relative"
-            }}>
-              {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 22 }} /> : "👤"}
-            </div>
-            
-            <div style={{ flex: 1, paddingBottom: 6 }}>
-              {isEditing ? (
-                <div style={{ position: "relative" }}>
-                  <input 
-                    value={name} 
-                    onChange={e => setName(e.target.value)}
-                    autoFocus
-                    placeholder="Enter your name"
-                    style={{ 
-                      background: "rgba(255,255,255,0.03)", 
-                      border: "1px solid #334155", 
-                      color: "#fff",
-                      fontSize: 24, fontWeight: 900, 
-                      padding: "6px 14px", 
-                      borderRadius: 12,
-                      width: "100%", 
-                      outline: "none",
-                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)"
-                    }} 
-                  />
-                </div>
-              ) : (
-                <h2 style={{ 
-                  margin: 0, fontSize: 28, fontWeight: 900, color: "#f8fafc",
-                  letterSpacing: "-0.5px"
-                }}>
-                  {profile?.display_name || "Code Master"}
-                </h2>
-              )}
-              <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600, marginTop: 4, display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ opacity: 0.6 }}>📅</span> Member since {memberSince}
-              </div>
+        {/* Premium Stats Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 24, marginBottom: 40 }}>
+          <div style={{ 
+            background: "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))", 
+            padding: "24px", borderRadius: 24, border: "1px solid rgba(59, 130, 246, 0.2)",
+            position: "relative", overflow: "hidden"
+          }}>
+            <div style={{ fontSize: 12, color: "#3b82f6", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>Current Streak</div>
+            <div style={{ fontSize: 40, fontWeight: 950, color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
+               {streak} <span style={{ fontSize: 32, filter: "drop-shadow(0 0 10px #3b82f6)" }}>🔥</span>
             </div>
           </div>
+          <div style={{ 
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))", 
+            padding: "24px", borderRadius: 24, border: "1px solid rgba(255, 255, 255, 0.1)" 
+          }}>
+            <div style={{ fontSize: 12, color: "#888", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>Total Completed</div>
+            <div style={{ fontSize: 40, fontWeight: 950, color: "#fff" }}>
+              {completedCount.size} <span style={{ fontSize: 20, color: "#444" }}>/ {totalQuestions}</span>
+            </div>
+          </div>
+        </div>
 
-          {/* Premium Stats Grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 28 }}>
+        {/* Journey & Bio Section */}
+        <div style={{ marginBottom: 40, maxWidth: 800 }}>
+          <label style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 16 }}>Journey & Bio</label>
+          {isEditing ? (
+            <textarea 
+              value={bio} 
+              onChange={e => setBio(e.target.value)}
+              placeholder="Share your DSA goals and achievements..."
+              style={{ 
+                background: "rgba(255,255,255,0.03)", 
+                border: "1px solid #334155", 
+                color: "#cbd5e1",
+                fontSize: 16, padding: "20px", borderRadius: 20, width: "100%",
+                minHeight: 140, outline: "none", resize: "none",
+                lineHeight: 1.6,
+                boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)"
+              }} 
+            />
+          ) : (
             <div style={{ 
-              background: "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))", 
-              padding: "18px", borderRadius: 20, border: "1px solid rgba(59, 130, 246, 0.2)",
-              position: "relative", overflow: "hidden"
+              background: "rgba(255,255,255,0.02)", 
+              padding: "24px", 
+              borderRadius: 24, 
+              border: "1px solid rgba(255,255,255,0.05)",
+              minHeight: 80
             }}>
-              <div style={{ fontSize: 11, color: "#3b82f6", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Current Streak</div>
-              <div style={{ fontSize: 32, fontWeight: 950, color: "#fff", display: "flex", alignItems: "center", gap: 10 }}>
-                 {streak} <span style={{ fontSize: 24, filter: "drop-shadow(0 0 8px #3b82f6)" }}>🔥</span>
-              </div>
-            </div>
-            <div style={{ 
-              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))", 
-              padding: "18px", borderRadius: 20, border: "1px solid rgba(255, 255, 255, 0.1)" 
-            }}>
-              <div style={{ fontSize: 11, color: "#888", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Total Questions</div>
-              <div style={{ fontSize: 32, fontWeight: 950, color: "#fff" }}>
-                {completedCount.size} <span style={{ fontSize: 16, color: "#444" }}>/ {totalQuestions}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bio Section */}
-          <div style={{ marginBottom: 28 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <label style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: 0.5 }}>Journey & Bio</label>
-              {!isEditing && (
-                <button 
-                  onClick={() => setIsEditing(true)} 
-                  style={{ 
-                    background: "rgba(59, 130, 246, 0.1)", 
-                    border: "none", 
-                    color: "#3b82f6", 
-                    fontSize: 12, 
-                    fontWeight: 700, 
-                    cursor: "pointer",
-                    padding: "4px 10px",
-                    borderRadius: 8
-                  }}
-                >
-                  Edit Profile
-                </button>
-              )}
-            </div>
-            {isEditing ? (
-              <textarea 
-                value={bio} 
-                onChange={e => setBio(e.target.value)}
-                placeholder="Share your DSA goals and achievements..."
-                style={{ 
-                  background: "rgba(255,255,255,0.03)", 
-                  border: "1px solid #334155", 
-                  color: "#cbd5e1",
-                  fontSize: 14, padding: "14px", borderRadius: 16, width: "100%",
-                  minHeight: 100, outline: "none", resize: "none",
-                  lineHeight: 1.5,
-                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)"
-                }} 
-              />
-            ) : (
-              <div style={{ 
-                background: "rgba(255,255,255,0.02)", 
-                padding: "16px", 
-                borderRadius: 16, 
-                border: "1px solid rgba(255,255,255,0.05)",
-                minHeight: 60
-              }}>
-                <p style={{ margin: 0, fontSize: 14, color: "#94a3b8", lineHeight: 1.6, fontStyle: bio ? "normal" : "italic" }}>
-                  {profile?.bio || "No biography added yet. Share your journey!"}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Detailed Progress Breakdown */}
-          <div style={{ marginBottom: 36 }}>
-            <label style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: 0.5, display: "block", marginBottom: 16 }}>Skill Mastery</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {[
-                { label: 'Easy', code: 'E', color: '#4ade80' },
-                { label: 'Medium', code: 'M', color: '#fb923c' },
-                { label: 'Hard', code: 'H', color: '#f87171' }
-              ].map(item => (
-                <div key={item.code}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: item.color }} />
-                      <span style={{ fontSize: 13, fontWeight: 800, color: "#e2e8f4" }}>{item.label}</span>
-                    </div>
-                    <span style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>
-                      {userStats[item.code]} <span style={{ opacity: 0.5 }}>/ {difficultyStats[item.code]}</span>
-                    </span>
-                  </div>
-                  <div style={{ height: 8, background: "rgba(255,255,255,0.03)", borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ 
-                      width: `${(userStats[item.code] / Math.max(1, difficultyStats[item.code])) * 100}%`, 
-                      height: "100%", 
-                      background: `linear-gradient(90deg, ${item.color}88, ${item.color})`,
-                      borderRadius: 4,
-                      transition: "width 1s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                      boxShadow: `0 0 10px ${item.color}44`
-                    }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {isEditing && (
-            <div style={{ display: "flex", gap: 12 }}>
-              <button 
-                onClick={handleSave} disabled={saving}
-                style={{ 
-                  flex: 1, background: "#f8fafc", color: "#0f172a", border: "none",
-                  padding: "14px", borderRadius: 16, fontWeight: 850, cursor: "pointer",
-                  boxShadow: "0 4px 12px rgba(255,255,255,0.1)",
-                  transition: "transform 0.2s"
-                }}
-                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                onMouseLeave={e => e.currentTarget.style.transform = "none"}
-              >
-                {saving ? "Syncing..." : "Publish Profile"}
-              </button>
-              <button 
-                onClick={() => setIsEditing(false)}
-                style={{ 
-                   background: "rgba(255,255,255,0.05)", color: "#fff", border: "1px solid rgba(255,255,255,0.1)",
-                  padding: "14px 20px", borderRadius: 16, fontWeight: 800, cursor: "pointer"
-                }}
-              >
-                Cancel
-              </button>
+              <p style={{ margin: 0, fontSize: 16, color: "#94a3b8", lineHeight: 1.8, fontStyle: bio ? "normal" : "italic" }}>
+                {profile?.bio || "No biography added yet. Share your journey and inspire others!"}
+              </p>
             </div>
           )}
         </div>
+
+        {/* Detailed Progress Breakdown */}
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 24 }}>Skill Mastery</label>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
+            {[
+              { label: 'Easy', code: 'E', color: '#4ade80' },
+              { label: 'Medium', code: 'M', color: '#fb923c' },
+              { label: 'Hard', code: 'H', color: '#f87171' }
+            ].map(item => (
+              <div key={item.code} style={{ background: "rgba(255,255,255,0.02)", padding: 24, borderRadius: 24, border: "1px solid rgba(255,255,255,0.03)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: "50%", background: item.color, boxShadow: `0 0 10px ${item.color}88` }} />
+                    <span style={{ fontSize: 15, fontWeight: 800, color: "#e2e8f4" }}>{item.label}</span>
+                  </div>
+                  <span style={{ fontSize: 13, color: "#64748b", fontWeight: 700 }}>
+                    {userStats[item.code]} <span style={{ opacity: 0.5 }}>/ {difficultyStats[item.code]}</span>
+                  </span>
+                </div>
+                <div style={{ height: 10, background: "rgba(255,255,255,0.05)", borderRadius: 5, overflow: "hidden" }}>
+                  <div style={{ 
+                    width: `${(userStats[item.code] / Math.max(1, difficultyStats[item.code])) * 100}%`, 
+                    height: "100%", 
+                    background: `linear-gradient(90deg, ${item.color}88, ${item.color})`,
+                    transition: "width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    boxShadow: `0 0 15px ${item.color}44`
+                  }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {isEditing && (
+          <div style={{ display: "flex", gap: 16, marginTop: 40, borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 32 }}>
+            <button 
+              onClick={handleSave} disabled={saving}
+              style={{ 
+                flex: 1, maxWidth: 240, background: "#f8fafc", color: "#0f172a", border: "none",
+                padding: "16px", borderRadius: 16, fontWeight: 850, cursor: "pointer",
+                boxShadow: "0 8px 20px rgba(255,255,255,0.1)",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform = "translateY(-4px)"}
+              onMouseLeave={e => e.currentTarget.style.transform = "none"}
+            >
+              {saving ? "Syncing..." : "Update Profile"}
+            </button>
+            <button 
+              onClick={() => setIsEditing(false)}
+              style={{ 
+                 background: "rgba(255,255,255,0.05)", color: "#fff", border: "1px solid rgba(255,255,255,0.1)",
+                padding: "16px 32px", borderRadius: 16, fontWeight: 800, cursor: "pointer"
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
-      <style>{`
-        @keyframes modalFadeUp {
-          from { opacity: 0; transform: translateY(20px) scale(0.98); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-      `}</style>
     </div>
   );
 }

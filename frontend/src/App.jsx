@@ -2557,7 +2557,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       style={{ 
                         height: 70 + (s * 28), // The actual image scales up gradually
                         width: "auto",
-                        maxWidth: "180%", 
+                        maxWidth: "130%", // Reduced from 180% to prevent overlapping with adjacent characters
                         objectFit: "contain",
                         imageRendering: "pixelated",
                         mixBlendMode: "multiply",

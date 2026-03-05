@@ -165,7 +165,8 @@ body {
 
 .stages-display {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 24px;
   width: calc(100% - 240px);
   margin-left: 240px;
   position: relative;

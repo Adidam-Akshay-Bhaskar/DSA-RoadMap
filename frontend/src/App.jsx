@@ -1294,7 +1294,7 @@ function Roadmap({ session }) {
       });
     
     if (!error) {
-      const nextProfile = { ...(prev || {}), ...updates, id: session.user.id };
+      const nextProfile = { ...(profile || {}), ...updates, id: session.user.id };
       setProfile(nextProfile);
       localStorage.setItem(`dsa_profile_${session.user.id}`, JSON.stringify(nextProfile));
       return { success: true };
@@ -2553,9 +2553,15 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
   const handleSave = async () => {
     if (!name.trim()) return;
     setSaving(true);
-    await onUpdate({ display_name: name, bio });
-    setIsEditing(false);
-    setSaving(false);
+    try {
+      await onUpdate({ display_name: name, bio });
+      setIsEditing(false);
+    } catch (e) {
+      console.error(e);
+      alert("Save failed. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const memberSince = profile?.updated_at 
@@ -2880,24 +2886,25 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
             />
           </div>
           
-          <div style={{ flex: 1, paddingBottom: 10, minWidth: 280 }}>
+          <div style={{ flex: 1, minWidth: 280 }}>
             {isEditing ? (
               <div style={{ position: "relative" }}>
                 <input 
                   value={name} 
                   onChange={e => setName(e.target.value)}
                   autoFocus
-                  placeholder="Enter your name"
+                  placeholder="Enter your name..."
                   style={{ 
                     background: "rgba(255,255,255,0.03)", 
                     border: "1px solid #334155", 
                     color: "#fff",
-                    fontSize: 32, fontWeight: 900, 
-                    padding: "8px 16px", 
+                    fontSize: 36, fontWeight: 900, 
+                    padding: "10px 20px", 
                     borderRadius: 16,
                     width: "100%", 
                     outline: "none",
-                    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)"
+                    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)",
+                    marginLeft: "-20px" // Offset the padding to align start of text 
                   }} 
                 />
               </div>

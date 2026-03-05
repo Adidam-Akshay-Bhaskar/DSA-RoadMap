@@ -2817,7 +2817,9 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                     <div 
                       className={`stage-tooltip-box stage-tooltip-box-${s}`}
                       style={{
-                        position: "absolute", bottom: "115px", left: "50%",
+                        position: "absolute", 
+                        ...(s === 1 ? { top: "calc(100% + 10px)" } : { bottom: "115px" }),
+                        left: "50%",
                         transform: s === 1 ? "translateX(-15%)" : s === 5 ? "translateX(-85%)" : "translateX(-50%)",
                         background: "#0f172a", border: "2px solid #334155",
                         color: "#fff", padding: "8px",
@@ -2889,13 +2891,14 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                         </div>
                       )}
 
-                      {/* Arrow Down */}
+                      {/* Arrow Logic */}
                       <div style={{ 
-                        position: "absolute", top: "100%", 
+                        position: "absolute", 
+                        ...(s === 1 ? { bottom: "100%" } : { top: "100%" }),
                         left: s === 1 ? "15%" : s === 5 ? "85%" : "50%", 
                         transform: "translateX(-50%)", width: 0, height: 0,
                         borderLeft: "6px solid transparent", borderRight: "6px solid transparent",
-                        borderTop: "6px solid #0f172a"
+                        ...(s === 1 ? { borderBottom: "6px solid #0f172a" } : { borderTop: "6px solid #0f172a" })
                       }} />
                     </div>
                   )}

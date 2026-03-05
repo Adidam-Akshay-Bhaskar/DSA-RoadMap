@@ -1160,6 +1160,19 @@ function Roadmap({ session }) {
     }
     return null;
   });
+  const [prevStreak, setPrevStreak] = useState(() => {
+    if (session?.user) {
+      const saved = localStorage.getItem(`dsa_prev_streak_${session.user.id}`);
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  });
+  const [prevActivityDate, setPrevActivityDate] = useState(() => {
+    if (session?.user) {
+      return localStorage.getItem(`dsa_prev_date_${session.user.id}`);
+    }
+    return null;
+  });
   const [todayQs, setTodayQs] = useState(() => {
     if (session?.user) {
       const saved = localStorage.getItem(`dsa_today_qs_${session.user.id}`);
@@ -1232,7 +1245,7 @@ function Roadmap({ session }) {
     async function fetchProgress() {
       const { data } = await supabase
         .from("user_progress")
-        .select("completed_qs, streak_count, last_activity_date, today_qs")
+        .select("completed_qs, streak_count, last_activity_date, today_qs, previous_streak_count, previous_activity_date")
         .eq("id", session.user.id)
         .single();
 
@@ -1256,22 +1269,33 @@ function Roadmap({ session }) {
 
         let currentStreak = data.streak_count || 0;
         let currentLastDate = data.last_activity_date;
+        let pStreak = data.previous_streak_count || 0;
+        let pDate = data.previous_activity_date;
         
         // Check if streak is lost due to inactivity
         if (data.last_activity_date && data.last_activity_date !== today && data.last_activity_date !== yesterday) {
           currentStreak = 0;
           currentLastDate = null;
+          pStreak = 0;
+          pDate = null;
           await supabase.from("user_progress").upsert({
             id: session.user.id,
             streak_count: 0,
             today_qs: [],
+            previous_streak_count: 0,
+            previous_activity_date: null
           });
         }
 
         setStreak(currentStreak);
         setLastActivityDate(currentLastDate);
+        setPrevStreak(pStreak);
+        setPrevActivityDate(pDate);
+
         localStorage.setItem(`dsa_streak_${session.user.id}`, currentStreak.toString());
         localStorage.setItem(`dsa_last_date_${session.user.id}`, currentLastDate || "");
+        localStorage.setItem(`dsa_prev_streak_${session.user.id}`, pStreak.toString());
+        localStorage.setItem(`dsa_prev_date_${session.user.id}`, pDate || "");
       }
       setSyncing(false);
     }
@@ -1301,9 +1325,10 @@ function Roadmap({ session }) {
       currentTodayQsArr = [];
     }
 
-    let newTodayQsArr = [...currentTodayQsArr];
     let newStreak = streak;
     let newLastDate = lastActivityDate;
+    let newPrevStreak = prevStreak;
+    let newPrevDate = prevActivityDate;
 
     if (isAdding) {
       if (!newTodayQsArr.includes(qId)) {
@@ -1311,6 +1336,8 @@ function Roadmap({ session }) {
       }
       // If this is the FIRST question ticked today
       if (currentTodayQsArr.length === 0) {
+        newPrevStreak = streak;
+        newPrevDate = lastActivityDate;
         if (lastActivityDate === yesterday) {
           newStreak += 1;
         } else if (lastActivityDate !== today) {
@@ -1321,20 +1348,24 @@ function Roadmap({ session }) {
     } else {
       // Removing
       newTodayQsArr = newTodayQsArr.filter(id => id !== qId);
-      // If we just became empty today such that we no longer meet the daily criteria
+      // If we just became empty today: REVERT to previous state
       if (newTodayQsArr.length === 0 && lastActivityDate === today) {
-        newStreak = 0;
-        newLastDate = null; 
+        newStreak = prevStreak;
+        newLastDate = prevActivityDate; 
       }
     }
 
     setTodayQs(newTodayQsArr);
     setStreak(newStreak);
     setLastActivityDate(newLastDate);
+    setPrevStreak(newPrevStreak);
+    setPrevActivityDate(newPrevDate);
     
     localStorage.setItem(`dsa_today_qs_${session.user.id}`, JSON.stringify(newTodayQsArr));
     localStorage.setItem(`dsa_streak_${session.user.id}`, newStreak.toString());
     localStorage.setItem(`dsa_last_date_${session.user.id}`, newLastDate || "");
+    localStorage.setItem(`dsa_prev_streak_${session.user.id}`, newPrevStreak.toString());
+    localStorage.setItem(`dsa_prev_date_${session.user.id}`, newPrevDate || "");
 
     // 3. Save to Supabase Cloud
     await supabase.from("user_progress").upsert({
@@ -1343,6 +1374,8 @@ function Roadmap({ session }) {
       today_qs: newTodayQsArr,
       streak_count: newStreak,
       last_activity_date: newLastDate,
+      previous_streak_count: newPrevStreak,
+      previous_activity_date: newPrevDate,
       updated_at: new Date().toISOString(),
     });
   };

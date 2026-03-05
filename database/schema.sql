@@ -4,6 +4,8 @@ CREATE TABLE public.user_progress (
   streak_count integer DEFAULT 0,
   last_activity_date text,
   today_qs jsonb DEFAULT '[]'::jsonb,
+  previous_streak_count integer DEFAULT 0,
+  previous_activity_date text,
   updated_at timestamp with time zone,
   PRIMARY KEY (id)
 );

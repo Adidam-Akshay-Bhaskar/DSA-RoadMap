@@ -2516,16 +2516,19 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
       await onUpdate({ avatar_url: publicUrl });
     } catch (e) {
-      console.error(e);
-      alert('Upload failed—ensure "avatars" bucket is public in Supabase.');
+      setUploadError('Upload failed — please ensure the "avatars" bucket exists and is public in Supabase.');
+      setTimeout(() => setUploadError(null), 5000);
     } finally {
       setUploading(false);
     }
   };
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+
   const handleDeleteAvatar = async () => {
-    if (!confirm("Remove profile photo?")) return;
     setUploading(true);
+    setShowDeleteConfirm(false);
     await onUpdate({ avatar_url: null });
     setUploading(false);
   };
@@ -2577,6 +2580,79 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
       backdropFilter: "blur(4px)"
     }}>
+
+      {/* ─── Delete Confirm Modal ─── */}
+      {showDeleteConfirm && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          background: "rgba(0,0,0,0.65)",
+          backdropFilter: "blur(8px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          animation: "fadeIn 0.2s ease"
+        }}>
+          <div style={{
+            background: "#0f172a",
+            border: "1px solid #1e293b",
+            borderRadius: 24,
+            padding: "36px 40px",
+            maxWidth: 380, width: "90%",
+            boxShadow: "0 25px 60px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            animation: "slideDown 0.25s ease"
+          }}>
+            <div style={{ fontSize: 40, marginBottom: 16 }}>🗑️</div>
+            <h3 style={{ color: "#f8fafc", fontWeight: 900, fontSize: 20, margin: "0 0 8px" }}>
+              Remove Profile Photo?
+            </h3>
+            <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.6, margin: "0 0 28px" }}>
+              Your profile photo will be removed and replaced with the default avatar.
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+              <button
+                onClick={handleDeleteAvatar}
+                style={{
+                  background: "#ef4444", color: "#fff", border: "none",
+                  padding: "12px 28px", borderRadius: 12, fontWeight: 800,
+                  cursor: "pointer", fontSize: 14, transition: "all 0.2s"
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "#f87171"}
+                onMouseLeave={e => e.currentTarget.style.background = "#ef4444"}
+              >
+                Yes, Remove
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                style={{
+                  background: "rgba(255,255,255,0.05)", color: "#94a3b8",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  padding: "12px 28px", borderRadius: 12, fontWeight: 700,
+                  cursor: "pointer", fontSize: 14, transition: "all 0.2s"
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
+              >
+                Keep Photo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Upload Error Toast ─── */}
+      {uploadError && (
+        <div style={{
+          position: "fixed", bottom: 28, left: "50%", transform: "translateX(-50%)",
+          zIndex: 9999, background: "#1e293b",
+          border: "1px solid #ef4444",
+          borderRadius: 14, padding: "14px 24px",
+          color: "#f87171", fontWeight: 700, fontSize: 13,
+          boxShadow: "0 8px 32px rgba(239,68,68,0.25)",
+          maxWidth: 420, textAlign: "center",
+          animation: "slideDown 0.3s ease"
+        }}>
+          ⚠️ {uploadError}
+        </div>
+      )}
       {/* Top Navigation */}
       <button
         onClick={onBack}
@@ -2864,7 +2940,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
             {profile?.avatar_url ? (
                <>
                  <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28, objectFit: "cover" }} />
-                 <div className="avatar-delete-btn" onClick={handleDeleteAvatar} title="Remove Photo">✕</div>
+                 <div className="avatar-delete-btn" onClick={() => setShowDeleteConfirm(true)} title="Remove Photo">✕</div>
                </>
             ) : (
                <div style={{ color: "#475569" }}>👤</div>

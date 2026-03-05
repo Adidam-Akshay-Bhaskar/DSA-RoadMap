@@ -2541,9 +2541,9 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   if (img) img.style.transform = "none";
                   e.currentTarget.style.zIndex = 1;
                 }}>
-                  {/* Character Image */}
+                  {/* Character Image with Ascending Size */}
                   <div style={{ 
-                    height: 160, 
+                    height: 90 + (s * 25), // Ascending height from 115px to 215px
                     width: "100%", 
                     display: "flex", 
                     alignItems: "center", 
@@ -2556,7 +2556,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       style={{ 
                         height: "100%",
                         width: "auto",
-                        maxWidth: "150%", 
+                        maxWidth: "180%", 
                         objectFit: "contain",
                         imageRendering: "pixelated",
                         mixBlendMode: "multiply",

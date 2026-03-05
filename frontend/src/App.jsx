@@ -869,9 +869,12 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3, backgroundImage: "radial-gradient(#1a2535 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
           
           <div style={{ position: "relative", zIndex: 1 }}>
-            <h1 style={{ margin: "0 0 16px", fontSize: 44, fontWeight: 900, color: "#fff", lineHeight: 1.1, letterSpacing: "-1px" }}>
-              DSA-roadmap
-            </h1>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+              <img src="/logo.png" alt="Logo" style={{ width: 44, height: 44, borderRadius: 10 }} />
+              <h1 style={{ margin: 0, fontSize: 44, fontWeight: 900, color: "#fff", lineHeight: 1.1, letterSpacing: "-1px" }}>
+                DSA-roadmap
+              </h1>
+            </div>
             <p style={{ color: "#888", fontSize: 16, lineHeight: 1.6, marginBottom: 32 }}>
               Your ultimate platform to track and master Data Structures and Algorithms. Explore 14 core topics, learn crucial patterns, and conquer interview questions.
             </p>
@@ -1340,14 +1343,15 @@ function Roadmap({ session }) {
                   background: "#111827",
                   border: "1px solid #334155",
                   borderRadius: 8,
-                  padding: "6px 14px",
-                  fontSize: 14,
-                  fontWeight: 900,
-                  color: "#e2e8f4",
-                  letterSpacing: 2,
+                  width: 40,
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden"
                 }}
               >
-                DSA
+                <img src="/logo.png" alt="DSA Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <h1
                 className="header-title-text"

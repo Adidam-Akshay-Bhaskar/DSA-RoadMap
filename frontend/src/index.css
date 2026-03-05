@@ -166,13 +166,13 @@ body {
 .stages-display {
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 130px); /* Fill most of the remaining area */
-  margin-left: 130px; /* Shift to the left, tightly hugging the avatar area */
+  width: calc(100% - 190px); /* Fill area starting after the avatar */
+  margin-left: 190px; /* Shift to start after the 140px avatar + 40px padding + 10px buffer */
   position: relative;
   z-index: 2;
   align-items: center;
   height: 100%;
-  padding: 0 10px; /* Reduced from 40px to give character more space */
+  padding: 0 20px;
   transition: all 0.3s ease;
 }
 

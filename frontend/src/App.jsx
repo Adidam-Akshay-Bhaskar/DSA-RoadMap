@@ -2614,7 +2614,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
           position: "fixed", inset: 0, zIndex: 9999,
           background: "rgba(0,0,0,0.65)",
           backdropFilter: "blur(8px)",
-          display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "15vh",
+          display: "flex", alignItems: "center", justifyContent: "center", padding: "20px",
           animation: "fadeIn 0.2s ease"
         }}>
           <div style={{
@@ -2820,15 +2820,17 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                 >
                   {/* Tooltip Popup */}
                   {hoveredStage === s && (
-                    <div style={{
-                      position: "absolute", bottom: "115px", left: "50%",
-                      transform: s === 1 ? "translateX(-15%)" : s === 5 ? "translateX(-85%)" : "translateX(-50%)",
-                      background: "#0f172a", border: "2px solid #334155",
-                      color: "#fff", padding: "8px",
-                      borderRadius: 16, width: 190, zIndex: 1000,
-                      boxShadow: "0 20px 25px -5px rgba(0,0,0,0.5)",
-                      pointerEvents: "none", animation: "fadeInUpTooltip 0.3s ease-out forwards"
-                    }}>
+                    <div 
+                      className={`stage-tooltip-box stage-tooltip-box-${s}`}
+                      style={{
+                        position: "absolute", bottom: "115px", left: "50%",
+                        transform: s === 1 ? "translateX(-15%)" : s === 5 ? "translateX(-85%)" : "translateX(-50%)",
+                        background: "#0f172a", border: "2px solid #334155",
+                        color: "#fff", padding: "8px",
+                        borderRadius: 16, width: 190, zIndex: 1000,
+                        boxShadow: "0 20px 25px -5px rgba(0,0,0,0.5)",
+                        pointerEvents: "none", animation: "fadeInUpTooltip 0.3s ease-out forwards"
+                      }}>
                       {/* Header Status */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                         <div style={{ 

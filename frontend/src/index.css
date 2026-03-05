@@ -375,6 +375,16 @@ body {
   .stage-item {
     flex: 0 1 45% !important;
   }
+  .stage-tooltip-box {
+    width: 155px !important;
+    padding: 6px !important;
+  }
+  .stage-tooltip-box-1 {
+    transform: translateX(-5%) !important;
+  }
+  .stage-tooltip-box-5 {
+    transform: translateX(-95%) !important;
+  }
   .profile-banner {
     padding-bottom: 60px;
   }

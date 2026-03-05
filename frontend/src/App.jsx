@@ -2488,6 +2488,7 @@ function Roadmap({ session }) {
       <style>{`
         @keyframes slideDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
         @keyframes toastSlideUp { from { opacity:0; transform:translate(-50%, 40px); } to { opacity:1; transform:translate(-50%, 0); } }
+        @keyframes fadeInUpTooltip { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(-10px); } }
       `}</style>
     </div>
   );
@@ -2537,7 +2538,6 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
       background: "rgba(13, 17, 23, 0.4)",
       borderRadius: 32,
       border: "1px solid rgba(255, 255, 255, 0.08)",
-      overflow: "hidden",
       position: "relative",
       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
       backdropFilter: "blur(4px)"
@@ -2673,7 +2673,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       backdropFilter: "blur(12px)", color: "#fff", padding: "12px 16px",
                       borderRadius: 16, width: 220, zIndex: 1000,
                       boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
-                      pointerEvents: "none", animation: "slideDown 0.2s ease"
+                      pointerEvents: "none", animation: "fadeInUpTooltip 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards"
                     }}>
                       <div style={{ fontSize: 13, fontWeight: 900, marginBottom: 4, color: isUnlocked ? "#10b981" : "#ef4444", display: "flex", alignItems: "center", gap: 6 }}>
                          {isUnlocked ? "✅ UNLOCKED" : "🔒 LOCKED"}

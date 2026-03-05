@@ -148,7 +148,6 @@ body {
   background: rgba(13, 17, 23, 0.4);
   border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  overflow: hidden;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);

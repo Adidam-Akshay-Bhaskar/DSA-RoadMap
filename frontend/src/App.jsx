@@ -835,14 +835,7 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
     <div
       style={{
         minHeight: "100vh",
-        background: "#070c18",
-        backgroundImage: `
-          radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
-          radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
-          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px)
-        `,
-        backgroundSize: "100% 100%, 100% 100%, 30px 30px, 30px 30px",
+        background: "#000000",
         fontFamily: "'Inter', sans-serif",
         display: "flex",
         alignItems: "center",
@@ -852,17 +845,13 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
         overflow: "hidden",
       }}
     >
-      {/* Background Orbs */}
-      <div style={{ position: "absolute", top: "10%", right: "10%", width: "40%", height: "40%", background: "radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(7,9,13,0) 70%)", borderRadius: "50%", zIndex: 0 }} />
-
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
           width: "100%",
           maxWidth: 1000,
-          background: "rgba(13, 17, 23, 0.8)",
-          backdropFilter: "blur(20px)",
+          background: "#121212",
           borderRadius: 32,
           border: "1px solid rgba(255, 255, 255, 0.08)",
           boxShadow: "0 40px 80px -15px rgba(0,0,0,0.6)",

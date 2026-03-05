@@ -167,8 +167,8 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  width: calc(100% - 240px);
-  margin-left: 240px;
+  width: calc(100% - 140px); /* Reduced empty space */
+  margin-left: 140px; /* Shift everything to the left */
   position: relative;
   z-index: 2;
   align-items: center;

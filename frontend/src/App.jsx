@@ -2457,8 +2457,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
         position: "relative",
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-end",
-        paddingRight: 40
+        justifyContent: "center"
       }}>
          <div style={{ 
            position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
@@ -2469,55 +2468,71 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
          {/* Stages Display */}
          <div style={{ 
            display: "flex", 
-           gap: 16, 
+           justifyContent: "space-around",
+           width: "100%",
            position: "relative", 
            zIndex: 2,
-           padding: "12px",
-           background: "rgba(0,0,0,0.2)",
-           borderRadius: 20,
-           backdropFilter: "blur(4px)",
-           border: "1px solid rgba(255,255,255,0.05)"
+           padding: "0 40px"
          }}>
-           {[1, 2, 3, 4].map(s => (
+           {[1, 2, 3, 4, 5].map(s => (
              <div key={s} style={{ 
-               width: 80, 
-               height: 80, 
-               borderRadius: 16, 
-               background: "rgba(13, 17, 23, 0.4)",
-               border: "1px solid rgba(255,255,255,0.08)",
+               width: 100, 
+               height: 100, 
                display: "flex",
+               flexDirection: "column",
                alignItems: "center",
                justifyContent: "center",
                position: "relative",
-               overflow: "hidden",
                transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-               cursor: "pointer"
+               cursor: s === 5 ? "default" : "pointer"
              }}
              onMouseEnter={e => {
-               e.currentTarget.style.transform = "translateY(-8px) scale(1.1)";
-               e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.4)";
-               e.currentTarget.style.background = "rgba(59, 130, 246, 0.1)";
+               if (s === 5) return;
+               e.currentTarget.style.transform = "translateY(-12px) scale(1.15)";
              }}
              onMouseLeave={e => {
+               if (s === 5) return;
                e.currentTarget.style.transform = "none";
-               e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-               e.currentTarget.style.background = "rgba(13, 17, 23, 0.4)";
              }}>
-               <img 
-                 src={`/stages/stage${s}.jpg`} 
-                 alt={`Stage ${s}`} 
-                 style={{ 
-                   width: "90%", 
-                   height: "90%", 
-                   objectFit: "contain",
-                   imageRendering: "pixelated"
-                 }} 
-               />
+               {s === 5 ? (
+                 <div style={{
+                   width: 80, height: 80, borderRadius: "50%",
+                   border: "2px dashed rgba(255,255,255,0.05)",
+                   display: "flex", alignItems: "center", justifyContent: "center",
+                   color: "rgba(255,255,255,0.05)", fontSize: 32, fontWeight: 900
+                 }}>?</div>
+               ) : (
+                 <div style={{
+                   position: "relative",
+                   width: 90,
+                   height: 90,
+                   display: "flex",
+                   alignItems: "center",
+                   justifyContent: "center"
+                 }}>
+                   <img 
+                     src={`/stages/stage${s}.jpg`} 
+                     alt={`Stage ${s}`} 
+                     style={{ 
+                       width: "100%", 
+                       height: "100%", 
+                       objectFit: "contain",
+                       imageRendering: "pixelated",
+                       // Try to blend away the checkerboard on a dark bg
+                       mixBlendMode: "lighten",
+                       filter: "brightness(1.1) contrast(1.1)"
+                     }} 
+                   />
+                 </div>
+               )}
                <div style={{ 
-                 position: "absolute", bottom: 4, right: 6, 
-                 fontSize: 10, fontWeight: 900, color: "rgba(255,255,255,0.3)",
-                 fontFamily: "monospace"
-               }}>L{s}</div>
+                 marginTop: 8,
+                 fontSize: 11, fontWeight: 900, 
+                 color: s === 5 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.3)",
+                 fontFamily: "monospace",
+                 textTransform: "uppercase",
+                 letterSpacing: 2
+               }}>{s === 5 ? "Final" : `Stage 0${s}`}</div>
              </div>
            ))}
          </div>

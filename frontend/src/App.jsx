@@ -2452,7 +2452,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
     }}>
       {/* Banner Section */}
       <div style={{ 
-        height: 160, 
+        height: 240, 
         background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", 
         position: "relative",
         display: "flex",
@@ -2472,9 +2472,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
             width: "100%",
             position: "relative", 
             zIndex: 2,
-            padding: "0 40px 0 220px", // Start after the profile square
+            padding: "0 40px 0 240px", // Increased offset for larger pfp compatibility
             alignItems: "flex-end",
-            height: "100%"
+            height: "100%",
+            paddingBottom: 20
           }}>
             {[1, 2, 3, 4, 5].map(s => {
               // Progression logic: 20% of total questions per stage
@@ -2484,21 +2485,22 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
               
               return (
                 <div key={s} style={{ 
-                  width: "16%", 
-                  height: 120, 
+                  width: "18%", 
+                  height: 200, // Significantly larger
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "flex-end",
                   position: "relative",
                   transition: "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                   cursor: isUnlocked ? "pointer" : "default",
-                  opacity: isUnlocked ? 1 : 0.3,
-                  filter: isUnlocked ? "none" : "grayscale(1) brightness(0.5)",
+                  opacity: isUnlocked ? 1 : 0.25,
+                  filter: isUnlocked ? "none" : "grayscale(1) brightness(0.4)",
+                  paddingBottom: 25
                 }}
                 onMouseEnter={e => {
                   if (isUnlocked) {
-                    e.currentTarget.style.transform = "translateY(-15px) scale(1.3)";
+                    e.currentTarget.style.transform = "translateY(-25px) scale(1.4)";
                     e.currentTarget.style.zIndex = 10;
                   }
                 }}
@@ -2509,12 +2511,12 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   {isCurrent && (
                     <div style={{
                       position: "absolute",
-                      bottom: 0,
-                      width: 40,
+                      bottom: 10,
+                      width: 60,
                       height: 4,
                       background: "#3b82f6",
                       borderRadius: 2,
-                      boxShadow: "0 0 15px #3b82f6"
+                      boxShadow: "0 0 20px #3b82f6"
                     }} />
                   )}
                   
@@ -2522,31 +2524,27 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                     src={`/stages/stage${s}.png`} 
                     alt={`Stage ${s}`} 
                     style={{ 
-                      width: "100%", 
-                      height: "100%", 
+                      width: "115%", // Slightly overflow the container for "large" feel
+                      height: "115%", 
                       objectFit: "contain",
                       imageRendering: "pixelated",
-                      /* 
-                         Updated blend strategy: 
-                         Since images have white backgrounds, we use multiply to clear it 
-                         against the banner. Filter boost ensures internal colors don't muddy.
-                      */
                       mixBlendMode: "multiply",
-                      filter: `contrast(1.5) brightness(1.1) ${isCurrent ? "drop-shadow(0 0 5px rgba(59,130,246,0.3))" : ""}`,
+                      filter: `contrast(1.4) brightness(1.1) ${isCurrent ? "drop-shadow(0 0 15px rgba(59,130,246,0.5))" : ""}`,
                       transition: "filter 0.3s ease"
                     }} 
                   />
                   
                   <div style={{ 
                     position: "absolute",
-                    bottom: -15,
-                    fontSize: 9, 
+                    bottom: -10,
+                    fontSize: 10, 
                     fontWeight: 900, 
-                    color: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.3)",
+                    color: isCurrent ? "#3b82f6" : "rgba(255,255,255,0.4)",
                     fontFamily: "monospace",
                     textTransform: "uppercase",
-                    letterSpacing: 1.5,
-                    opacity: isUnlocked ? 1 : 0.5
+                    letterSpacing: 2,
+                    opacity: isUnlocked ? 1 : 0.5,
+                    textShadow: isCurrent ? "0 0 10px rgba(59,130,246,0.5)" : "none"
                   }}>
                     {s === 5 ? "Ascended" : `LVL 0${s}`}
                   </div>

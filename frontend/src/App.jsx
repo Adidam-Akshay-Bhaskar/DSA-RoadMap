@@ -1136,7 +1136,11 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
 }
 
 function Roadmap({ session }) {
-  const [active, setActive] = useState(null);
+  const [active, setActive] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const topicId = params.get('topic');
+    return topicId ? parseInt(topicId, 10) : null;
+  });
   const [tab, setTab] = useState("algorithms");
   const [completedQs, setCompletedQs] = useState(() => {
     if (session?.user) {
@@ -1145,7 +1149,10 @@ function Roadmap({ session }) {
     }
     return new Set();
   });
-  const [showTracker, setShowTracker] = useState(false);
+  const [showTracker, setShowTracker] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('view') === 'tracker';
+  });
   const [syncing, setSyncing] = useState(true);
   const [streak, setStreak] = useState(() => {
     if (session?.user) {
@@ -1196,7 +1203,20 @@ function Roadmap({ session }) {
   }, [todos, session?.user?.id]);
 
   useEffect(() => {
-    window.history.replaceState({ view: 'dashboard' }, "", window.location.pathname);
+    // Correctly initialize history state if it's currently null
+    if (!window.history.state) {
+      const params = new URLSearchParams(window.location.search);
+      const topicId = params.get('topic');
+      const view = params.get('view');
+      
+      if (view === 'tracker') {
+        window.history.replaceState({ view: 'tracker' }, "", window.location.href);
+      } else if (topicId) {
+        window.history.replaceState({ view: 'topic', id: parseInt(topicId, 10) }, "", window.location.href);
+      } else {
+        window.history.replaceState({ view: 'dashboard' }, "", window.location.href);
+      }
+    }
 
     const handlePopState = (e) => {
       const state = e.state;

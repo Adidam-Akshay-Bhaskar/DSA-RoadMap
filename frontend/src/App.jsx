@@ -786,12 +786,10 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
       if (!error && res.data.user)
         setMsg("Check your email for the confirmation link!");
     } else if (view === "signIn") {
+      // Clear deep links immediately so the roadmap natively loads as a pure dashboard
+      window.history.replaceState({ view: 'dashboard' }, "", "/");
       const res = await supabase.auth.signInWithPassword({ email, password });
       error = res.error;
-      if (!error) {
-        // Only redirect to dashboard on an exact, fresh login action (not page reloads)
-        window.history.replaceState({ view: 'dashboard' }, "", "/");
-      }
     } else if (view === "forgot") {
       if (resendCooldown > 0) {
         setMsg(`Please wait ${resendCooldown}s before trying again.`);

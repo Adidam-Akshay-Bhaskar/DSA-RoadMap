@@ -835,7 +835,14 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
     <div
       style={{
         minHeight: "100vh",
-        background: "#07090d",
+        background: "#070c18",
+        backgroundImage: `
+          radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+          radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px)
+        `,
+        backgroundSize: "100% 100%, 100% 100%, 30px 30px, 30px 30px",
         fontFamily: "'Inter', sans-serif",
         display: "flex",
         alignItems: "center",
@@ -846,19 +853,19 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
       }}
     >
       {/* Background Orbs */}
-      <div style={{ position: "absolute", top: "-15%", left: "-10%", width: "50%", height: "60%", background: "radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(7,9,13,0) 70%)", borderRadius: "50%", zIndex: 0 }} />
-      <div style={{ position: "absolute", bottom: "-15%", right: "-10%", width: "50%", height: "60%", background: "radial-gradient(circle, rgba(80,80,80,0.06) 0%, rgba(7,9,13,0) 70%)", borderRadius: "50%", zIndex: 0 }} />
+      <div style={{ position: "absolute", top: "10%", right: "10%", width: "40%", height: "40%", background: "radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(7,9,13,0) 70%)", borderRadius: "50%", zIndex: 0 }} />
 
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
           width: "100%",
-          maxWidth: 960,
-          background: "#0d1117",
-          borderRadius: 24,
-          border: "1px solid #222",
-          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
+          maxWidth: 1000,
+          background: "rgba(13, 17, 23, 0.8)",
+          backdropFilter: "blur(20px)",
+          borderRadius: 32,
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          boxShadow: "0 40px 80px -15px rgba(0,0,0,0.6)",
           overflow: "hidden",
           position: "relative",
           zIndex: 1,
@@ -1438,9 +1445,16 @@ function Roadmap({ session }) {
     <div
       style={{
         minHeight: "100vh",
-        background: "#07090d",
+        background: "#070c18",
+        backgroundImage: `
+          radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+          radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px)
+        `,
+        backgroundSize: "100% 100%, 100% 100%, 30px 30px, 30px 30px",
         fontFamily: "'Inter', sans-serif",
-        color: "#ddd",
+        color: "#cbd5e1",
         position: "relative",
       }}
     >
@@ -1448,10 +1462,12 @@ function Roadmap({ session }) {
       <div
         className="header-container"
         style={{
-          background: "#0d1117",
-          borderBottom: "1px solid #222",
-          padding: "22px 28px 16px",
-          position: "relative",
+          background: "rgba(13, 17, 23, 0.7)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          padding: "16px 28px",
+          position: "sticky",
+          top: 0,
           zIndex: 200,
         }}
       >
@@ -1488,32 +1504,44 @@ function Roadmap({ session }) {
                   alignItems: "center", 
                   gap: 12, 
                   cursor: "pointer",
-                  padding: "4px 10px",
-                  borderRadius: 12,
-                  transition: "background 0.2s"
+                  padding: "6px 14px",
+                  borderRadius: 20,
+                  transition: "all 0.2s",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.05)"
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = "#ffffff05"}
-                onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(59, 130, 246, 0.1)";
+                  e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.3)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)";
+                }}
               >
                 <div style={{
-                  width: 32, height: 32, borderRadius: 8, background: "#1f2937",
+                  width: 32, height: 32, borderRadius: 10, 
+                  background: "linear-gradient(135deg, #1e293b, #0f172a)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 14, border: "1px solid #334155"
+                  fontSize: 16, border: "1px solid rgba(255,255,255,0.1)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
                 }}>
-                  {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 6 }} /> : "👤"}
+                  {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 8 }} /> : "👤"}
                 </div>
-                <h1
-                  className="header-title-text"
-                  style={{
-                    margin: 0,
-                    fontSize: 20,
-                    fontWeight: 850,
-                    color: "#f1f5f9",
-                    letterSpacing: -0.4,
-                  }}
-                >
-                  {profile?.display_name || session?.user?.email.split('@')[0]}
-                </h1>
+                <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <span
+                    className="header-title-text"
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 800,
+                      color: "#f8fafc",
+                      lineHeight: 1
+                    }}
+                  >
+                    {profile?.display_name || session?.user?.email.split('@')[0]}
+                  </span>
+                  <span style={{ fontSize: 10, color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>View Profile</span>
+                </div>
               </div>
             </div>
 
@@ -1866,37 +1894,33 @@ function Roadmap({ session }) {
                   scrollbarWidth: "none",
                   msOverflowStyle: "none",
                   WebkitOverflowScrolling: "touch",
+                  padding: "0 4px",
+                  gap: 8
                 }}
               >
-                {TABS.filter(
-                  (t) =>
-                    !(
-                      t.key === "structures" && selected.structures.length === 0
-                    ),
-                ).map((t) => (
+                {TABS.map((t) => (
                   <button
                     key={t.key}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setTab(t.key);
-                    }}
+                    onClick={() => setTab(t.key)}
                     style={{
-                      background: "none",
                       border: "none",
+                      background: "none",
                       borderBottom:
                         tab === t.key
-                          ? "2px solid #fff"
+                          ? "2px solid #3b82f6"
                           : "2px solid transparent",
-                      color: tab === t.key ? "#fff" : "#555",
-                      padding: "16px 14px",
+                      color: tab === t.key ? "#fff" : "#64748b",
+                      padding: "16px 12px",
                       cursor: "pointer",
-                      fontSize: 14,
-                      fontWeight: 600,
+                      fontSize: 13,
+                      fontWeight: 700,
                       fontFamily: "inherit",
-                      transition: "all 0.12s",
+                      transition: "all 0.2s",
                       marginBottom: -1,
                       whiteSpace: "nowrap",
                       flexShrink: 0,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
                     }}
                   >
                     {t.label}
@@ -2076,21 +2100,25 @@ function Roadmap({ session }) {
                     gap: 14,
                     cursor: "pointer",
                     padding: "24px",
-                    borderRadius: 14,
-                    border: isAllCompleted ? "1px solid #10b98180" : "1px solid #333",
-                    background: isAllCompleted ? "#10b98110" : "#161b22",
-                    transition: "border-color 0.2s, box-shadow 0.2s, transform 0.2s, background-color 0.2s",
+                    borderRadius: 20,
+                    border: isAllCompleted ? "1px solid rgba(16, 185, 129, 0.4)" : "1px solid rgba(255,255,255,0.08)",
+                    background: isAllCompleted ? "rgba(16, 185, 129, 0.05)" : "rgba(13, 17, 23, 0.6)",
+                    backdropFilter: "blur(4px)",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     height: "190px",
                     justifyContent: "space-between",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = isAllCompleted ? "#10b981" : "#555";
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = isAllCompleted ? "0 8px 24px rgba(16,185,129,0.2)" : "0 8px 24px rgba(255,255,255,0.04)";
+                    e.currentTarget.style.borderColor = isAllCompleted ? "#10b981" : "rgba(255,255,255,0.2)";
+                    e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
+                    e.currentTarget.style.background = isAllCompleted ? "rgba(16, 185, 129, 0.08)" : "rgba(22, 27, 34, 0.8)";
+                    e.currentTarget.style.boxShadow = isAllCompleted ? "0 12px 30px rgba(16,185,129,0.15)" : "0 12px 30px rgba(0,0,0,0.3)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = isAllCompleted ? "#10b98180" : "#555";
+                    e.currentTarget.style.borderColor = isAllCompleted ? "rgba(16, 185, 129, 0.4)" : "rgba(255,255,255,0.08)";
                     e.currentTarget.style.transform = "none";
+                    e.currentTarget.style.background = isAllCompleted ? "rgba(16, 185, 129, 0.05)" : "rgba(13, 17, 23, 0.6)";
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
@@ -2193,43 +2221,45 @@ function Roadmap({ session }) {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                background: "#0d1117",
-                border: "1px solid #1a2535",
-                borderRadius: 14,
+                background: "rgba(13, 17, 23, 0.6)",
+                border: "1px solid rgba(59, 130, 246, 0.15)",
+                borderRadius: 20,
                 padding: "24px",
                 height: "190px",
-                transition: "border-color 0.2s, box-shadow 0.2s, transform 0.2s",
+                backdropFilter: "blur(4px)",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#3b82f650";
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow = "0 8px 24px rgba(59, 130, 246, 0.1)";
+                e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.4)";
+                e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#1a2535";
+                e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.15)";
                 e.currentTarget.style.transform = "none";
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              <h3 style={{ margin: "0 0 12px", color: "#e2e8f4", fontSize: 18, display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                 📝 DSA To-Do List
+              <h3 style={{ margin: "0 0 16px", color: "#f1f5f9", fontSize: 16, fontWeight: 800, display: "flex", alignItems: "center", gap: 10, flexShrink: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                 <span style={{ filter: "drop-shadow(0 0 8px #3b82f6)" }}>📝</span> Daily Tasks
               </h3>
               <div 
                 style={{ 
                   flex: 1, 
                   overflowY: "auto", 
-                  marginBottom: 12, 
+                  marginBottom: 16, 
                   display: "flex", 
                   flexDirection: "column", 
-                  gap: 8, 
-                  paddingRight: 4 
+                  gap: 10, 
+                  paddingRight: 6 
                 }}
               >
                 {todos.length === 0 ? (
-                  <div style={{ color: "#4f7598", fontSize: 13, fontStyle: "italic", marginTop: 4 }}>No tasks added yet. Stay focused!</div>
+                  <div style={{ color: "#475569", fontSize: 13, fontStyle: "italic", textAlign: "center", marginTop: 10 }}>Your task list is empty.</div>
                 ) : (
                   todos.map((t, idx) => (
-                    <div key={idx} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: t.done ? "#4f7598" : "#acc4dc" }}>
+                    <div key={idx} style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 14, color: t.done ? "#475569" : "#cbd5e1", background: "rgba(255,255,255,0.02)", padding: "8px 12px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.03)" }}>
                       <input 
                         type="checkbox" 
                         checked={t.done} 
@@ -2238,13 +2268,12 @@ function Roadmap({ session }) {
                           newTodos[idx].done = !newTodos[idx].done;
                           setTodos(newTodos);
                         }}
-                        style={{ cursor: "pointer", width: 16, height: 16, accentColor: "#3b82f6" }}
+                        style={{ cursor: "pointer", width: 18, height: 18, accentColor: "#3b82f6" }}
                       />
-                      <span style={{ flex: 1, textDecoration: t.done ? "line-through" : "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t.text}</span>
+                      <span style={{ flex: 1, textDecoration: t.done ? "line-through" : "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontWeight: 500 }}>{t.text}</span>
                       <button 
                         onClick={() => setTodos(todos.filter((_, i) => i !== idx))}
-                        style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 18, padding: 0, opacity: 0.8 }}
-                        title="Delete task"
+                        style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18, padding: 0.2, opacity: 0.6 }}
                       >
                         ×
                       </button>
@@ -2259,42 +2288,40 @@ function Roadmap({ session }) {
                   setTodos([...todos, { text: newTodo.trim(), done: false }]);
                   setNewTodo("");
                 }}
-                style={{ display: "flex", gap: 8, flexShrink: 0 }}
+                style={{ display: "flex", gap: 10, flexShrink: 0 }}
               >
                 <input 
                   type="text" 
                   value={newTodo}
                   onChange={(e) => setNewTodo(e.target.value)}
-                  placeholder="Write a new task..." 
+                  placeholder="What's next?" 
                   style={{
                     flex: 1,
-                    background: "#07090d",
-                    border: "1px solid #1f2937",
+                    background: "rgba(0,0,0,0.3)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                     color: "#fff",
-                    padding: "8px 12px",
-                    borderRadius: 8,
+                    padding: "10px 14px",
+                    borderRadius: 12,
                     fontSize: 13,
                     outline: "none",
                     transition: "border 0.2s"
                   }}
-                  onFocus={(e) => e.target.style.borderColor = "#666"}
-                  onBlur={(e) => e.target.style.borderColor = "#1f2937"}
+                  onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+                  onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.1)"}
                 />
                 <button 
                   type="submit"
                   style={{
-                    background: "#fff",
-                    color: "#000",
+                    background: "#3b82f6",
+                    color: "#fff",
                     border: "none",
-                    padding: "0 16px",
-                    borderRadius: 8,
+                    padding: "0 18px",
+                    borderRadius: 12,
                     fontSize: 13,
-                    fontWeight: 600,
+                    fontWeight: 700,
                     cursor: "pointer",
                     transition: "0.2s"
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "#e0e0e0"}
-                  onMouseLeave={(e) => e.currentTarget.style.background = "#fff"}
                 >
                   Add
                 </button>
@@ -2354,126 +2381,206 @@ function ProfileModal({ profile, streak, completedCount, totalQuestions, onClose
   });
 
   const handleSave = async () => {
+    if (!name.trim()) return;
     setSaving(true);
     await onUpdate({ display_name: name, bio });
     setIsEditing(false);
     setSaving(false);
   };
 
+  const memberSince = profile?.updated_at 
+    ? new Date(profile.updated_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+    : 'Unknown Date';
+
   return (
     <div style={{
       position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-      background: "rgba(0,0,0,0.85)", zIndex: 1000,
+      background: "rgba(2, 6, 23, 0.9)", zIndex: 1000,
       display: "flex", alignItems: "center", justifyContent: "center",
-      backdropFilter: "blur(8px)", padding: 20
+      backdropFilter: "blur(12px)", padding: 20
     }} onClick={onClose}>
       <div style={{
-        background: "#0d1117", width: "100%", maxWidth: 500,
-        borderRadius: 24, border: "1px solid #333",
+        background: "#0d1117", width: "100%", maxWidth: 520,
+        borderRadius: 32, border: "1px solid rgba(255,255,255,0.1)",
         overflow: "hidden", position: "relative",
-        animation: "slideDown 0.3s ease-out"
+        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+        animation: "modalFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
       }} onClick={e => e.stopPropagation()}>
-        {/* Banner */}
-        <div style={{ height: 100, background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", position: "relative" }}>
+        
+        {/* Banner Section */}
+        <div style={{ 
+          height: 120, 
+          background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", 
+          position: "relative",
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: 20
+        }}>
+           <div style={{ 
+             position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
+             opacity: 0.1, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", 
+             backgroundSize: "20px 20px" 
+           }} />
            <button onClick={onClose} style={{
-             position: "absolute", top: 16, right: 16,
-             background: "#ffffff10", border: "none", color: "#fff",
-             width: 32, height: 32, borderRadius: "50%", cursor: "pointer",
-             fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center"
+             background: "rgba(255,255,255,0.1)", border: "none", color: "#fff",
+             width: 36, height: 36, borderRadius: "50%", cursor: "pointer",
+             fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center",
+             backdropFilter: "blur(4px)", position: "relative", zIndex: 2
            }}>×</button>
         </div>
 
-        {/* Profile Info */}
-        <div style={{ padding: "0 32px 32px", marginTop: -40 }}>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 20, marginBottom: 24 }}>
+        {/* Profile Content */}
+        <div style={{ padding: "0 32px 32px", marginTop: -45, position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 24, marginBottom: 28 }}>
             <div style={{
-              width: 90, height: 90, borderRadius: 24, background: "#1f2937",
-              border: "4px solid #0d1117", display: "flex", alignItems: "center",
-              justifyContent: "center", fontSize: 40, boxShadow: "0 10px 25px rgba(0,0,0,0.3)"
+              width: 100, height: 100, borderRadius: 28, 
+              background: "linear-gradient(135deg, #334155, #1e293b)",
+              border: "6px solid #0d1117", display: "flex", alignItems: "center",
+              justifyContent: "center", fontSize: 44, 
+              boxShadow: "0 12px 24px rgba(0,0,0,0.4)",
+              position: "relative"
             }}>
-              {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 20 }} /> : "👤"}
+              {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 22 }} /> : "👤"}
             </div>
-            <div style={{ flex: 1, paddingBottom: 8 }}>
+            
+            <div style={{ flex: 1, paddingBottom: 6 }}>
               {isEditing ? (
-                <input 
-                  value={name} onChange={e => setName(e.target.value)}
-                  style={{ 
-                    background: "#07090d", border: "1px solid #333", color: "#fff",
-                    fontSize: 22, fontWeight: 800, padding: "4px 12px", borderRadius: 8,
-                    width: "100%", outline: "none"
-                  }} 
-                />
+                <div style={{ position: "relative" }}>
+                  <input 
+                    value={name} 
+                    onChange={e => setName(e.target.value)}
+                    autoFocus
+                    placeholder="Enter your name"
+                    style={{ 
+                      background: "rgba(255,255,255,0.03)", 
+                      border: "1px solid #334155", 
+                      color: "#fff",
+                      fontSize: 24, fontWeight: 900, 
+                      padding: "6px 14px", 
+                      borderRadius: 12,
+                      width: "100%", 
+                      outline: "none",
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)"
+                    }} 
+                  />
+                </div>
               ) : (
-                <h2 style={{ margin: 0, fontSize: 24, fontWeight: 900, color: "#fff" }}>
-                  {profile?.display_name || "User"}
+                <h2 style={{ 
+                  margin: 0, fontSize: 28, fontWeight: 900, color: "#f8fafc",
+                  letterSpacing: "-0.5px"
+                }}>
+                  {profile?.display_name || "Code Master"}
                 </h2>
               )}
-              <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
-                Member since {new Date(profile?.updated_at).toLocaleDateString()}
+              <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600, marginTop: 4, display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ opacity: 0.6 }}>📅</span> Member since {memberSince}
               </div>
             </div>
           </div>
 
-          {/* Stats Grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
-            <div style={{ background: "#161b22", padding: 16, borderRadius: 16, border: "1px solid #222" }}>
-              <div style={{ fontSize: 11, color: "#64748b", fontWeight: 800, textTransform: "uppercase", marginBottom: 8 }}>Current Streak</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: "#3b82f6", display: "flex", alignItems: "center", gap: 8 }}>
-                 {streak} <span style={{ fontSize: 20 }}>🔥</span>
+          {/* Premium Stats Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 28 }}>
+            <div style={{ 
+              background: "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))", 
+              padding: "18px", borderRadius: 20, border: "1px solid rgba(59, 130, 246, 0.2)",
+              position: "relative", overflow: "hidden"
+            }}>
+              <div style={{ fontSize: 11, color: "#3b82f6", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Current Streak</div>
+              <div style={{ fontSize: 32, fontWeight: 950, color: "#fff", display: "flex", alignItems: "center", gap: 10 }}>
+                 {streak} <span style={{ fontSize: 24, filter: "drop-shadow(0 0 8px #3b82f6)" }}>🔥</span>
               </div>
             </div>
-            <div style={{ background: "#161b22", padding: 16, borderRadius: 16, border: "1px solid #222" }}>
-              <div style={{ fontSize: 11, color: "#64748b", fontWeight: 800, textTransform: "uppercase", marginBottom: 8 }}>Total Completed</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: "#fff" }}>
-                {completedCount.size} <span style={{ fontSize: 14, color: "#444" }}>/ {totalQuestions}</span>
+            <div style={{ 
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))", 
+              padding: "18px", borderRadius: 20, border: "1px solid rgba(255, 255, 255, 0.1)" 
+            }}>
+              <div style={{ fontSize: 11, color: "#888", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Total Questions</div>
+              <div style={{ fontSize: 32, fontWeight: 950, color: "#fff" }}>
+                {completedCount.size} <span style={{ fontSize: 16, color: "#444" }}>/ {totalQuestions}</span>
               </div>
             </div>
           </div>
 
           {/* Bio Section */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <label style={{ fontSize: 12, fontWeight: 800, color: "#4b5563", textTransform: "uppercase" }}>Bio</label>
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <label style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: 0.5 }}>Journey & Bio</label>
               {!isEditing && (
-                <button onClick={() => setIsEditing(true)} style={{ background: "none", border: "none", color: "#3b82f6", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Edit Profile</button>
+                <button 
+                  onClick={() => setIsEditing(true)} 
+                  style={{ 
+                    background: "rgba(59, 130, 246, 0.1)", 
+                    border: "none", 
+                    color: "#3b82f6", 
+                    fontSize: 12, 
+                    fontWeight: 700, 
+                    cursor: "pointer",
+                    padding: "4px 10px",
+                    borderRadius: 8
+                  }}
+                >
+                  Edit Profile
+                </button>
               )}
             </div>
             {isEditing ? (
               <textarea 
-                value={bio} onChange={e => setBio(e.target.value)}
-                placeholder="Talk about your DSA journey..."
+                value={bio} 
+                onChange={e => setBio(e.target.value)}
+                placeholder="Share your DSA goals and achievements..."
                 style={{ 
-                  background: "#07090d", border: "1px solid #333", color: "#ddd",
-                  fontSize: 14, padding: "12px", borderRadius: 12, width: "100%",
-                  minHeight: 80, outline: "none", resize: "none"
+                  background: "rgba(255,255,255,0.03)", 
+                  border: "1px solid #334155", 
+                  color: "#cbd5e1",
+                  fontSize: 14, padding: "14px", borderRadius: 16, width: "100%",
+                  minHeight: 100, outline: "none", resize: "none",
+                  lineHeight: 1.5,
+                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)"
                 }} 
               />
             ) : (
-              <p style={{ margin: 0, fontSize: 14, color: "#9ca3af", lineHeight: 1.6 }}>
-                {profile?.bio || "No bio yet. Click Edit to add one!"}
-              </p>
+              <div style={{ 
+                background: "rgba(255,255,255,0.02)", 
+                padding: "16px", 
+                borderRadius: 16, 
+                border: "1px solid rgba(255,255,255,0.05)",
+                minHeight: 60
+              }}>
+                <p style={{ margin: 0, fontSize: 14, color: "#94a3b8", lineHeight: 1.6, fontStyle: bio ? "normal" : "italic" }}>
+                  {profile?.bio || "No biography added yet. Share your journey!"}
+                </p>
+              </div>
             )}
           </div>
 
-          {/* Difficulty Breakdown */}
-          <div style={{ marginBottom: 32 }}>
-            <label style={{ fontSize: 12, fontWeight: 800, color: "#4b5563", textTransform: "uppercase", display: "block", marginBottom: 12 }}>Difficulty Breakdown</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {['E', 'M', 'H'].map(diff => (
-                <div key={diff} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 60, fontSize: 12, fontWeight: 700, color: diff === 'E' ? '#4ade80' : diff === 'H' ? '#f87171' : '#fb923c' }}>
-                    {diff === 'E' ? 'Easy' : diff === 'H' ? 'Hard' : 'Med'}
+          {/* Detailed Progress Breakdown */}
+          <div style={{ marginBottom: 36 }}>
+            <label style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: 0.5, display: "block", marginBottom: 16 }}>Skill Mastery</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {[
+                { label: 'Easy', code: 'E', color: '#4ade80' },
+                { label: 'Medium', code: 'M', color: '#fb923c' },
+                { label: 'Hard', code: 'H', color: '#f87171' }
+              ].map(item => (
+                <div key={item.code}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: item.color }} />
+                      <span style={{ fontSize: 13, fontWeight: 800, color: "#e2e8f4" }}>{item.label}</span>
+                    </div>
+                    <span style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>
+                      {userStats[item.code]} <span style={{ opacity: 0.5 }}>/ {difficultyStats[item.code]}</span>
+                    </span>
                   </div>
-                  <div style={{ flex: 1, height: 6, background: "#161b22", borderRadius: 3, overflow: "hidden" }}>
+                  <div style={{ height: 8, background: "rgba(255,255,255,0.03)", borderRadius: 4, overflow: "hidden" }}>
                     <div style={{ 
-                      width: `${(userStats[diff] / Math.max(1, difficultyStats[diff])) * 100}%`, 
+                      width: `${(userStats[item.code] / Math.max(1, difficultyStats[item.code])) * 100}%`, 
                       height: "100%", 
-                      background: diff === 'E' ? '#4ade80' : diff === 'H' ? '#f87171' : '#fb923c',
-                      transition: "width 0.5s ease"
+                      background: `linear-gradient(90deg, ${item.color}88, ${item.color})`,
+                      borderRadius: 4,
+                      transition: "width 1s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                      boxShadow: `0 0 10px ${item.color}44`
                     }} />
-                  </div>
-                  <div style={{ fontSize: 12, color: "#4b5563", fontWeight: 700 }}>
-                    {userStats[diff]} <span style={{ color: "#222" }}>/</span> {difficultyStats[diff]}
                   </div>
                 </div>
               ))}
@@ -2485,17 +2592,21 @@ function ProfileModal({ profile, streak, completedCount, totalQuestions, onClose
               <button 
                 onClick={handleSave} disabled={saving}
                 style={{ 
-                  flex: 1, background: "#fff", color: "#000", border: "none",
-                  padding: "12px", borderRadius: 12, fontWeight: 800, cursor: "pointer"
+                  flex: 1, background: "#f8fafc", color: "#0f172a", border: "none",
+                  padding: "14px", borderRadius: 16, fontWeight: 850, cursor: "pointer",
+                  boxShadow: "0 4px 12px rgba(255,255,255,0.1)",
+                  transition: "transform 0.2s"
                 }}
+                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "none"}
               >
-                {saving ? "Saving..." : "Save Changes"}
+                {saving ? "Syncing..." : "Publish Profile"}
               </button>
               <button 
                 onClick={() => setIsEditing(false)}
                 style={{ 
-                  flex: 1, background: "#161b22", color: "#fff", border: "1px solid #333",
-                  padding: "12px", borderRadius: 12, fontWeight: 800, cursor: "pointer"
+                   background: "rgba(255,255,255,0.05)", color: "#fff", border: "1px solid rgba(255,255,255,0.1)",
+                  padding: "14px 20px", borderRadius: 16, fontWeight: 800, cursor: "pointer"
                 }}
               >
                 Cancel
@@ -2504,6 +2615,12 @@ function ProfileModal({ profile, streak, completedCount, totalQuestions, onClose
           )}
         </div>
       </div>
+      <style>{`
+        @keyframes modalFadeUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
     </div>
   );
 }

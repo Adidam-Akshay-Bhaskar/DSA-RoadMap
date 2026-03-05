@@ -2479,9 +2479,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 return topic.questions.every(q => completedCount.has(q.id));
               };
 
-              // Level is unlocked if ALL previous levels + current level topics are done
-              // (Or based on user request: if they complete the entire structure then level is unlocked)
-              const isUnlocked = levelGroups[s].every(id => isTopicDone(id));
+              // Level is unlocked ONLY IF current level topics ARE DONE AND all previous levels ARE ALSO UNLOCKED
+              const isUnlocked = Array.from({ length: s }, (_, i) => i + 1).every(lvl => 
+                levelGroups[lvl].every(id => isTopicDone(id))
+              );
               
               // Find current level (the first one not yet unlocked)
               let currentLevel = 1;

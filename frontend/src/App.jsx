@@ -877,7 +877,7 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
           
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <img src="/logo.png" alt="Logo" style={{ width: 44, height: 44, borderRadius: 10 }} />
+              <img src="/logo.png" alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, background: "#000", border: "1px solid rgba(255,255,255,0.1)" }} />
               <h1 style={{ margin: 0, fontSize: 44, fontWeight: 900, color: "#fff", lineHeight: 1.1, letterSpacing: "-1px" }}>
                 DSA-roadmap
               </h1>
@@ -1508,11 +1508,11 @@ function Roadmap({ session }) {
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
                 style={{
-                  background: "#111827",
-                  border: "1px solid #334155",
-                  borderRadius: 8,
-                  width: 40,
-                  height: 40,
+                  background: "#000",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 10,
+                  width: 42,
+                  height: 42,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

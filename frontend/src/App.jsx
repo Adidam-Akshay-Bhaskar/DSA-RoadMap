@@ -2667,44 +2667,42 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   {/* Tooltip Popup */}
                   {hoveredStage === s && (
                     <div style={{
-                      position: "absolute", bottom: "185px", left: "50%",
-                      transform: "translateX(-50%) translateY(-10px)",
-                      background: "rgba(13, 17, 23, 0.98)", border: "1px solid rgba(255, 255, 255, 0.15)",
-                      backdropFilter: "blur(20px)", color: "#fff", padding: "20px",
-                      borderRadius: 24, width: 300, zIndex: 1000,
-                      boxShadow: "0 25px 50px -12px rgba(0,0,0,0.8), 0 0 30px rgba(59,130,246,0.2)",
-                      pointerEvents: "none", animation: "fadeInUpTooltip 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards"
+                      position: "absolute", bottom: "140px", left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "#0f172a", border: "2px solid #334155",
+                      color: "#fff", padding: "14px",
+                      borderRadius: 16, width: 250, zIndex: 1000,
+                      boxShadow: "0 20px 25px -5px rgba(0,0,0,0.5), 0 10px 10px -5px rgba(0,0,0,0.4)",
+                      pointerEvents: "none", animation: "fadeInUpTooltip 0.3s ease-out forwards"
                     }}>
                       {/* Header Status */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                         <div style={{ 
-                          fontSize: 11, fontWeight: 950, letterSpacing: 1,
-                          color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "#475569",
-                          textTransform: "uppercase"
+                          fontSize: 10, fontWeight: 900,
+                          color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "#94a3b8",
+                          textTransform: "uppercase", letterSpacing: 0.5
                         }}>
-                          {isUnlocked ? "✨ EVOLVED" : isCurrent ? "🔥 CURRENT FORM" : "🔒 STAGE LOCKED"}
+                          {isUnlocked ? "✅ EVOLVED" : isCurrent ? "🔥 CURRENT" : "🔒 LOCKED"}
                         </div>
-                        <div style={{ fontSize: 10, padding: "2px 8px", background: "rgba(255,255,255,0.05)", borderRadius: 8, color: "#94a3b8" }}>
-                          STG {s}/5
-                        </div>
+                        <div style={{ fontSize: 9, color: "#475569", fontWeight: 700 }}>STAGE {s}/5</div>
                       </div>
 
-                      {/* Stage Title & Lore */}
-                      <div style={{ fontSize: 20, fontWeight: 950, color: "#fff", marginBottom: 6 }}>
+                      {/* Stage Title */}
+                      <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 4 }}>
                         {levelTitles[s]}
                       </div>
-                      <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5, marginBottom: 16 }}>
-                        {s === 1 && "The dawn of reasoning. You've mastered the basic syntax of the universe."}
-                        {s === 2 && "The logic becomes fluid. You now flow through data with purpose and intent."}
-                        {s === 3 && "A professional architect. You structure complex nodes into powerful systems."}
-                        {s === 4 && "The machine's shadow. You navigate the deepest logic networks with ease."}
-                        {s === 5 && "Digital Divinity. Time and memory bend to your ultimate command."}
+                      <p style={{ fontSize: 11, color: "#94a3b8", lineHeight: 1.4, marginBottom: 12 }}>
+                        {s === 1 && "Master the basic syntax of the universe."}
+                        {s === 2 && "Flow through data with purpose and intent."}
+                        {s === 3 && "Structure complex nodes into powerful systems."}
+                        {s === 4 && "Navigate deep logic networks with ease."}
+                        {s === 5 && "Bending time and memory to your command."}
                       </p>
 
                       {/* Technical Detail */}
-                      <div style={{ background: "rgba(59, 130, 246, 0.05)", padding: "12px", borderRadius: 12, border: "1px solid rgba(59, 130, 246, 0.1)", marginBottom: 16 }}>
-                        <div style={{ fontSize: 10, color: "#3b82f6", fontWeight: 800, textTransform: "uppercase", marginBottom: 6 }}>Evolution Requirements:</div>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                      <div style={{ borderTop: "1px solid #1e293b", paddingTop: 10 }}>
+                        <div style={{ fontSize: 9, color: "#64748b", fontWeight: 800, textTransform: "uppercase", marginBottom: 6 }}>Requirements:</div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                            {(s === 1 ? ["Math", "Arrays", "Strings"] : 
                              s === 2 ? ["Hashing", "Stack", "Queue"] : 
                              s === 3 ? ["Lists", "Binary Trees", "Adv Trees"] : 
@@ -2720,11 +2718,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                                const done = isTopicDone(topicMap[tag]);
                                return (
                                  <span key={tag} style={{ 
-                                   fontSize: 10, px: 8, py: 2, borderRadius: 6, 
-                                   background: done ? "rgba(16, 185, 129, 0.15)" : "rgba(255,255,255,0.03)",
-                                   border: `1px solid ${done ? "rgba(16, 185, 129, 0.3)" : "rgba(255,255,255,0.08)"}`,
+                                   fontSize: 9, borderRadius: 4, 
+                                   background: done ? "rgba(16, 185, 129, 0.2)" : "rgba(255,255,255,0.05)",
                                    color: done ? "#10b981" : "#475569",
-                                   padding: "3px 8px", fontWeight: 700
+                                   padding: "2px 6px", fontWeight: 800
                                  }}>
                                    {tag} {done ? "✓" : "○"}
                                  </span>
@@ -2736,12 +2733,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       {/* Locking Logic Warning */}
                       {s > 1 && !Array.from({length: s-1}, (_, i) => i + 1).every(lvl => levelGroups[lvl].every(id => isTopicDone(id))) && (
                         <div style={{ 
-                          fontSize: 10, color: "#ef4444", fontWeight: 900, 
-                          background: "rgba(239, 68, 68, 0.1)", padding: "8px 12px", 
-                          borderRadius: 10, border: "1px solid rgba(239, 68, 68, 0.2)",
-                          textAlign: "center"
+                          fontSize: 9, color: "#ef4444", fontWeight: 900, 
+                          marginTop: 10, textAlign: "center", textTransform: "uppercase"
                         }}>
-                          ⚠️ MASTER PREVIOUS STAGES TO UNLOCK
+                          ⚠️ Master previous stages first
                         </div>
                       )}
 
@@ -2749,8 +2744,8 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       <div style={{ 
                         position: "absolute", top: "100%", left: "50%", 
                         transform: "translateX(-50%)", width: 0, height: 0,
-                        borderLeft: "10px solid transparent", borderRight: "10px solid transparent",
-                        borderTop: "10px solid rgba(13, 17, 23, 0.98)"
+                        borderLeft: "8px solid transparent", borderRight: "8px solid transparent",
+                        borderTop: "8px solid #0f172a"
                       }} />
                     </div>
                   )}

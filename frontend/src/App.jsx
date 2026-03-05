@@ -2444,42 +2444,6 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
       {/* Profile Content */}
       <div style={{ padding: "0 40px 40px", marginTop: -60, position: "relative" }}>
-        
-        {/* Back Button */}
-        <button
-          onClick={onBack}
-          style={{
-            position: "absolute",
-            top: -120,
-            left: 20,
-            background: "rgba(13, 17, 23, 0.4)",
-            backdropFilter: "blur(12px)",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            color: "#eee",
-            padding: "10px 18px",
-            borderRadius: 14,
-            cursor: "pointer",
-            fontSize: 14,
-            fontWeight: 700,
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            transition: "all 0.2s",
-            zIndex: 10
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(13, 17, 23, 0.6)";
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
-            e.currentTarget.style.transform = "translateX(-4px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(13, 17, 23, 0.4)";
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-            e.currentTarget.style.transform = "none";
-          }}
-        >
-          <span>←</span> Back to Roadmap
-        </button>
 
         <div style={{ display: "flex", alignItems: "flex-end", gap: 32, marginBottom: 36, flexWrap: "wrap" }}>
           <div style={{
@@ -2528,25 +2492,55 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
           </div>
 
           {!isEditing && (
-            <button 
-              onClick={() => setIsEditing(true)} 
-              style={{ 
-                background: "rgba(59, 130, 246, 0.1)", 
-                border: "1px solid rgba(59, 130, 246, 0.2)",
-                color: "#3b82f6", 
-                fontSize: 14, 
-                fontWeight: 700, 
-                cursor: "pointer",
-                padding: "10px 24px",
-                borderRadius: 12,
-                marginBottom: 10,
-                transition: "all 0.2s"
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(59,130,246,0.2)"}
-              onMouseLeave={e => e.currentTarget.style.background = "rgba(59,130,246,0.1)"}
-            >
-              Edit Profile
-            </button>
+            <div style={{ display: "flex", gap: 12, marginBottom: 10 }}>
+              <button
+                onClick={onBack}
+                style={{
+                  background: "rgba(255, 255, 255, 0.03)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  color: "#aaa",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  padding: "10px 24px",
+                  borderRadius: 12,
+                  transition: "all 0.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
+                  e.currentTarget.style.color = "#fff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                  e.currentTarget.style.color = "#aaa";
+                }}
+              >
+                ← Roadmap
+              </button>
+              <button 
+                onClick={() => setIsEditing(true)} 
+                style={{ 
+                  background: "rgba(59, 130, 246, 0.1)", 
+                  border: "1px solid rgba(59, 130, 246, 0.2)",
+                  color: "#3b82f6", 
+                  fontSize: 14, 
+                  fontWeight: 700, 
+                  cursor: "pointer",
+                  padding: "10px 24px",
+                  borderRadius: 12,
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(59,130,246,0.2)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(59,130,246,0.1)"}
+              >
+                Edit Profile
+              </button>
+            </div>
           )}
         </div>
 

@@ -2604,7 +2604,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
             </p>
           </div>
 
-          <div className="stages-display">
+          <div className="stages-display" style={{ paddingTop: "60px" }}>
             {[1, 2, 3, 4, 5].map(s => {
               // Define topic groups for each level
               const levelGroups = {
@@ -2684,7 +2684,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   {hoveredStage === s && (
                     <div style={{
                       position: "absolute", bottom: "115px", left: "50%",
-                      transform: s === 1 ? "translateX(-5%)" : s === 5 ? "translateX(-95%)" : "translateX(-50%)",
+                      transform: s === 1 ? "translateX(-15%)" : s === 5 ? "translateX(-85%)" : "translateX(-50%)",
                       background: "#0f172a", border: "2px solid #334155",
                       color: "#fff", padding: "8px",
                       borderRadius: 16, width: 190, zIndex: 1000,
@@ -2758,7 +2758,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       {/* Arrow Down */}
                       <div style={{ 
                         position: "absolute", top: "100%", 
-                        left: s === 1 ? "12%" : s === 5 ? "88%" : "50%", 
+                        left: s === 1 ? "15%" : s === 5 ? "85%" : "50%", 
                         transform: "translateX(-50%)", width: 0, height: 0,
                         borderLeft: "6px solid transparent", borderRight: "6px solid transparent",
                         borderTop: "6px solid #0f172a"
@@ -2784,7 +2784,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                         objectFit: "contain",
                         imageRendering: "pixelated",
                         mixBlendMode: "multiply",
-                        filter: `contrast(1.4) brightness(1.1) ${isCurrent ? "drop-shadow(0 0 15px rgba(59,130,246,0.6))" : ""}`,
+                        filter: `contrast(1.4) brightness(1.2) ${isCurrent ? "drop-shadow(0 0 20px rgba(59,130,246,0.6))" : ""}`,
                         transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
                       }} 
                     />

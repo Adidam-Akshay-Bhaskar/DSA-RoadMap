@@ -145,17 +145,18 @@ body {
 
 /* Profile Banner & Stages Responsiveness */
 .profile-card {
-  background: #000000;
+  background: rgba(13, 17, 23, 0.4);
   border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
 }
 
 .profile-banner {
   height: 280px;
-  background: #000000;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   position: relative;
   display: flex;
   align-items: center;
@@ -165,9 +166,8 @@ body {
 .stages-display {
   display: flex;
   justify-content: space-between;
-  gap: 24px;
-  width: calc(100% - 140px); /* Reduced empty space */
-  margin-left: 140px; /* Shift everything to the left */
+  width: calc(100% - 150px);
+  margin-left: 150px;
   position: relative;
   z-index: 2;
   align-items: center;
@@ -175,6 +175,11 @@ body {
   padding: 0 40px;
   transition: all 0.3s ease;
 }
+
+/* Character Spacing Adjustments */
+.stage-item-1 { margin-left: 20px; } /* Move 1st slightly to right */
+.stage-item-1, .stage-item-2, .stage-item-3 { margin-right: -10px; } /* Reduce gap between 1,2,3,4 */
+.stage-item-5 { margin-left: 40px; } /* Increase gap between 4 and 5 */
 
 .profile-avatar-container {
   width: 140px;

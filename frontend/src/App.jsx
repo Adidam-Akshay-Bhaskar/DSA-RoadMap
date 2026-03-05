@@ -1488,7 +1488,8 @@ function Roadmap({ session }) {
       <div
         className="header-container"
         style={{
-          background: "#000000",
+          background: "rgba(13, 17, 23, 0.7)",
+          backdropFilter: "blur(12px)",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           padding: "16px 28px",
           position: "sticky",
@@ -2448,15 +2449,21 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
   return (
     <div style={{
-      background: "#000000",
+      background: "rgba(13, 17, 23, 0.4)",
       borderRadius: 32,
       border: "1px solid rgba(255, 255, 255, 0.08)",
       overflow: "hidden",
       position: "relative",
       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+      backdropFilter: "blur(4px)"
     }}>
       {/* Banner Section */}
       <div className="profile-banner">
+         <div style={{ 
+           position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
+           opacity: 0.1, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", 
+           backgroundSize: "20px 20px" 
+         }} />
 
           {/* Stages Display */}
           <div className="stages-display">
@@ -2502,7 +2509,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
               const isCurrent = s === currentLevel;
               
               return (
-                <div key={s} className="stage-item" style={{ 
+                <div key={s} className={`stage-item stage-item-${s}`} style={{ 
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",

@@ -2474,77 +2474,50 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
            zIndex: 2,
            padding: "0 40px"
          }}>
-           {[1, 2, 3, 4, 5, 6].map(s => (
+           {[1, 2, 3, 4, 5].map(s => (
              <div key={s} style={{ 
-               width: 120, 
-               height: 120, 
+               width: "18%", 
+               height: 140, 
                display: "flex",
                flexDirection: "column",
                alignItems: "center",
                justifyContent: "center",
                position: "relative",
-               transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-               cursor: s === 6 ? "default" : "pointer"
+               transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+               cursor: "pointer"
              }}
              onMouseEnter={e => {
-               if (s === 6) return;
-               e.currentTarget.style.transform = "translateY(-15px) scale(1.2)";
+               e.currentTarget.style.transform = "translateY(-20px) scale(1.4)";
+               e.currentTarget.style.zIndex = 10;
              }}
              onMouseLeave={e => {
-               if (s === 6) return;
                e.currentTarget.style.transform = "none";
+               e.currentTarget.style.zIndex = 1;
              }}>
-               {s === 6 ? (
-                 <div style={{
-                   width: 100, height: 100, borderRadius: "50%",
-                   border: "2px dashed rgba(255,255,255,0.05)",
-                   display: "flex", alignItems: "center", justifyContent: "center",
-                   color: "rgba(255,255,255,0.05)", fontSize: 32, fontWeight: 900
-                 }}>?</div>
-               ) : (
-                 <div style={{
-                   position: "relative",
-                   width: 100,
-                   height: 100,
-                   display: "flex",
-                   alignItems: "center",
-                   justifyContent: "center",
-                   borderRadius: "50%",
-                   overflow: "hidden", 
-                   background: "rgba(0,0,0,0.1)"
-                 }}>
-                   <img 
-                     src={`/stages/stage${s}.jpg`} 
-                     alt={`Stage ${s}`} 
-                     style={{ 
-                       width: "135%", 
-                       height: "135%", 
-                       objectFit: "contain",
-                       imageRendering: "pixelated",
-                       mixBlendMode: "screen",
-                       filter: "contrast(1.3) brightness(1.1)",
-                       WebkitMaskImage: "radial-gradient(circle, black 40%, transparent 75%)",
-                       maskImage: "radial-gradient(circle, black 40%, transparent 75%)"
-                     }} 
-                   />
-                   <div style={{
-                      position: "absolute", inset: 0,
-                      borderRadius: "50%",
-                      boxShadow: "inset 0 0 20px rgba(59, 130, 246, 0.2)"
-                   }} />
-                 </div>
-               )}
+                <img 
+                   src={`/stages/stage${s}.jpg`} 
+                   alt={`Stage ${s}`} 
+                   style={{ 
+                     width: "100%", 
+                     height: "100%", 
+                     objectFit: "contain",
+                     imageRendering: "pixelated",
+                     // Blend technique to make characters float on dark bg
+                     mixBlendMode: "lighten",
+                     filter: "contrast(1.4) brightness(1.2)"
+                   }} 
+                 />
                
                <div style={{ 
-                 marginTop: 12,
+                 marginTop: 0,
                  fontSize: 10, fontWeight: 900, 
-                 color: s === 6 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.4)",
+                 color: "rgba(255,255,255,0.4)",
                  fontFamily: "monospace",
                  textTransform: "uppercase",
                  letterSpacing: 2,
                  textShadow: "0 2px 4px rgba(0,0,0,0.5)"
                }}>
-                 {s === 6 ? "Beyond" : s === 5 ? "Ascended" : `Stage 0${s}`}
+                 {s === 5 ? "Ascended" : `Stage 0${s}`}
                </div>
              </div>
            ))}

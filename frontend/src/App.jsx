@@ -2857,7 +2857,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
       </div>
 
       {/* Profile Content */}
-      <div style={{ padding: window.innerWidth < 600 ? "0 20px 40px" : "0 40px 40px", marginTop: -60, position: "relative" }}>
+      <div style={{ padding: window.innerWidth < 600 ? "0 20px 40px" : "0 40px 40px", marginTop: -40, position: "relative" }}>
 
         <div className="profile-info-row">
           <div className="profile-avatar-container">
@@ -2886,7 +2886,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
             />
           </div>
           
-          <div style={{ flex: 1, minWidth: 280 }}>
+          <div style={{ flex: 1, minWidth: 280, paddingTop: 50 }}>
             {isEditing ? (
               <div style={{ position: "relative" }}>
                 <input 

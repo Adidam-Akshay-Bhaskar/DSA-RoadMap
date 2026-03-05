@@ -1312,10 +1312,7 @@ function Roadmap({ session }) {
   };
 
   const selected = dsaData.find((d) => d.id === active);
-  const totalQuestions = dsaData.reduce(
-    (acc, curr) => acc + curr.questions.length,
-    0,
-  );
+  const totalQuestions = new Set(dsaData.flatMap(topic => topic.questions.map(q => q.id))).size;
 
   // Load progress from Supabase on mount
   useEffect(() => {
@@ -1403,13 +1400,12 @@ function Roadmap({ session }) {
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
     const isAdding = !completedQs.has(qId);
     
-    // 1. Update completed_qs with globally unique ID: topic-qId
-    const globalQId = `${active}-${qId}`;
+    // 1. Update completed_qs
     const nextArr = [...completedQs];
     if (isAdding) {
-      nextArr.push(globalQId);
+      nextArr.push(qId);
     } else {
-      nextArr.splice(nextArr.indexOf(globalQId), 1);
+      nextArr.splice(nextArr.indexOf(qId), 1);
     }
     const nextSet = new Set(nextArr);
     setCompletedQs(nextSet);
@@ -2086,11 +2082,10 @@ function Roadmap({ session }) {
                       const order = { E: 0, M: 1, H: 2 };
                       return (order[a.difficulty] ?? 1) - (order[b.difficulty] ?? 1);
                     }).map((q) => {
-                      const globalQId = `${active}-${q.id}`;
-                      const isCompleted = completedQs.has(globalQId);
+                      const isCompleted = completedQs.has(q.id);
                       return (
                         <div
-                          key={globalQId}
+                          key={q.id}
                           className="question-card"
                           style={{
                             background: isCompleted ? "#10b981" : "#111",
@@ -2423,9 +2418,8 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
   questions.forEach(topic => {
     topic.questions.forEach(q => {
-      const globalQId = `${topic.id}-${q.id}`;
       difficultyStats[q.difficulty]++;
-      if (completedCount.has(globalQId)) {
+      if (completedCount.has(q.id)) {
         userStats[q.difficulty]++;
       }
     });
@@ -2502,7 +2496,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
               const isTopicDone = (topicId) => {
                 const topic = dsaData.find(d => d.id === topicId);
                 if (!topic) return false;
-                return topic.questions.every(q => completedCount.has(`${topic.id}-${q.id}`));
+                return topic.questions.every(q => completedCount.has(q.id));
               };
 
               // Level is unlocked if ALL previous levels + current level topics are done
@@ -2725,32 +2719,6 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
             <div style={{ fontSize: 40, fontWeight: 950, color: "#fff" }}>
               {completedCount.size} <span style={{ fontSize: 20, color: "#444" }}>/ {totalQuestions}</span>
             </div>
-          </div>
-          <div style={{ 
-            background: "linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05))", 
-            padding: "24px", borderRadius: 24, border: "1px solid rgba(239, 68, 68, 0.2)",
-            display: "flex", flexDirection: "column", justifyContent: "center", cursor: "pointer"
-          }} 
-          onClick={async () => {
-            if (window.confirm("Are you sure you want to clear ALL progress? This cannot be undone.")) {
-              await supabase.from("user_progress").upsert({
-                id: profile.id,
-                completed_qs: [],
-                streak_count: 0,
-                today_qs: [],
-                previous_streak_count: 0,
-                previous_activity_date: null,
-                last_activity_date: null
-              });
-              localStorage.clear();
-              window.location.reload();
-            }
-          }}
-          onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.15)"}
-          onMouseLeave={e => e.currentTarget.style.background = "linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05))"}
-          >
-            <div style={{ fontSize: 12, color: "#ef4444", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Danger Zone</div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>Reset All Progress</div>
           </div>
         </div>
 

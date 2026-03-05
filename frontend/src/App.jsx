@@ -2454,13 +2454,73 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
       <div style={{ 
         height: 160, 
         background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", 
-        position: "relative"
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        paddingRight: 40
       }}>
          <div style={{ 
            position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
            opacity: 0.1, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", 
            backgroundSize: "20px 20px" 
          }} />
+
+         {/* Stages Display */}
+         <div style={{ 
+           display: "flex", 
+           gap: 16, 
+           position: "relative", 
+           zIndex: 2,
+           padding: "12px",
+           background: "rgba(0,0,0,0.2)",
+           borderRadius: 20,
+           backdropFilter: "blur(4px)",
+           border: "1px solid rgba(255,255,255,0.05)"
+         }}>
+           {[1, 2, 3, 4].map(s => (
+             <div key={s} style={{ 
+               width: 80, 
+               height: 80, 
+               borderRadius: 16, 
+               background: "rgba(13, 17, 23, 0.4)",
+               border: "1px solid rgba(255,255,255,0.08)",
+               display: "flex",
+               alignItems: "center",
+               justifyContent: "center",
+               position: "relative",
+               overflow: "hidden",
+               transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+               cursor: "pointer"
+             }}
+             onMouseEnter={e => {
+               e.currentTarget.style.transform = "translateY(-8px) scale(1.1)";
+               e.currentTarget.style.borderColor = "rgba(59, 130, 246, 0.4)";
+               e.currentTarget.style.background = "rgba(59, 130, 246, 0.1)";
+             }}
+             onMouseLeave={e => {
+               e.currentTarget.style.transform = "none";
+               e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+               e.currentTarget.style.background = "rgba(13, 17, 23, 0.4)";
+             }}>
+               <img 
+                 src={`/stages/stage${s}.jpg`} 
+                 alt={`Stage ${s}`} 
+                 style={{ 
+                   width: "90%", 
+                   height: "90%", 
+                   objectFit: "contain",
+                   imageRendering: "pixelated"
+                 }} 
+               />
+               <div style={{ 
+                 position: "absolute", bottom: 4, right: 6, 
+                 fontSize: 10, fontWeight: 900, color: "rgba(255,255,255,0.3)",
+                 fontFamily: "monospace"
+               }}>L{s}</div>
+             </div>
+           ))}
+         </div>
       </div>
 
       {/* Profile Content */}

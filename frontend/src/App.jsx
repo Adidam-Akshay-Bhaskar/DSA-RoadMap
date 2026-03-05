@@ -2905,10 +2905,12 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                     <img 
                       src={`/stages/stage${s}.png`} 
                       alt={levelTitles[s]} 
+                      loading="eager"
+                      fetchPriority="high"
                       style={{ 
-                        height: 70 + (s * 28), // The actual image scales up gradually
+                        height: 70 + (s * 28),
                         width: "auto",
-                        maxWidth: "130%", // Reduced from 180% to prevent overlapping with adjacent characters
+                        maxWidth: "130%",
                         objectFit: "contain",
                         imageRendering: "pixelated",
                         mixBlendMode: "multiply",

@@ -1160,6 +1160,13 @@ function Roadmap({ session }) {
     }
     return null;
   });
+  const [todayQs, setTodayQs] = useState(() => {
+    if (session?.user) {
+      const saved = localStorage.getItem(`dsa_today_qs_${session.user.id}`);
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
   const [todos, setTodos] = useState(() => {
     if (session && session.user) {
       const savedTodos = localStorage.getItem(`dsa_todos_${session.user.id}`);
@@ -1225,37 +1232,46 @@ function Roadmap({ session }) {
     async function fetchProgress() {
       const { data } = await supabase
         .from("user_progress")
-        .select("completed_qs, streak_count, last_activity_date")
+        .select("completed_qs, streak_count, last_activity_date, today_qs")
         .eq("id", session.user.id)
         .single();
 
       if (data) {
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
         if (data.completed_qs) {
           const fetchedSet = new Set(data.completed_qs);
           setCompletedQs(fetchedSet);
           localStorage.setItem(`dsa_completed_${session.user.id}`, JSON.stringify([...fetchedSet]));
         }
-        if (data.streak_count !== undefined) {
-          setStreak(data.streak_count);
-          localStorage.setItem(`dsa_streak_${session.user.id}`, data.streak_count.toString());
-        }
-        if (data.last_activity_date) {
-          setLastActivityDate(data.last_activity_date);
-          localStorage.setItem(`dsa_last_date_${session.user.id}`, data.last_activity_date);
-        }
         
-        // Check if streak is lost
-        const today = new Date().toISOString().split('T')[0];
-        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        let fetchedTodayQs = data.today_qs || [];
+        // Clear today_qs if it's from a previous date
+        if (data.last_activity_date && data.last_activity_date !== today) {
+          fetchedTodayQs = [];
+        }
+        setTodayQs(fetchedTodayQs);
+        localStorage.setItem(`dsa_today_qs_${session.user.id}`, JSON.stringify(fetchedTodayQs));
+
+        let currentStreak = data.streak_count || 0;
+        let currentLastDate = data.last_activity_date;
         
+        // Check if streak is lost due to inactivity
         if (data.last_activity_date && data.last_activity_date !== today && data.last_activity_date !== yesterday) {
-          setStreak(0);
-          localStorage.setItem(`dsa_streak_${session.user.id}`, "0");
+          currentStreak = 0;
+          currentLastDate = null;
           await supabase.from("user_progress").upsert({
             id: session.user.id,
             streak_count: 0,
+            today_qs: [],
           });
         }
+
+        setStreak(currentStreak);
+        setLastActivityDate(currentLastDate);
+        localStorage.setItem(`dsa_streak_${session.user.id}`, currentStreak.toString());
+        localStorage.setItem(`dsa_last_date_${session.user.id}`, currentLastDate || "");
       }
       setSyncing(false);
     }
@@ -1263,43 +1279,68 @@ function Roadmap({ session }) {
   }, [session.user.id]);
 
   const toggleQuestion = async (qId) => {
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    const isAdding = !completedQs.has(qId);
+    
+    // 1. Update completed_qs
     const nextArr = [...completedQs];
-    if (completedQs.has(qId)) {
-      nextArr.splice(nextArr.indexOf(qId), 1);
-    } else {
+    if (isAdding) {
       nextArr.push(qId);
+    } else {
+      nextArr.splice(nextArr.indexOf(qId), 1);
     }
-
     const nextSet = new Set(nextArr);
     setCompletedQs(nextSet);
     localStorage.setItem(`dsa_completed_${session.user.id}`, JSON.stringify(nextArr));
 
-    // Calculate streak
+    // 2. Update today_qs & streak logic
+    let currentTodayQsArr = [...todayQs];
+    // If we're starting fresh on a new day
+    if (lastActivityDate !== today) {
+      currentTodayQsArr = [];
+    }
+
+    let newTodayQsArr = [...currentTodayQsArr];
     let newStreak = streak;
     let newLastDate = lastActivityDate;
-    const isGaining = nextArr.length > completedQs.size;
-    const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
-    if (isGaining) {
-      if (!lastActivityDate || lastActivityDate !== today) {
+    if (isAdding) {
+      if (!newTodayQsArr.includes(qId)) {
+        newTodayQsArr.push(qId);
+      }
+      // If this is the FIRST question ticked today
+      if (currentTodayQsArr.length === 0) {
         if (lastActivityDate === yesterday) {
           newStreak += 1;
         } else if (lastActivityDate !== today) {
           newStreak = 1;
         }
         newLastDate = today;
-        setStreak(newStreak);
-        setLastActivityDate(newLastDate);
-        localStorage.setItem(`dsa_streak_${session.user.id}`, newStreak.toString());
-        localStorage.setItem(`dsa_last_date_${session.user.id}`, newLastDate);
+      }
+    } else {
+      // Removing
+      newTodayQsArr = newTodayQsArr.filter(id => id !== qId);
+      // If we just became empty today such that we no longer meet the daily criteria
+      if (newTodayQsArr.length === 0 && lastActivityDate === today) {
+        newStreak = 0;
+        newLastDate = null; 
       }
     }
 
-    // Save to Supabase Cloud
+    setTodayQs(newTodayQsArr);
+    setStreak(newStreak);
+    setLastActivityDate(newLastDate);
+    
+    localStorage.setItem(`dsa_today_qs_${session.user.id}`, JSON.stringify(newTodayQsArr));
+    localStorage.setItem(`dsa_streak_${session.user.id}`, newStreak.toString());
+    localStorage.setItem(`dsa_last_date_${session.user.id}`, newLastDate || "");
+
+    // 3. Save to Supabase Cloud
     await supabase.from("user_progress").upsert({
       id: session.user.id,
       completed_qs: nextArr,
+      today_qs: newTodayQsArr,
       streak_count: newStreak,
       last_activity_date: newLastDate,
       updated_at: new Date().toISOString(),

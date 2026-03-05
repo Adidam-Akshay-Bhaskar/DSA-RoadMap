@@ -1138,6 +1138,8 @@ function Roadmap({ session }) {
   const [completedQs, setCompletedQs] = useState(new Set());
   const [showTracker, setShowTracker] = useState(false);
   const [syncing, setSyncing] = useState(true);
+  const [streak, setStreak] = useState(0);
+  const [lastActivityDate, setLastActivityDate] = useState(null);
   const [todos, setTodos] = useState(() => {
     if (session && session.user) {
       const savedTodos = localStorage.getItem(`dsa_todos_${session.user.id}`);
@@ -1201,14 +1203,28 @@ function Roadmap({ session }) {
   // Load progress from Supabase on mount
   useEffect(() => {
     async function fetchProgress() {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("user_progress")
-        .select("completed_qs")
+        .select("completed_qs, streak_count, last_activity_date")
         .eq("id", session.user.id)
         .single();
 
-      if (data && data.completed_qs) {
-        setCompletedQs(new Set(data.completed_qs));
+      if (data) {
+        if (data.completed_qs) setCompletedQs(new Set(data.completed_qs));
+        if (data.streak_count) setStreak(data.streak_count);
+        if (data.last_activity_date) setLastActivityDate(data.last_activity_date);
+        
+        // Check if streak is lost
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        
+        if (data.last_activity_date && data.last_activity_date !== today && data.last_activity_date !== yesterday) {
+          setStreak(0);
+          await supabase.from("user_progress").upsert({
+            id: session.user.id,
+            streak_count: 0,
+          });
+        }
       }
       setSyncing(false);
     }
@@ -1226,10 +1242,32 @@ function Roadmap({ session }) {
     const nextSet = new Set(nextArr);
     setCompletedQs(nextSet);
 
+    // Calculate streak
+    let newStreak = streak;
+    let newLastDate = lastActivityDate;
+    const isGaining = nextArr.length > completedQs.size;
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+    if (isGaining) {
+      if (!lastActivityDate || lastActivityDate !== today) {
+        if (lastActivityDate === yesterday) {
+          newStreak += 1;
+        } else if (lastActivityDate !== today) {
+          newStreak = 1;
+        }
+        newLastDate = today;
+        setStreak(newStreak);
+        setLastActivityDate(newLastDate);
+      }
+    }
+
     // Save to Supabase Cloud
     await supabase.from("user_progress").upsert({
       id: session.user.id,
       completed_qs: nextArr,
+      streak_count: newStreak,
+      last_activity_date: newLastDate,
       updated_at: new Date().toISOString(),
     });
   };
@@ -1361,6 +1399,39 @@ function Roadmap({ session }) {
                   </>
                 )}
               </div>
+
+              {/* Streak Section */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "#111827",
+                  padding: "6px 14px",
+                  borderRadius: 20,
+                  border: "1px solid #1a2535",
+                  position: "relative",
+                  overflow: "hidden"
+                }}
+                title="Your DSA Streak"
+              >
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative"
+                }}>
+                  <span style={{ fontSize: 20, filter: "drop-shadow(0 0 8px #3b82f6)", display: "flex", alignItems: "center" }}>
+                    <span style={{ color: "#3b82f6" }}>⚡</span>
+                    <span style={{ marginLeft: -4, marginTop: 4, transform: "scale(0.8)", filter: "hue-rotate(180deg) brightness(1.5)" }}>🔥</span>
+                  </span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+                  <span style={{ fontSize: 16, fontWeight: 900, color: "#e2e8f4" }}>{streak}</span>
+                  <span style={{ fontSize: 8, fontWeight: 800, color: "#3b82f6", textTransform: "uppercase", letterSpacing: 0.5 }}>STREAK</span>
+                </div>
+              </div>
+
               <button
                 onClick={() => supabase.auth.signOut()}
                 style={{

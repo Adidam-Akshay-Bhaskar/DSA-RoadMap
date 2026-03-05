@@ -199,6 +199,51 @@ body {
   position: relative;
 }
 
+.avatar-edit-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(2px);
+}
+
+.profile-avatar-container:hover .avatar-edit-overlay {
+  opacity: 1;
+}
+
+.avatar-delete-btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  border: 4px solid #070c18;
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.avatar-delete-btn:hover {
+  transform: scale(1.1) rotate(9deg);
+  background: #f87171;
+}
+
 .profile-info-row {
   display: flex;
   align-items: flex-end;

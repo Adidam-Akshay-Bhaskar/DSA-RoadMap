@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "./supabaseClient";
 
 const dsaData = [
@@ -1571,7 +1571,7 @@ function Roadmap({ session }) {
                   fontSize: 16, border: "1px solid rgba(255,255,255,0.1)",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
                 }}>
-                  {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 8 }} /> : "👤"}
+                  {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 8, objectFit: "cover" }} /> : "👤"}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
                   <span
@@ -2494,12 +2494,41 @@ function Roadmap({ session }) {
   );
 }
 
-function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate, questions, onBack, onResetProgress, defaultName }) {
+function ProfileTab({ profile, session, streak, completedCount, totalQuestions, onUpdate, questions, onBack, onResetProgress, defaultName }) {
   const [name, setName] = useState(profile?.display_name || defaultName || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [hoveredStage, setHoveredStage] = useState(null);
+  const fileInputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+      const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file);
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      await onUpdate({ avatar_url: publicUrl });
+    } catch (e) {
+      console.error(e);
+      alert('Upload failed—ensure "avatars" bucket is public in Supabase.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    if (!confirm("Remove profile photo?")) return;
+    setUploading(true);
+    await onUpdate({ avatar_url: null });
+    setUploading(false);
+  };
 
   // Sync state with props when they finally load
   useEffect(() => {
@@ -2826,7 +2855,29 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
         <div className="profile-info-row">
           <div className="profile-avatar-container">
-            {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28 }} /> : "👤"}
+            {profile?.avatar_url ? (
+               <>
+                 <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28, objectFit: "cover" }} />
+                 <div className="avatar-delete-btn" onClick={handleDeleteAvatar} title="Remove Photo">✕</div>
+               </>
+            ) : (
+               <div style={{ color: "#475569" }}>👤</div>
+            )}
+            
+            <div className="avatar-edit-overlay" onClick={() => fileInputRef.current?.click()}>
+               <div style={{ fontSize: 20, marginBottom: 4 }}>📷</div>
+               <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: 1 }}>
+                 {uploading ? "Updating..." : "Change Photo"}
+               </div>
+            </div>
+
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileUpload} 
+              accept="image/*" 
+              style={{ display: "none" }} 
+            />
           </div>
           
           <div style={{ flex: 1, paddingBottom: 10, minWidth: 280 }}>

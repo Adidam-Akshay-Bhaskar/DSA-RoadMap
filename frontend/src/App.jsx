@@ -2498,6 +2498,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
   const [bio, setBio] = useState(profile?.bio || "");
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [hoveredStage, setHoveredStage] = useState(null);
 
   // Sync state with props when they finally load
   useEffect(() => {
@@ -2631,32 +2632,86 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
               const isCurrent = s === currentLevel;
               
               return (
-                <div key={s} className={`stage-item stage-item-${s}`} style={{ 
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-end", // Align to bottom so all bars sit at the exact same horizontal baseline
-                  paddingBottom: 25,
-                  height: "100%",
-                  position: "relative",
-                  transition: "all 0.4s ease",
-                  cursor: isUnlocked ? "pointer" : "default",
-                  opacity: isUnlocked ? 1 : 0.2,
-                  filter: isUnlocked ? "none" : "grayscale(1) brightness(0.3)",
-                }}
-                onMouseEnter={e => {
-                  if (isUnlocked) {
+                <div 
+                  key={s} 
+                  className={`stage-item stage-item-${s}`} 
+                  onMouseEnter={e => {
+                    setHoveredStage(s);
+                    if (isUnlocked) {
+                      const img = e.currentTarget.querySelector('img');
+                      if (img) img.style.transform = "translateY(-15px) scale(1.15)";
+                      e.currentTarget.style.zIndex = 10;
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    setHoveredStage(null);
                     const img = e.currentTarget.querySelector('img');
-                    if (img) img.style.transform = "translateY(-15px) scale(1.15)";
-                    e.currentTarget.style.zIndex = 10;
-                  }
-                }}
-                onMouseLeave={e => {
-                  const img = e.currentTarget.querySelector('img');
-                  if (img) img.style.transform = "none";
-                  e.currentTarget.style.zIndex = 1;
-                }}>
+                    if (img) img.style.transform = "none";
+                    e.currentTarget.style.zIndex = 1;
+                  }}
+                  style={{ 
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-end", 
+                    paddingBottom: 25,
+                    height: "100%",
+                    position: "relative",
+                    transition: "all 0.4s ease",
+                    cursor: "pointer", 
+                    opacity: isUnlocked ? 1 : 0.6, 
+                    filter: isUnlocked ? "none" : "grayscale(1) brightness(0.6)",
+                  }}
+                >
+                  {/* Tooltip Popup */}
+                  {hoveredStage === s && (
+                    <div style={{
+                      position: "absolute", bottom: "100%", left: "50%",
+                      transform: "translateX(-50%) translateY(-10px)",
+                      background: "rgba(13, 17, 23, 0.95)", border: "1px solid rgba(255, 255, 255, 0.1)",
+                      backdropFilter: "blur(12px)", color: "#fff", padding: "12px 16px",
+                      borderRadius: 16, width: 220, zIndex: 1000,
+                      boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
+                      pointerEvents: "none", animation: "slideDown 0.2s ease"
+                    }}>
+                      <div style={{ fontSize: 13, fontWeight: 900, marginBottom: 4, color: isUnlocked ? "#10b981" : "#ef4444", display: "flex", alignItems: "center", gap: 6 }}>
+                         {isUnlocked ? "✅ UNLOCKED" : "🔒 LOCKED"}
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 8, color: "#fff" }}>
+                        {levelTitles[s]}
+                      </div>
+                      <div style={{ fontSize: 11, color: "#94a3b8", lineHeight: 1.5, marginBottom: 12 }}>
+                        {s === 1 && "The dawn of your journey. Master the fundamental primitives."}
+                        {s === 2 && "Consciousness rises. Understanding the flow of data."}
+                        {s === 3 && "Professional warrior. Mastery over complex structural nodes."}
+                        {s === 4 && "The digital phantom. Efficient navigation through logic mazes."}
+                        {s === 5 && "Ascended Divinity. Total command over time and memory."}
+                      </div>
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 8 }}>
+                         <div style={{ fontSize: 10, color: "#475569", textTransform: "uppercase", fontWeight: 800, marginBottom: 4 }}>Required Topics:</div>
+                         <div style={{ fontSize: 11, color: "#3b82f6", fontWeight: 700 }}>
+                           {s === 1 && "Math, Arrays, Strings"}
+                           {s === 2 && "Hashing, Stack, Queue"}
+                           {s === 3 && "Lists, Binary Trees, Advanced Trees"}
+                           {s === 4 && "Heap, Graphs"}
+                           {s === 5 && "Recursion, Greedy, DP"}
+                         </div>
+                         {s > 1 && !Array.from({length: s-1}, (_, i) => i + 1).every(lvl => levelGroups[lvl].every(id => isTopicDone(id))) && (
+                           <div style={{ fontSize: 10, color: "#ef4444", marginTop: 4, fontWeight: 700 }}>
+                             ⚠️ Must unlock previous stages first!
+                           </div>
+                         )}
+                      </div>
+                      {/* Arrow Down */}
+                      <div style={{ 
+                        position: "absolute", top: "100%", left: "50%", 
+                        transform: "translateX(-50%)", width: 0, height: 0,
+                        borderLeft: "8px solid transparent", borderRight: "8px solid transparent",
+                        borderTop: "8px solid rgba(13, 17, 23, 0.95)"
+                      }} />
+                    </div>
+                  )}
                   {/* Character Image with Ascending Size */}
                   <div style={{ 
                     height: 220, // Fixed height container forces all bars/labels below it to sit perfectly level

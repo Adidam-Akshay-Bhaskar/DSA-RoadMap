@@ -1462,34 +1462,22 @@ function Roadmap({ session }) {
                         key={q.id}
                         className="question-card"
                         style={{
-                          background: "#10b981",
-                          border: "1px solid #10b981",
-                          cursor: "pointer"
+                          background: "#111",
+                          border: "1px solid #222",
                         }}
-                        onClick={() => toggleQuestion(q.id)}
                       >
                         <span 
                           className="question-id"
-                          style={{ color: "rgba(0,0,0,0.5)" }}
+                          style={{ color: "#555" }}
                         >
                           #{q.id}
                         </span>
                         <span 
                           className="question-name"
-                          style={{ color: "#000" }}
+                          style={{ color: "#eee" }}
                         >
                           {q.name}
                         </span>
-                        <div 
-                          className="action-btn"
-                          style={{ 
-                            color: "#000",
-                            border: "2px solid rgba(0,0,0,0.3)",
-                            background: "rgba(0,0,0,0.1)"
-                          }}
-                        >
-                          ✓
-                        </div>
                       </div>
                     ))}
                   </div>

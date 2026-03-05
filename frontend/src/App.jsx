@@ -2757,37 +2757,6 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
           {!isEditing && (
             <div style={{ display: "flex", gap: 12, marginBottom: 10, width: window.innerWidth < 600 ? "100%" : "auto" }}>
-              <button
-                onClick={onBack}
-                style={{
-                  flex: window.innerWidth < 600 ? 1 : "initial",
-                  background: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  color: "#aaa",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  padding: "10px 24px",
-                  borderRadius: 12,
-                  transition: "all 0.2s",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
-                  e.currentTarget.style.color = "#fff";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                  e.currentTarget.style.color = "#aaa";
-                }}
-              >
-                ← Roadmap
-              </button>
               <button 
                 onClick={() => setIsEditing(true)} 
                 style={{ 

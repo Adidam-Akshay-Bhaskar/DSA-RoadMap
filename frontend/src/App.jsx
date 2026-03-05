@@ -2604,7 +2604,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
             </p>
           </div>
 
-          <div className="stages-display" style={{ paddingTop: "40px" }}>
+          <div className="stages-display" style={{ paddingTop: "15px" }}>
             {[1, 2, 3, 4, 5].map(s => {
               // Define topic groups for each level
               const levelGroups = {

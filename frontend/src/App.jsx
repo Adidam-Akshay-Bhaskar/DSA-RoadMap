@@ -1290,11 +1290,14 @@ function Roadmap({ session }) {
   const updateProfile = async (updates) => {
     const { error } = await supabase
       .from("profiles")
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq("id", session.user.id);
+      .upsert({ 
+        id: session.user.id,
+        ...updates, 
+        updated_at: new Date().toISOString() 
+      });
     
     if (!error) {
-      setProfile(prev => ({ ...prev, ...updates }));
+      setProfile(prev => ({ ...(prev || {}), ...updates, id: session.user.id }));
       return { success: true };
     }
     return { success: false, error };
@@ -2395,6 +2398,14 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  // Sync state with props when they finally load
+  useEffect(() => {
+    if (!isEditing && profile) {
+      setName(profile.display_name || "");
+      setBio(profile.bio || "");
+    }
+  }, [profile, isEditing]);
+
   const difficultyStats = { E: 0, M: 0, H: 0 };
   const userStats = { E: 0, M: 0, H: 0 };
 
@@ -2417,7 +2428,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
   const memberSince = profile?.updated_at 
     ? new Date(profile.updated_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
-    : 'Unknown Date';
+    : new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
   return (
     <div style={{

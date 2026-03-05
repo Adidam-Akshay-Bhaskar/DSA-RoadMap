@@ -2586,8 +2586,24 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
            opacity: 0.1, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", 
            backgroundSize: "20px 20px" 
          }} />
+          {/* Section Heading */}
+          <div style={{ position: "absolute", top: "100px", left: "32px", maxWidth: "120px", zIndex: 10 }}>
+            <h2 style={{ 
+              fontSize: "16px", fontWeight: 950, color: "#fff", margin: 0, 
+              textTransform: "uppercase", letterSpacing: "2px",
+              lineHeight: 1.2
+            }}>
+              Your <br/><span style={{ color: "#3b82f6" }}>Evolution</span>
+            </h2>
+            <p style={{ 
+              fontSize: "9px", color: "#475569", marginTop: "8px", 
+              fontWeight: 800, lineHeight: 1.4,
+              textTransform: "uppercase", letterSpacing: "1px"
+            }}>
+              Transcend through stages of digital mastery.
+            </p>
+          </div>
 
-          {/* Stages Display */}
           <div className="stages-display">
             {[1, 2, 3, 4, 5].map(s => {
               // Define topic groups for each level

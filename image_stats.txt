@@ -1,5 +1,0 @@
-Stage 1: size 612x408, bbox (168, 73, 409, 352), bottom gap: 56
-Stage 2: size 408x612, bbox (62, 120, 325, 410), bottom gap: 202
-Stage 3: size 408x612, bbox (61, 90, 325, 424), bottom gap: 188
-Stage 4: size 408x612, bbox (40, 49, 367, 453), bottom gap: 159
-Stage 5: size 408x612, bbox (33, 42, 377, 454), bottom gap: 158

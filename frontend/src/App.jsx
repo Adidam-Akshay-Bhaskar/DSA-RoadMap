@@ -1735,12 +1735,13 @@ function Roadmap({ session }) {
       </div>
 
       <div
-        style={{ maxWidth: 1060, margin: "0 auto", padding: "24px 20px 60px" }}
+        style={{ maxWidth: 1060, margin: "0 auto", padding: window.innerWidth < 600 ? "16px 20px 60px" : "40px 20px 60px" }}
       >
         {showProfile ? (
           <div style={{ animation: "slideDown 0.3s ease" }}>
              <ProfileTab 
                 profile={profile}
+                session={session}
                 streak={streak}
                 completedCount={completedQs}
                 totalQuestions={totalQuestions}
@@ -1903,6 +1904,7 @@ function Roadmap({ session }) {
                   borderBottom: "1px solid #222",
                   display: "flex",
                   alignItems: "center",
+                  gap: 20,
                 }}
               >
                 <span style={{ fontSize: 40 }}>{selected.emoji}</span>
@@ -2133,42 +2135,58 @@ function Roadmap({ session }) {
             </div>
           </div>
         ) : (
-          <div className="roadmap-grid" style={{ animation: "fadeIn 0.25s ease" }}>
+          <div className="roadmap-grid">
             {dsaData.map((item) => {
               const totalQ = item.questions.length;
-              const completedQCount = item.questions.filter(q => completedQs.has(q.id)).length;
-              const isAllCompleted = totalQ > 0 && totalQ === completedQCount;
+              const compQ = item.questions.filter(q => completedQs.has(q.id)).length;
+              const isAllComp = totalQ > 0 && totalQ === compQ;
 
               return (
                 <div
                   key={item.id}
-                  onClick={() => openDataStructure(item.id)}
+                  onClick={() => setActive(item.id)}
                   style={{
+                    background:
+                      active === item.id
+                        ? "rgba(59, 130, 246, 0.12)"
+                        : isAllComp
+                        ? "rgba(16, 185, 129, 0.05)"
+                        : "rgba(13, 17, 23, 0.6)",
+                    borderRadius: 24,
+                    padding: "24px",
+                    cursor: "pointer",
+                    border:
+                      active === item.id
+                        ? "1.5px solid rgba(59, 130, 246, 0.5)"
+                        : isAllComp
+                        ? "1.5px solid rgba(16, 185, 129, 0.3)"
+                        : "1px solid rgba(255, 255, 255, 0.05)",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    position: "relative",
+                    overflow: "hidden",
                     display: "flex",
                     flexDirection: "column",
-                    gap: 14,
-                    cursor: "pointer",
-                    padding: "24px",
-                    borderRadius: 20,
-                    border: isAllCompleted ? "1px solid rgba(16, 185, 129, 0.4)" : "1px solid rgba(255,255,255,0.08)",
-                    background: isAllCompleted ? "rgba(16, 185, 129, 0.05)" : "rgba(13, 17, 23, 0.6)",
-                    backdropFilter: "blur(4px)",
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    gap: 16,
+                    boxShadow: active === item.id ? "0 10px 25px -5px rgba(59, 130, 246, 0.2)" : "none",
                     height: "190px",
                     justifyContent: "space-between",
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+                    backdropFilter: "blur(4px)"
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = isAllCompleted ? "#10b981" : "rgba(255,255,255,0.2)";
-                    e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
-                    e.currentTarget.style.background = isAllCompleted ? "rgba(16, 185, 129, 0.08)" : "rgba(22, 27, 34, 0.8)";
-                    e.currentTarget.style.boxShadow = isAllCompleted ? "0 12px 30px rgba(16,185,129,0.15)" : "0 12px 30px rgba(0,0,0,0.3)";
+                    if (active !== item.id) {
+                      e.currentTarget.style.background = isAllComp ? "rgba(16, 185, 129, 0.08)" : "rgba(22, 27, 34, 0.8)";
+                      e.currentTarget.style.borderColor = isAllComp ? "#10b981" : "rgba(255,255,255,0.2)";
+                      e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
+                      e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4)";
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = isAllCompleted ? "rgba(16, 185, 129, 0.4)" : "rgba(255,255,255,0.08)";
-                    e.currentTarget.style.transform = "none";
-                    e.currentTarget.style.background = isAllCompleted ? "rgba(16, 185, 129, 0.05)" : "rgba(13, 17, 23, 0.6)";
-                    e.currentTarget.style.boxShadow = "none";
+                    if (active !== item.id) {
+                      e.currentTarget.style.background = isAllComp ? "rgba(16, 185, 129, 0.05)" : "rgba(13, 17, 23, 0.6)";
+                      e.currentTarget.style.borderColor = isAllComp ? "rgba(16, 185, 129, 0.4)" : "rgba(255,255,255,0.08)";
+                      e.currentTarget.style.transform = "none";
+                      e.currentTarget.style.boxShadow = "none";
+                    }
                   }}
                 >
                   <div
@@ -2247,7 +2265,6 @@ function Roadmap({ session }) {
                       <span title="Algorithms">
                         ⚙️ {item.algorithms.length}
                       </span>
-                      <span title="Patterns">🔁 {item.patterns.length}</span>
                       <span title="Questions">❓ {item.questions.length}</span>
                     </div>
                     <div
@@ -2448,14 +2465,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
       backdropFilter: "blur(4px)"
     }}>
       {/* Banner Section */}
-      <div style={{ 
-        height: 240, 
-        background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", 
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}>
+      <div className="profile-banner">
          <div style={{ 
            position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
            opacity: 0.1, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", 
@@ -2463,17 +2473,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
          }} />
 
           {/* Stages Display */}
-          <div style={{ 
-            display: "flex", 
-            justifyContent: "space-around",
-            width: "calc(100% - 240px)", // Account for profile pic offset
-            marginLeft: "240px",
-            position: "relative", 
-            zIndex: 2,
-            alignItems: "center",
-            height: "100%",
-            padding: "0 40px"
-          }}>
+          <div className="stages-display">
             {[1, 2, 3, 4, 5].map(s => {
               // Define topic groups for each level
               const levelGroups = {
@@ -2494,7 +2494,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
               // Helper to check if a topic is fully completed
               const isTopicDone = (topicId) => {
-                const topic = dsaData.find(d => d.id === topicId);
+                const topic = questions.find(d => d.id === topicId);
                 if (!topic) return false;
                 return topic.questions.every(q => completedCount.has(q.id));
               };
@@ -2516,7 +2516,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
               const isCurrent = s === currentLevel;
               
               return (
-                <div key={s} style={{ 
+                <div key={s} className="stage-item" style={{ 
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",
@@ -2532,7 +2532,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 onMouseEnter={e => {
                   if (isUnlocked) {
                     const img = e.currentTarget.querySelector('img');
-                    if (img) img.style.transform = "translateY(-15px) scale(1.2)";
+                    if (img) img.style.transform = "translateY(-15px) scale(1.15)";
                     e.currentTarget.style.zIndex = 10;
                   }
                 }}
@@ -2543,7 +2543,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 }}>
                   {/* Character Image with Ascending Size */}
                   <div style={{ 
-                    height: 90 + (s * 25), // Ascending height from 115px to 215px
+                    height: 80 + (s * 20), // Slightly smaller scaling for mobile compatibility
                     width: "100%", 
                     display: "flex", 
                     alignItems: "center", 
@@ -2579,7 +2579,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
 
                   {/* Level Label */}
                   <div style={{ 
-                    fontSize: 10, 
+                    fontSize: 9, 
                     fontWeight: 900, 
                     color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "rgba(255,255,255,0.3)",
                     fontFamily: "monospace",
@@ -2598,17 +2598,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
       </div>
 
       {/* Profile Content */}
-      <div style={{ padding: "0 40px 40px", marginTop: -60, position: "relative" }}>
+      <div style={{ padding: window.innerWidth < 600 ? "0 20px 40px" : "0 40px 40px", marginTop: -60, position: "relative" }}>
 
-        <div style={{ display: "flex", alignItems: "flex-end", gap: 32, marginBottom: 36, flexWrap: "wrap" }}>
-          <div style={{
-            width: 140, height: 140, borderRadius: 36, 
-            background: "linear-gradient(135deg, #334155, #1e293b)",
-            border: "8px solid #070c18", display: "flex", alignItems: "center",
-            justifyContent: "center", fontSize: 60, 
-            boxShadow: "0 12px 24px rgba(0,0,0,0.4)",
-            position: "relative"
-          }}>
+        <div className="profile-info-row">
+          <div className="profile-avatar-container">
             {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28 }} /> : "👤"}
           </div>
           
@@ -2647,10 +2640,11 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
           </div>
 
           {!isEditing && (
-            <div style={{ display: "flex", gap: 12, marginBottom: 10 }}>
+            <div style={{ display: "flex", gap: 12, marginBottom: 10, width: window.innerWidth < 600 ? "100%" : "auto" }}>
               <button
                 onClick={onBack}
                 style={{
+                  flex: window.innerWidth < 600 ? 1 : "initial",
                   background: "rgba(255, 255, 255, 0.03)",
                   border: "1px solid rgba(255, 255, 255, 0.1)",
                   color: "#aaa",
@@ -2662,6 +2656,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   transition: "all 0.2s",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: 8
                 }}
                 onMouseEnter={(e) => {
@@ -2680,6 +2675,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
               <button 
                 onClick={() => setIsEditing(true)} 
                 style={{ 
+                  flex: window.innerWidth < 600 ? 1 : "initial",
                   background: "rgba(59, 130, 246, 0.1)", 
                   border: "1px solid rgba(59, 130, 246, 0.2)",
                   color: "#3b82f6", 
@@ -2758,7 +2754,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
         {/* Detailed Progress Breakdown */}
         <div style={{ marginBottom: 20 }}>
           <label style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: 1, display: "block", marginBottom: 24 }}>Skill Mastery</label>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: window.innerWidth < 600 ? 16 : 32 }}>
             {[
               { label: 'Easy', code: 'E', color: '#4ade80' },
               { label: 'Medium', code: 'M', color: '#fb923c' },

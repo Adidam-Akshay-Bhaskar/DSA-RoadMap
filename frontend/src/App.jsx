@@ -1231,20 +1231,25 @@ function Roadmap({ session }) {
       const state = e.state;
       if (state && state.view === 'topic') {
         setActive(state.id);
+        setTab("algorithms");
         setShowTracker(false);
         setShowProfile(false);
+        window.scrollTo({ top: 0, behavior: "instant" });
       } else if (state && state.view === 'tracker') {
         setShowTracker(true);
         setActive(null);
         setShowProfile(false);
+        window.scrollTo({ top: 0, behavior: "instant" });
       } else if (state && state.view === 'profile') {
         setShowProfile(true);
         setActive(null);
         setShowTracker(false);
+        window.scrollTo({ top: 0, behavior: "instant" });
       } else {
         setActive(null);
         setShowTracker(false);
         setShowProfile(false);
+        window.scrollTo({ top: 0, behavior: "instant" });
       }
     };
 
@@ -1256,6 +1261,7 @@ function Roadmap({ session }) {
     setActive(id);
     setTab("algorithms");
     window.history.pushState({ view: 'topic', id }, "", `?topic=${id}`);
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const openProfile = () => {
@@ -1263,6 +1269,7 @@ function Roadmap({ session }) {
     setShowTracker(false);
     setActive(null);
     window.history.pushState({ view: 'profile' }, "", "?view=profile");
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const toggleTracker = () => {
@@ -1282,6 +1289,7 @@ function Roadmap({ session }) {
     setShowTracker(false);
     setShowProfile(false);
     window.history.pushState({ view: 'dashboard' }, "", "/");
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const updateProfile = async (updates) => {

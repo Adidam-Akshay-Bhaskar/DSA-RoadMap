@@ -1202,6 +1202,8 @@ function Roadmap({ session }) {
     const params = new URLSearchParams(window.location.search);
     return params.get('view') === 'profile';
   });
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showResetToast, setShowResetToast] = useState(false);
 
   useEffect(() => {
     if (session && session.user) {
@@ -1300,8 +1302,12 @@ function Roadmap({ session }) {
     return { success: false, error };
   };
 
-  const handleResetProgress = async () => {
-    if (!window.confirm("Are you sure? This will untick ALL questions. Your current streak will be preserved, but you must tick at least one question within 24 hours to maintain it!")) return;
+  const handleResetProgressRequest = () => {
+    setShowResetConfirm(true);
+  };
+
+  const handleConfirmReset = async () => {
+    setShowResetConfirm(false);
     
     setCompletedQs(new Set());
     setTodayQs([]);
@@ -1315,7 +1321,8 @@ function Roadmap({ session }) {
       updated_at: new Date().toISOString(),
     });
 
-    alert("Progress reset! Start ticking to maintain your streak.");
+    setShowResetToast(true);
+    setTimeout(() => setShowResetToast(false), 5000);
   };
 
   const selected = dsaData.find((d) => d.id === active);
@@ -1751,7 +1758,7 @@ function Roadmap({ session }) {
                 questions={dsaData}
                 onUpdate={updateProfile}
                 onBack={goBackToDashboard}
-                onResetProgress={handleResetProgress}
+                onResetProgress={handleResetProgressRequest}
                 defaultName={session?.user?.email?.split('@')[0] || "User"}
              />
           </div>
@@ -2416,6 +2423,72 @@ function Roadmap({ session }) {
       </div>
 
       <style>{`@keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }`}</style>
+      
+      {/* Custom Reset Confirmation Modal */}
+      {showResetConfirm && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 1000, padding: 24, animation: "slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+        }}>
+          <div style={{
+            background: "#0d1117", border: "1px solid rgba(239, 68, 68, 0.3)",
+            maxWidth: 480, width: "100%", borderRadius: 32, padding: "40px",
+            boxShadow: "0 40px 100px -20px rgba(0,0,0,0.8), 0 0 40px rgba(239, 68, 68, 0.1)"
+          }}>
+            <div style={{ fontSize: 48, textAlign: "center", marginBottom: 24 }}>🛑</div>
+            <h3 style={{ fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 16 }}>Confirm Global Reset?</h3>
+            <p style={{ color: "#94a3b8", textAlign: "center", lineHeight: 1.6, marginBottom: 32, fontSize: 15 }}>
+              Are you sure? This will untick <strong style={{ color: "#fff" }}>ALL</strong> questions across the entire platform. 
+              Your current streak is <strong style={{ color: "#3b82f6" }}>preserved</strong>, but you must complete a topic within 24 hours to maintain it.
+            </p>
+            <div style={{ display: "flex", gap: 16 }}>
+              <button 
+                onClick={handleConfirmReset}
+                style={{
+                  flex: 1, background: "#ef4444", color: "#fff", border: "none",
+                  padding: "18px", borderRadius: 16, fontWeight: 800, cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "none"}
+              >
+                Yes, Reset All
+              </button>
+              <button 
+                onClick={() => setShowResetConfirm(false)}
+                style={{
+                  flex: 1, background: "rgba(255,255,255,0.05)", color: "#fff", border: "1px solid rgba(255,255,255,0.1)",
+                  padding: "18px", borderRadius: 16, fontWeight: 800, cursor: "pointer"
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Global Notification (Toast) */}
+      {showResetToast && (
+        <div style={{
+          position: "fixed", bottom: 40, left: "50%", transform: "translateX(-50%)",
+          background: "#0d1117", border: "1px solid #10b981", color: "#10b981",
+          padding: "16px 32px", borderRadius: 20, fontWeight: 800, fontSize: 14,
+          boxShadow: "0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(16,185,129,0.2)",
+          display: "flex", alignItems: "center", gap: 12, zIndex: 2000,
+          animation: "toastSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)"
+        }}>
+          <span style={{ fontSize: 20 }}>✅</span>
+          Progress reset! Start ticking to maintain your streak.
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes toastSlideUp { from { opacity:0; transform:translate(-50%, 40px); } to { opacity:1; transform:translate(-50%, 0); } }
+      `}</style>
     </div>
   );
 }
@@ -2718,7 +2791,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.2)"}
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)"}
               >
-                <span>🗑️</span> Reset
+                Reset
               </button>
             </div>
           )}

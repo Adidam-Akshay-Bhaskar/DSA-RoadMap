@@ -2587,7 +2587,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
            backgroundSize: "20px 20px" 
          }} />
           {/* Section Heading */}
-          <div style={{ position: "absolute", top: "100px", left: "32px", maxWidth: "120px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "80px", left: "32px", maxWidth: "120px", zIndex: 10 }}>
             <h2 style={{ 
               fontSize: "16px", fontWeight: 950, color: "#fff", margin: 0, 
               textTransform: "uppercase", letterSpacing: "2px",
@@ -2604,7 +2604,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
             </p>
           </div>
 
-          <div className="stages-display" style={{ paddingTop: "60px" }}>
+          <div className="stages-display" style={{ paddingTop: "40px" }}>
             {[1, 2, 3, 4, 5].map(s => {
               // Define topic groups for each level
               const levelGroups = {

@@ -2521,9 +2521,8 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: "center", // Center vertically so they appear at 'same level'
                   height: "100%",
-                  paddingBottom: 25,
                   position: "relative",
                   transition: "all 0.4s ease",
                   cursor: isUnlocked ? "pointer" : "default",
@@ -2544,10 +2543,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                 }}>
                   {/* Character Image with Ascending Size */}
                   <div style={{ 
-                    height: 70 + (s * 28), // Steep ascending height: ~100px to ~210px
+                    height: 70 + (s * 28), // Ascending height (~100px to ~210px)
                     width: "100%", 
                     display: "flex", 
-                    alignItems: "flex-end", // Align to bottom baseline
+                    alignItems: "center", // Shared midline center
                     justifyContent: "center",
                     marginBottom: 10
                   }}>

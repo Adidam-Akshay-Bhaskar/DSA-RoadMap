@@ -2684,7 +2684,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   {hoveredStage === s && (
                     <div style={{
                       position: "absolute", bottom: "135px", left: "50%",
-                      transform: s === 1 ? "translateX(-20%)" : s === 5 ? "translateX(-80%)" : "translateX(-50%)",
+                      transform: s === 1 ? "translateX(-5%)" : s === 5 ? "translateX(-95%)" : "translateX(-50%)",
                       background: "#0f172a", border: "2px solid #334155",
                       color: "#fff", padding: "10px",
                       borderRadius: 16, width: 210, zIndex: 1000,
@@ -2758,7 +2758,7 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       {/* Arrow Down */}
                       <div style={{ 
                         position: "absolute", top: "100%", 
-                        left: s === 1 ? "20%" : s === 5 ? "80%" : "50%", 
+                        left: s === 1 ? "12%" : s === 5 ? "88%" : "50%", 
                         transform: "translateX(-50%)", width: 0, height: 0,
                         borderLeft: "6px solid transparent", borderRight: "6px solid transparent",
                         borderTop: "6px solid #0f172a"

@@ -1195,6 +1195,8 @@ function Roadmap({ session }) {
     return [];
   });
   const [newTodo, setNewTodo] = useState("");
+  const [profile, setProfile] = useState(null);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     if (session && session.user) {
@@ -1246,6 +1248,19 @@ function Roadmap({ session }) {
     const nextState = !showTracker;
     setShowTracker(nextState);
     window.history.pushState({ view: nextState ? 'tracker' : 'dashboard' }, "", nextState ? '?view=tracker' : window.location.pathname);
+  };
+
+  const updateProfile = async (updates) => {
+    const { error } = await supabase
+      .from("profiles")
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq("id", session.user.id);
+    
+    if (!error) {
+      setProfile(prev => ({ ...prev, ...updates }));
+      return { success: true };
+    }
+    return { success: false, error };
   };
 
   const goBackToDashboard = () => {
@@ -1323,6 +1338,18 @@ function Roadmap({ session }) {
         localStorage.setItem(`dsa_prev_streak_${session.user.id}`, pStreak.toString());
         localStorage.setItem(`dsa_prev_date_${session.user.id}`, pDate || "");
       }
+
+      // Fetch Profile
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+      
+      if (profileData) {
+        setProfile(profileData);
+      }
+
       setSyncing(false);
     }
     fetchProgress();
@@ -1454,18 +1481,40 @@ function Roadmap({ session }) {
               >
                 <img src="/logo.png" alt="DSA Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
-              <h1
-                className="header-title-text"
-                style={{
-                  margin: 0,
-                  fontSize: 26,
-                  fontWeight: 900,
-                  color: "#e2e8f4",
-                  letterSpacing: -0.5,
+              <div 
+                onClick={() => setShowProfile(true)}
+                style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: 12, 
+                  cursor: "pointer",
+                  padding: "4px 10px",
+                  borderRadius: 12,
+                  transition: "background 0.2s"
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "#ffffff05"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
               >
-                {session?.user?.email}
-              </h1>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8, background: "#1f2937",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 14, border: "1px solid #334155"
+                }}>
+                  {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 6 }} /> : "👤"}
+                </div>
+                <h1
+                  className="header-title-text"
+                  style={{
+                    margin: 0,
+                    fontSize: 20,
+                    fontWeight: 850,
+                    color: "#f1f5f9",
+                    letterSpacing: -0.4,
+                  }}
+                >
+                  {profile?.display_name || session?.user?.email.split('@')[0]}
+                </h1>
+              </div>
             </div>
 
             {/* Tracker UI & Logout */}
@@ -2270,6 +2319,191 @@ function Roadmap({ session }) {
       </div>
 
       <style>{`@keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }`}</style>
+
+      {showProfile && (
+        <ProfileModal 
+          profile={profile}
+          streak={streak}
+          completedCount={completedQs}
+          totalQuestions={totalQuestions}
+          questions={dsaData}
+          onClose={() => setShowProfile(false)}
+          onUpdate={updateProfile}
+        />
+      )}
+    </div>
+  );
+}
+
+function ProfileModal({ profile, streak, completedCount, totalQuestions, onClose, onUpdate, questions }) {
+  const [name, setName] = useState(profile?.display_name || "");
+  const [bio, setBio] = useState(profile?.bio || "");
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const difficultyStats = { E: 0, M: 0, H: 0 };
+  const userStats = { E: 0, M: 0, H: 0 };
+
+  questions.forEach(topic => {
+    topic.questions.forEach(q => {
+      difficultyStats[q.difficulty]++;
+      if (completedCount.has(q.id)) {
+        userStats[q.difficulty]++;
+      }
+    });
+  });
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onUpdate({ display_name: name, bio });
+    setIsEditing(false);
+    setSaving(false);
+  };
+
+  return (
+    <div style={{
+      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+      background: "rgba(0,0,0,0.85)", zIndex: 1000,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      backdropFilter: "blur(8px)", padding: 20
+    }} onClick={onClose}>
+      <div style={{
+        background: "#0d1117", width: "100%", maxWidth: 500,
+        borderRadius: 24, border: "1px solid #333",
+        overflow: "hidden", position: "relative",
+        animation: "slideDown 0.3s ease-out"
+      }} onClick={e => e.stopPropagation()}>
+        {/* Banner */}
+        <div style={{ height: 100, background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", position: "relative" }}>
+           <button onClick={onClose} style={{
+             position: "absolute", top: 16, right: 16,
+             background: "#ffffff10", border: "none", color: "#fff",
+             width: 32, height: 32, borderRadius: "50%", cursor: "pointer",
+             fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center"
+           }}>×</button>
+        </div>
+
+        {/* Profile Info */}
+        <div style={{ padding: "0 32px 32px", marginTop: -40 }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 20, marginBottom: 24 }}>
+            <div style={{
+              width: 90, height: 90, borderRadius: 24, background: "#1f2937",
+              border: "4px solid #0d1117", display: "flex", alignItems: "center",
+              justifyContent: "center", fontSize: 40, boxShadow: "0 10px 25px rgba(0,0,0,0.3)"
+            }}>
+              {profile?.avatar_url ? <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 20 }} /> : "👤"}
+            </div>
+            <div style={{ flex: 1, paddingBottom: 8 }}>
+              {isEditing ? (
+                <input 
+                  value={name} onChange={e => setName(e.target.value)}
+                  style={{ 
+                    background: "#07090d", border: "1px solid #333", color: "#fff",
+                    fontSize: 22, fontWeight: 800, padding: "4px 12px", borderRadius: 8,
+                    width: "100%", outline: "none"
+                  }} 
+                />
+              ) : (
+                <h2 style={{ margin: 0, fontSize: 24, fontWeight: 900, color: "#fff" }}>
+                  {profile?.display_name || "User"}
+                </h2>
+              )}
+              <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+                Member since {new Date(profile?.updated_at).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+            <div style={{ background: "#161b22", padding: 16, borderRadius: 16, border: "1px solid #222" }}>
+              <div style={{ fontSize: 11, color: "#64748b", fontWeight: 800, textTransform: "uppercase", marginBottom: 8 }}>Current Streak</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: "#3b82f6", display: "flex", alignItems: "center", gap: 8 }}>
+                 {streak} <span style={{ fontSize: 20 }}>🔥</span>
+              </div>
+            </div>
+            <div style={{ background: "#161b22", padding: 16, borderRadius: 16, border: "1px solid #222" }}>
+              <div style={{ fontSize: 11, color: "#64748b", fontWeight: 800, textTransform: "uppercase", marginBottom: 8 }}>Total Completed</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: "#fff" }}>
+                {completedCount.size} <span style={{ fontSize: 14, color: "#444" }}>/ {totalQuestions}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bio Section */}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <label style={{ fontSize: 12, fontWeight: 800, color: "#4b5563", textTransform: "uppercase" }}>Bio</label>
+              {!isEditing && (
+                <button onClick={() => setIsEditing(true)} style={{ background: "none", border: "none", color: "#3b82f6", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Edit Profile</button>
+              )}
+            </div>
+            {isEditing ? (
+              <textarea 
+                value={bio} onChange={e => setBio(e.target.value)}
+                placeholder="Talk about your DSA journey..."
+                style={{ 
+                  background: "#07090d", border: "1px solid #333", color: "#ddd",
+                  fontSize: 14, padding: "12px", borderRadius: 12, width: "100%",
+                  minHeight: 80, outline: "none", resize: "none"
+                }} 
+              />
+            ) : (
+              <p style={{ margin: 0, fontSize: 14, color: "#9ca3af", lineHeight: 1.6 }}>
+                {profile?.bio || "No bio yet. Click Edit to add one!"}
+              </p>
+            )}
+          </div>
+
+          {/* Difficulty Breakdown */}
+          <div style={{ marginBottom: 32 }}>
+            <label style={{ fontSize: 12, fontWeight: 800, color: "#4b5563", textTransform: "uppercase", display: "block", marginBottom: 12 }}>Difficulty Breakdown</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {['E', 'M', 'H'].map(diff => (
+                <div key={diff} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 60, fontSize: 12, fontWeight: 700, color: diff === 'E' ? '#4ade80' : diff === 'H' ? '#f87171' : '#fb923c' }}>
+                    {diff === 'E' ? 'Easy' : diff === 'H' ? 'Hard' : 'Med'}
+                  </div>
+                  <div style={{ flex: 1, height: 6, background: "#161b22", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ 
+                      width: `${(userStats[diff] / Math.max(1, difficultyStats[diff])) * 100}%`, 
+                      height: "100%", 
+                      background: diff === 'E' ? '#4ade80' : diff === 'H' ? '#f87171' : '#fb923c',
+                      transition: "width 0.5s ease"
+                    }} />
+                  </div>
+                  <div style={{ fontSize: 12, color: "#4b5563", fontWeight: 700 }}>
+                    {userStats[diff]} <span style={{ color: "#222" }}>/</span> {difficultyStats[diff]}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {isEditing && (
+            <div style={{ display: "flex", gap: 12 }}>
+              <button 
+                onClick={handleSave} disabled={saving}
+                style={{ 
+                  flex: 1, background: "#fff", color: "#000", border: "none",
+                  padding: "12px", borderRadius: 12, fontWeight: 800, cursor: "pointer"
+                }}
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+              <button 
+                onClick={() => setIsEditing(false)}
+                style={{ 
+                  flex: 1, background: "#161b22", color: "#fff", border: "1px solid #333",
+                  padding: "12px", borderRadius: 12, fontWeight: 800, cursor: "pointer"
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

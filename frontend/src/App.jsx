@@ -677,10 +677,6 @@ export default function DSARoadmap() {
       if (event === "PASSWORD_RECOVERY") {
         setIsRecovering(true);
       }
-      // On fresh login: always land on dashboard, not a stale deep-link
-      if (event === "SIGNED_IN") {
-        window.history.replaceState({ view: 'dashboard' }, "", "/");
-      }
     });
 
     return () => subscription.unsubscribe();
@@ -792,6 +788,10 @@ function AuthScreen({ initialView = "signIn", onRecoveryComplete }) {
     } else if (view === "signIn") {
       const res = await supabase.auth.signInWithPassword({ email, password });
       error = res.error;
+      if (!error) {
+        // Only redirect to dashboard on an exact, fresh login action (not page reloads)
+        window.history.replaceState({ view: 'dashboard' }, "", "/");
+      }
     } else if (view === "forgot") {
       if (resendCooldown > 0) {
         setMsg(`Please wait ${resendCooldown}s before trying again.`);

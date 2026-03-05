@@ -2667,42 +2667,41 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                   {/* Tooltip Popup */}
                   {hoveredStage === s && (
                     <div style={{
-                      position: "absolute", bottom: "140px", left: "50%",
+                      position: "absolute", bottom: "135px", left: "50%",
                       transform: "translateX(-50%)",
                       background: "#0f172a", border: "2px solid #334155",
-                      color: "#fff", padding: "14px",
-                      borderRadius: 16, width: 250, zIndex: 1000,
-                      boxShadow: "0 20px 25px -5px rgba(0,0,0,0.5), 0 10px 10px -5px rgba(0,0,0,0.4)",
+                      color: "#fff", padding: "10px",
+                      borderRadius: 16, width: 210, zIndex: 1000,
+                      boxShadow: "0 20px 25px -5px rgba(0,0,0,0.5)",
                       pointerEvents: "none", animation: "fadeInUpTooltip 0.3s ease-out forwards"
                     }}>
                       {/* Header Status */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                         <div style={{ 
-                          fontSize: 10, fontWeight: 900,
-                          color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "#94a3b8",
+                          fontSize: 9, fontWeight: 900,
+                          color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "#64748b",
                           textTransform: "uppercase", letterSpacing: 0.5
                         }}>
                           {isUnlocked ? "✅ EVOLVED" : isCurrent ? "🔥 CURRENT" : "🔒 LOCKED"}
                         </div>
-                        <div style={{ fontSize: 9, color: "#475569", fontWeight: 700 }}>STAGE {s}/5</div>
+                        <div style={{ fontSize: 8, color: "#334155", fontWeight: 700 }}>{s}/5</div>
                       </div>
 
                       {/* Stage Title */}
-                      <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 4 }}>
+                      <div style={{ fontSize: 13, fontWeight: 950, color: "#fff", marginBottom: 2 }}>
                         {levelTitles[s]}
                       </div>
-                      <p style={{ fontSize: 11, color: "#94a3b8", lineHeight: 1.4, marginBottom: 12 }}>
-                        {s === 1 && "Master the basic syntax of the universe."}
-                        {s === 2 && "Flow through data with purpose and intent."}
-                        {s === 3 && "Structure complex nodes into powerful systems."}
-                        {s === 4 && "Navigate deep logic networks with ease."}
-                        {s === 5 && "Bending time and memory to your command."}
+                      <p style={{ fontSize: 9.5, color: "#94a3b8", lineHeight: 1.3, marginBottom: 8 }}>
+                        {s === 1 && "Start your journey into logic."}
+                        {s === 2 && "Fluid data flow and purpose."}
+                        {s === 3 && "Architecting complex structures."}
+                        {s === 4 && "Navigating deep logic networks."}
+                        {s === 5 && "Bending time and memory."}
                       </p>
 
                       {/* Technical Detail */}
-                      <div style={{ borderTop: "1px solid #1e293b", paddingTop: 10 }}>
-                        <div style={{ fontSize: 9, color: "#64748b", fontWeight: 800, textTransform: "uppercase", marginBottom: 6 }}>Requirements:</div>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                      <div style={{ borderTop: "1px solid #1e293b", paddingTop: 8 }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                            {(s === 1 ? ["Math", "Arrays", "Strings"] : 
                              s === 2 ? ["Hashing", "Stack", "Queue"] : 
                              s === 3 ? ["Lists", "Binary Trees", "Adv Trees"] : 
@@ -2718,10 +2717,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                                const done = isTopicDone(topicMap[tag]);
                                return (
                                  <span key={tag} style={{ 
-                                   fontSize: 9, borderRadius: 4, 
-                                   background: done ? "rgba(16, 185, 129, 0.2)" : "rgba(255,255,255,0.05)",
+                                   fontSize: 8.5, borderRadius: 4, 
+                                   background: done ? "rgba(16, 185, 129, 0.2)" : "rgba(255,255,255,0.03)",
                                    color: done ? "#10b981" : "#475569",
-                                   padding: "2px 6px", fontWeight: 800
+                                   padding: "2px 5px", fontWeight: 800
                                  }}>
                                    {tag} {done ? "✓" : "○"}
                                  </span>
@@ -2733,10 +2732,10 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       {/* Locking Logic Warning */}
                       {s > 1 && !Array.from({length: s-1}, (_, i) => i + 1).every(lvl => levelGroups[lvl].every(id => isTopicDone(id))) && (
                         <div style={{ 
-                          fontSize: 9, color: "#ef4444", fontWeight: 900, 
-                          marginTop: 10, textAlign: "center", textTransform: "uppercase"
+                          fontSize: 8.5, color: "#ef4444", fontWeight: 950, 
+                          marginTop: 8, textAlign: "center", textTransform: "uppercase"
                         }}>
-                          ⚠️ Master previous stages first
+                          ⚠️ Master previous stages
                         </div>
                       )}
 
@@ -2744,8 +2743,8 @@ function ProfileTab({ profile, streak, completedCount, totalQuestions, onUpdate,
                       <div style={{ 
                         position: "absolute", top: "100%", left: "50%", 
                         transform: "translateX(-50%)", width: 0, height: 0,
-                        borderLeft: "8px solid transparent", borderRight: "8px solid transparent",
-                        borderTop: "8px solid #0f172a"
+                        borderLeft: "6px solid transparent", borderRight: "6px solid transparent",
+                        borderTop: "6px solid #0f172a"
                       }} />
                     </div>
                   )}

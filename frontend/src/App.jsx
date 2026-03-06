@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
-
 const dsaData = [
   {
     id: 1,
@@ -2607,34 +2607,30 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
     }}>
 
       {/* ─── Delete Confirm Modal ─── */}
-      {showDeleteConfirm && (
+      {showDeleteConfirm && createPortal(
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
           background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          zIndex: 9999, padding: 24, animation: "fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+          zIndex: 1000, padding: 24, animation: "slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
         }}>
           <div style={{
-            background: "#0f172a", border: "1px solid rgba(239, 68, 68, 0.3)",
-            maxWidth: 380, width: "100%", borderRadius: 32, padding: "40px",
-            boxShadow: "0 40px 100px -20px rgba(0,0,0,0.8), 0 0 40px rgba(239, 68, 68, 0.1)",
-            textAlign: "center",
-            animation: "slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
+            background: "#0d1117", border: "1px solid rgba(239, 68, 68, 0.3)",
+            maxWidth: 480, width: "100%", borderRadius: 32, padding: "40px",
+            boxShadow: "0 40px 100px -20px rgba(0,0,0,0.8), 0 0 40px rgba(239, 68, 68, 0.1)"
           }}>
-            <div style={{ fontSize: 40, marginBottom: 16 }}>🗑️</div>
-            <h3 style={{ color: "#f8fafc", fontWeight: 900, fontSize: 22, margin: "0 0 12px" }}>
-              Remove Photo?
-            </h3>
-            <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.6, margin: "0 0 28px" }}>
+            <div style={{ fontSize: 48, textAlign: "center", marginBottom: 24 }}>🗑️</div>
+            <h3 style={{ fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 16 }}>Remove Photo?</h3>
+            <p style={{ color: "#94a3b8", textAlign: "center", lineHeight: 1.6, marginBottom: 32, fontSize: 15 }}>
               This action will permanently delete your custom avatar.
             </p>
-            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <div style={{ display: "flex", gap: 16 }}>
               <button
                 onClick={handleDeleteAvatar}
                 style={{
                   flex: 1, background: "#ef4444", color: "#fff", border: "none",
-                  padding: "16px", borderRadius: 16, fontWeight: 800,
-                  cursor: "pointer", fontSize: 14, transition: "all 0.2s"
+                  padding: "18px", borderRadius: 16, fontWeight: 800, cursor: "pointer",
+                  transition: "all 0.2s"
                 }}
                 onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
                 onMouseLeave={e => e.currentTarget.style.transform = "none"}
@@ -2645,16 +2641,15 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                 onClick={() => setShowDeleteConfirm(false)}
                 style={{
                   flex: 1, background: "rgba(255,255,255,0.05)", color: "#fff", border: "1px solid rgba(255,255,255,0.1)",
-                  padding: "16px", borderRadius: 16, fontWeight: 800, cursor: "pointer", fontSize: 14, transition: "all 0.2s"
+                  padding: "18px", borderRadius: 16, fontWeight: 800, cursor: "pointer"
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
-                onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
               >
                 Keep Photo
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ─── Upload Error Toast ─── */}

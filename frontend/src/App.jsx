@@ -2811,7 +2811,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                       className={`stage-tooltip-box stage-tooltip-box-${s}`}
                       style={{
                         position: "absolute", 
-                        ...(s === 1 ? { top: "calc(100% + 10px)" } : { bottom: "115px" }),
+                        bottom: "115px",
                         left: "50%",
                         transform: s === 1 ? "translateX(-15%)" : s === 5 ? "translateX(-85%)" : "translateX(-50%)",
                         background: "#0f172a", border: "2px solid #334155",
@@ -2887,11 +2887,11 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                       {/* Arrow Logic */}
                       <div style={{ 
                         position: "absolute", 
-                        ...(s === 1 ? { bottom: "100%" } : { top: "100%" }),
+                        top: "100%",
                         left: s === 1 ? "15%" : s === 5 ? "85%" : "50%", 
                         transform: "translateX(-50%)", width: 0, height: 0,
                         borderLeft: "6px solid transparent", borderRight: "6px solid transparent",
-                        ...(s === 1 ? { borderBottom: "6px solid #0f172a" } : { borderTop: "6px solid #0f172a" })
+                        borderTop: "6px solid #0f172a"
                       }} />
                     </div>
                   )}
@@ -2937,7 +2937,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
                   <div style={{ 
                     fontSize: 9, 
                     fontWeight: 900, 
-                    color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "rgba(255,255,255,0.3)",
+                    color: isUnlocked ? "#10b981" : isCurrent ? "#3b82f6" : "rgba(255,255,255,0.6)",
                     fontFamily: "monospace",
                     textTransform: "uppercase",
                     letterSpacing: 1,
@@ -2957,11 +2957,11 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
       <div style={{ padding: window.innerWidth < 600 ? "0 20px 40px" : "0 40px 40px", marginTop: -40, position: "relative" }}>
 
         <div className="profile-info-row">
-          <div className="profile-avatar-container">
+           <div className="profile-avatar-container">
             {profile?.avatar_url ? (
                <>
                  <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28, objectFit: "cover" }} />
-                 <div className="avatar-delete-btn" onClick={() => setShowDeleteConfirm(true)} title="Remove Photo">✕</div>
+                 <div className="avatar-delete-btn" onClick={() => setShowDeleteConfirm(true)} title="Remove Photo" style={{ fontSize: "16px", paddingBottom: "2px" }}>🗑️</div>
                </>
             ) : (
                <div style={{ color: "#475569" }}>👤</div>

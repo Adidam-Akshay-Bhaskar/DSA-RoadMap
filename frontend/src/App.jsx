@@ -1269,6 +1269,7 @@ function Roadmap({ session }) {
         setActive(null);
         setShowTracker(false);
         setShowProfile(false);
+        setTab("algorithms");
         window.scrollTo({ top: 0, behavior: "instant" });
       }
     };
@@ -1288,6 +1289,7 @@ function Roadmap({ session }) {
     setShowProfile(true);
     setShowTracker(false);
     setActive(null);
+    setTab("algorithms");
     window.history.pushState({ view: 'profile' }, "", "?view=profile");
     window.scrollTo({ top: 0, behavior: "instant" });
   };
@@ -1297,6 +1299,7 @@ function Roadmap({ session }) {
     setShowTracker(nextState);
     setShowProfile(false);
     setActive(null);
+    setTab("algorithms");
     if (nextState) {
       window.history.pushState({ view: 'tracker' }, "", "?view=tracker");
     } else {
@@ -1308,6 +1311,7 @@ function Roadmap({ session }) {
     setActive(null);
     setShowTracker(false);
     setShowProfile(false);
+    setTab("algorithms");
     window.history.pushState({ view: 'dashboard' }, "", "/");
     window.scrollTo({ top: 0, behavior: "instant" });
   };
@@ -2191,7 +2195,7 @@ function Roadmap({ session }) {
               return (
                 <div
                   key={item.id}
-                  onClick={() => setActive(item.id)}
+                  onClick={() => openDataStructure(item.id)}
                   style={{
                     background:
                       active === item.id

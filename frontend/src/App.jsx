@@ -1735,7 +1735,10 @@ function Roadmap({ session }) {
               </div>
 
               <button
-                onClick={() => supabase.auth.signOut()}
+                onClick={() => {
+                  window.history.replaceState({ view: 'dashboard' }, "", "/");
+                  supabase.auth.signOut();
+                }}
                 style={{
                   background: "transparent",
                   border: "1px solid #444",
@@ -3185,3 +3188,22 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
     </div>
   );
 }
+en/session validation
+
+
+
+Database
+
+
+
+* Store user credentials securely
+
+* Passwords hashed using **bcrypt or Argon2**
+
+
+
+### 12. Performance Requirements
+
+
+
+* Fast login response

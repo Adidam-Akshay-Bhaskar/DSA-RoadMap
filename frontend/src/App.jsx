@@ -1139,7 +1139,10 @@ function Roadmap({ session }) {
     const topicId = params.get('topic');
     return topicId ? parseInt(topicId, 10) : null;
   });
-  const [tab, setTab] = useState("algorithms");
+  const [tab, setTab] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tab') || "algorithms";
+  });
   const [completedQs, setCompletedQs] = useState(() => {
     if (session?.user) {
       const saved = localStorage.getItem(`dsa_completed_${session.user.id}`);
@@ -1242,13 +1245,13 @@ function Roadmap({ session }) {
         const view = params.get('view');
         if (view === 'tracker') state = { view: 'tracker' };
         else if (view === 'profile') state = { view: 'profile' };
-        else if (topicId) state = { view: 'topic', id: parseInt(topicId, 10) };
+        else if (topicId) state = { view: 'topic', id: parseInt(topicId, 10), tab: params.get('tab') || 'algorithms' };
         else state = { view: 'dashboard' };
       }
 
       if (state && state.view === 'topic') {
         setActive(state.id);
-        setTab("algorithms");
+        setTab(state.tab || "algorithms");
         setShowTracker(false);
         setShowProfile(false);
         window.scrollTo({ top: 0, behavior: "instant" });
@@ -1277,7 +1280,7 @@ function Roadmap({ session }) {
   const openDataStructure = (id) => {
     setActive(id);
     setTab("algorithms");
-    window.history.pushState({ view: 'topic', id }, "", `?topic=${id}`);
+    window.history.pushState({ view: 'topic', id, tab: 'algorithms' }, "", `?topic=${id}&tab=algorithms`);
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
@@ -1991,7 +1994,12 @@ function Roadmap({ session }) {
                 {TABS.map((t) => (
                   <button
                     key={t.key}
-                    onClick={() => setTab(t.key)}
+                    onClick={() => {
+                      setTab(t.key);
+                      const params = new URLSearchParams(window.location.search);
+                      params.set('tab', t.key);
+                      window.history.replaceState({ view: 'topic', id: active, tab: t.key }, "", `?${params.toString()}`);
+                    }}
                     style={{
                       border: "none",
                       background: "none",

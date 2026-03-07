@@ -1,7 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
-import { Trash2 } from "lucide-react";
+
+// Custom unique delete symbol (Futuristic "Purge" icon replacing standard trash cans)
+const CustomDeleteIcon = ({ size = 24, color = "currentColor" }) => (
+  <svg 
+    width={size} height={size} viewBox="0 0 24 24" fill="none" 
+    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+  >
+    {/* Outer hexagonal pulse ring */}
+    <path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z" strokeOpacity="0.2" fill="rgba(239,68,68,0.05)" />
+    {/* Inner cross out */}
+    <path d="M9 9l6 6" />
+    <path d="M15 9l-6 6" />
+    {/* Warning dot */}
+    <circle cx="12" cy="16.5" r="0.5" fill={color} stroke="none" />
+  </svg>
+);
+
 const dsaData = [
   {
     id: 1,
@@ -2391,11 +2407,11 @@ function Roadmap({ session }) {
                       <span style={{ flex: 1, textDecoration: t.done ? "line-through" : "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontWeight: 500 }}>{t.text}</span>
                       <button 
                         onClick={() => setTodos(todos.filter((_, i) => i !== idx))}
-                        style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 4, opacity: 0.6, transition: "opacity 0.2s" }}
-                        onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                        onMouseLeave={e => e.currentTarget.style.opacity = 0.6}
+                        style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 4, opacity: 0.6, transition: "transform 0.2s, opacity 0.2s" }}
+                        onMouseEnter={e => { e.currentTarget.style.opacity = 1; e.currentTarget.style.transform = "scale(1.15) rotate(9deg)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.opacity = 0.6; e.currentTarget.style.transform = "none"; }}
                       >
-                        <Trash2 size={16} />
+                        <CustomDeleteIcon size={20} />
                       </button>
                     </div>
                   ))
@@ -2637,7 +2653,9 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
             maxWidth: 480, width: "100%", borderRadius: 32, padding: "40px",
             boxShadow: "0 40px 100px -20px rgba(0,0,0,0.8), 0 0 40px rgba(239, 68, 68, 0.1)"
           }}>
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}><Trash2 size={48} color="#ef4444" /></div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 24, animation: "pulse 2s infinite" }}>
+              <CustomDeleteIcon size={64} color="#ef4444" />
+            </div>
             <h3 style={{ fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 16 }}>Remove Photo?</h3>
             <p style={{ color: "#94a3b8", textAlign: "center", lineHeight: 1.6, marginBottom: 32, fontSize: 15 }}>
               This action will permanently delete your custom avatar.
@@ -2979,7 +2997,9 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
             {profile?.avatar_url ? (
                <>
                  <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28, objectFit: "cover" }} />
-                 <div className="avatar-delete-btn" onClick={() => setShowDeleteConfirm(true)} title="Remove Photo" style={{ padding: 4, display: "flex", alignItems: "center", justifyContent: "center" }}><Trash2 size={18} /></div>
+                 <div className="avatar-delete-btn" onClick={() => setShowDeleteConfirm(true)} title="Remove Photo" style={{ padding: 4, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+                   <CustomDeleteIcon size={20} />
+                 </div>
                </>
             ) : (
                <div style={{ color: "#475569" }}>👤</div>

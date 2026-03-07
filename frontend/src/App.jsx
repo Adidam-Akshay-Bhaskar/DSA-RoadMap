@@ -3188,22 +3188,3 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
     </div>
   );
 }
-en/session validation
-
-
-
-Database
-
-
-
-* Store user credentials securely
-
-* Passwords hashed using **bcrypt or Argon2**
-
-
-
-### 12. Performance Requirements
-
-
-
-* Fast login response

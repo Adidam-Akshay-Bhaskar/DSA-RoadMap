@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
+import { Trash2 } from "lucide-react";
 const dsaData = [
   {
     id: 1,
@@ -2390,9 +2391,11 @@ function Roadmap({ session }) {
                       <span style={{ flex: 1, textDecoration: t.done ? "line-through" : "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontWeight: 500 }}>{t.text}</span>
                       <button 
                         onClick={() => setTodos(todos.filter((_, i) => i !== idx))}
-                        style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18, padding: 0.2, opacity: 0.6 }}
+                        style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 4, opacity: 0.6, transition: "opacity 0.2s" }}
+                        onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                        onMouseLeave={e => e.currentTarget.style.opacity = 0.6}
                       >
-                        ×
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   ))
@@ -2634,7 +2637,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
             maxWidth: 480, width: "100%", borderRadius: 32, padding: "40px",
             boxShadow: "0 40px 100px -20px rgba(0,0,0,0.8), 0 0 40px rgba(239, 68, 68, 0.1)"
           }}>
-            <div style={{ fontSize: 48, textAlign: "center", marginBottom: 24 }}>🗑️</div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}><Trash2 size={48} color="#ef4444" /></div>
             <h3 style={{ fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 16 }}>Remove Photo?</h3>
             <p style={{ color: "#94a3b8", textAlign: "center", lineHeight: 1.6, marginBottom: 32, fontSize: 15 }}>
               This action will permanently delete your custom avatar.
@@ -2976,7 +2979,7 @@ function ProfileTab({ profile, session, streak, completedCount, totalQuestions, 
             {profile?.avatar_url ? (
                <>
                  <img src={profile.avatar_url} style={{ width: "100%", height: "100%", borderRadius: 28, objectFit: "cover" }} />
-                 <div className="avatar-delete-btn" onClick={() => setShowDeleteConfirm(true)} title="Remove Photo" style={{ fontSize: "16px", paddingBottom: "2px" }}>🗑️</div>
+                 <div className="avatar-delete-btn" onClick={() => setShowDeleteConfirm(true)} title="Remove Photo" style={{ padding: 4, display: "flex", alignItems: "center", justifyContent: "center" }}><Trash2 size={18} /></div>
                </>
             ) : (
                <div style={{ color: "#475569" }}>👤</div>

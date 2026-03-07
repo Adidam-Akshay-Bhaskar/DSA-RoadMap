@@ -74,7 +74,7 @@ const dsaData = [
   {
     id: 2,
     order: "02",
-    emoji: "📦",
+    emoji: "📚",
     title: "Arrays",
     subtitle: "Foundation",
     color: "#FF7043",
@@ -192,7 +192,7 @@ const dsaData = [
   {
     id: 4,
     order: "04",
-    emoji: "🗂️",
+    emoji: "🔑",
     title: "Hashing",
     subtitle: "Foundation",
     color: "#FFCA28",
@@ -230,7 +230,7 @@ const dsaData = [
   {
     id: 5,
     order: "05",
-    emoji: "📚",
+    emoji: "🥞",
     title: "Stack",
     subtitle: "Linear DS",
     color: "#66BB6A",
@@ -274,7 +274,7 @@ const dsaData = [
   {
     id: 6,
     order: "06",
-    emoji: "🚶",
+    emoji: "🎟️",
     title: "Queue & Deque",
     subtitle: "Linear DS",
     color: "#26C6DA",
@@ -355,7 +355,7 @@ const dsaData = [
   {
     id: 8,
     order: "08",
-    emoji: "🌳",
+    emoji: "🌲",
     title: "Binary Tree",
     subtitle: "Non-Linear DS",
     color: "#A5D6A7",
@@ -408,7 +408,7 @@ const dsaData = [
   {
     id: 9,
     order: "09",
-    emoji: "🌲",
+    emoji: "🌳",
     title: "Advanced Trees",
     subtitle: "Non-Linear DS",
     color: "#81C784",
@@ -451,7 +451,7 @@ const dsaData = [
   {
     id: 10,
     order: "10",
-    emoji: "⛰️",
+    emoji: "🏔️",
     title: "Heap / Priority Queue",
     subtitle: "Non-Linear DS",
     color: "#EF9A9A",
@@ -486,7 +486,7 @@ const dsaData = [
   {
     id: 11,
     order: "11",
-    emoji: "🔷",
+    emoji: "🕸️",
     title: "Graphs",
     subtitle: "Non-Linear DS",
     color: "#CE93D8",
@@ -540,7 +540,7 @@ const dsaData = [
   {
     id: 12,
     order: "12",
-    emoji: "🔙",
+    emoji: "🔁",
     title: "Recursion & Backtracking",
     subtitle: "Technique",
     color: "#F48FB1",
@@ -576,7 +576,7 @@ const dsaData = [
   {
     id: 13,
     order: "13",
-    emoji: "🧩",
+    emoji: "💎",
     title: "Greedy",
     subtitle: "Technique",
     color: "#FFAB40",
@@ -612,7 +612,7 @@ const dsaData = [
   {
     id: 14,
     order: "14",
-    emoji: "🔄",
+    emoji: "🧩",
     title: "Dynamic Programming",
     subtitle: "Technique",
     color: "#80DEEA",
